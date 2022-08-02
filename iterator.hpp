@@ -1,6 +1,5 @@
 namespace ft {
 
-// include <iterator>에서 들고옴
   template<class Iterator>
   struct iterator_traits {
     typedef typename Iterator::difference_type difference_type;

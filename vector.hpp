@@ -1,160 +1,235 @@
 #include <memory>
+#include <limits> //std::numeric_limits
+#include <exception> //exception
 #include "iterator.hpp"
-/* std::vector 
-T must meet the requirements of 
-CopyAssignable and CopyConstructible.	
 
-An allocator that is used to acquire/release 
-memory and to construct/destroy the elements in that memory. 
-The type must meet the requirements of Allocator. 
-The behavior is undefined 
-if Allocator::value_type is not the same as T. 
-*/
-#include <vector>
-
-namespace ft {
+namespace ft { 
   template <class T, class Allocator = std::allocator<T> >
   class vector {
   public:
     /* Member types */
-    typedef T                                        value_type;
     typedef Allocator                                allocator_type;
-    typedef typename allocator_type::reference       reference;
-    typedef typename allocator_type::const_reference const_reference;
-    // typedef implementation-defined                   iterator;
-    // typedef implementation-defined                   const_iterator;
+    typedef typename allocator_type::value_type      value_type;
     typedef typename allocator_type::size_type       size_type;
     typedef typename allocator_type::difference_type difference_type;
     typedef typename allocator_type::pointer         pointer;
     typedef typename allocator_type::const_pointer   const_pointer;
-    // typedef std::reverse_iterator<iterator>          reverse_iterator;
-    // typedef std::reverse_iterator<const_iterator>    const_reverse_iterator;
+    typedef typename allocator_type::reference       reference;
+    typedef typename allocator_type::const_reference const_reference;
+/*
+[ ]  iterators_traits - <iterator> 헤더 내에 구현된 템플릿 클래스
+[ ]  reverse_iterator
+    // typedef implementation-defined                   iterator;
+    // typedef implementation-defined                   const_iterator;
+    // typedef ft::reverse_iterator<iterator>           reverse_iterator;
+    // typedef ft::reverse_iterator<const_iterator>     const_reverse_iterator;
 
-    /*
-    =================std::allocator=================
-    멤버 변수
-    value_type T : 할당한 데이터 타입을 의미한다.
-    pointer T* : 데이터 타입의 포인터형이다.
-    const_pointer const T* : 데이터 타입의 상수 포인터형이다.
-    reference T& : 데이터 타입의 레퍼런스이다.
-    const_reference const T& : 데이터 타입의 상수 레퍼런스이다.
-    size_type std::size_t : 할당할 데이터의 개수를 의미한다.
-    difference_type std::ptrdiff_t : 두 포인터 간 차이를 의미한다.
-    rebind "template struct rebind"
-    멤버 함수
-    생성자
-    파괴자
-    address()
-    allocate() : 인수 n만큼의 메모리를 할당하고 첫번째 요소의 포인터를 반환한다. 성능 향상을 위해 인수 hint를 집어넣을 수 있다.
-    deallocate()
-    max_size() : 할당 가능한 최대 크기를 의미한다.
-    construct()
-    destroy()
-    */
-
-    /*
-[x]    iterators_traits - <iterator> 헤더 내에 구현된 템플릿 클래스
-
-[x]    reverse_iterator
-
-    enable_if SFINAE
-      template< bool B, class T = void >
-      struct enable_if;
+[ ]  enable_if SFINAE
+    // template< bool B, class T = void >
+    // struct enable_if
     
-    is_integral
+[ ]  is_integral
 
-    equal and/or lexicographical_compare
+[ ]  equal and/or lexicographical_compare
     
-    std::pair
-    
-    std::make_pair
+[ ]  std::pair
+[ ]  std::make_pair
+*/
 
-    */
+  private:
+    allocator_type _allocator;
+    pointer _start;
+    pointer _end;
+    pointer _capacity;
 
-
-
-
+  public:
     /* Member functions */
 
-    // std::vector<T,Allocator>::operator=
-    // Copy assignment operator. Replaces the contents with a copy of the contents of other.
+    //constructor
+      //(1) empty container constructor (default constructor)
+    explicit vector (const allocator_type& alloc = allocator_type())
+    : _start(nullptr),
+      _end(nullptr),
+      _capacity(nullptr) {};
+
+      //(2) fill constructor
+    explicit vector (size_type n, const value_type& val = value_type(),
+      const allocator_type& alloc = allocator_type());
+
+      //(3) range constructor
+    template <class InputIterator>
+      vector (InputIterator first, InputIterator last,
+        const allocator_type& alloc = allocator_type());
+
+      //(4) copy constructor
+    vector (const vector& x);
+
+    //destructor
+    ~vector() {
+      this->clear();
+      this->_allocator.deallocate(this->_start, this->_capacity); //capacity - start?
+    };
+
+    // May throw implementation-defined exceptions. <- ?
     vector& operator=( const vector& other ) {
+      if (this != &other) {
+        this->clear();
+        this->insert(this->_start, other.begin(), other.end());
+      }
       return *this;
     };
-    /*
-    other - another container to use as data source
-    return - *this
-    May throw implementation-defined exceptions.
-    */
 
-    // std::vector<T,Allocator>::assign
-    void assign( size_type count, const T& value );
+    void assign( size_type count, const T& value ){
+      this->clear();
+      this->_start = this->_allocator.allocate(count);
+      this->_capacity = this->_start + count;
+      this->end = this->_start;
+      while (--count) {
+        this->_alloc.construct(this->_end++, value);
+      }
+      //capacity < count?
+    };
 
     template< class InputIt >
     void assign( InputIt first, InputIt last );
 
-    // std::vector<T,Allocator>::get_allocator
-    allocator_type get_allocator() const;
+    allocator_type get_allocator() const {
+      return (this->_allocator);
+    };
 
-    // std::vector<T,Allocator>::at
-    reference at( size_type pos );
+    reference at( size_type pos ) {
+      while (--pos)
+        this->_start++;
+      if (!*_start)
+        throw std::out_of_range("vector");
+      return (this->_start);
+    };
+
     const_reference at( size_type pos ) const;
-    // std::vector<T,Allocator>::operator[]
+
     reference operator[]( size_type pos );
+
     const_reference operator[]( size_type pos ) const;
     /*
     pos - position of the element to return
     return - Reference to the requested element.
     */
 
-    // std::vector<T,Allocator>::front, back
-    reference front();
-    const_reference front() const;
-    reference back();
-    const_reference back() const;
-    /*
-    return - reference to the first element in the container
-    Calling front on an empty container is undefined.
-    */
+    // Calling front on an empty container is undefined.
+    reference front() {
+      return (this->_start);
+    };
 
-    // std::vector<T,Allocator>::data
-    T* data();
-    const T* data() const;
+    const_reference front() const {
+      return (this->_start);
+    };
+    
+    reference back() {
+      return (this->--_end);
+    };
+
+    const_reference back() const {
+      return (this->--_end);
+    };
+
+    T* data() {
+      return (this->_start);
+    };
+
+    const T* data() const {
+      return (this->_start);
+    };
 
     /* iterators */
-    iterator begin();
-    const_iterator begin() const;
-    iterator end();
-    const_iterator end() const;
-    iterator rbegin();
-    const_iterator rbegin() const;
-    iterator rend();
-    const_iterator rend() const;
+    //return iterator
+    iterator begin() {
+      return (this->_start);
+    };
+
+    const_iterator begin() const {
+      return (this->_start);
+    };
+
+    iterator end() {
+      return (this->_end);
+    };
+
+    const_iterator end() const {
+      return (this->_end);
+    };
+
+    iterator rbegin() {
+      return reverse_iterator(this->end());
+    };
+
+    const_iterator rbegin() const {
+      return reverse_iterator(this->end());
+    };
+
+    iterator rend() {
+      return reverse_iterator(this->begin());
+    };
+
+    const_iterator rend() const {
+      return reverse_iterator(this->begin());
+    };
 
     /* capacity */
-    bool empty() const;
-    // return - true if the container is empty
-    size_type size() const;
-    size_type max_size() const;
-    // return - Maximum number of elements.
+    bool empty() const {
+      if (this->_start == this->_end)
+        return true;
+      return false;
+    };
 
-    void reserve( size_type new_cap );
+    size_type size() const {
+      size_type vec_size;
+      for (vec_size = 0; this->_start == this->_end; this->_start++)
+        vec_size++;
+      return vec_size;
+    };
+
+    size_type max_size() const {
+      return (numeric_limits<size_type>::max() / sizeof(value_type));
+    };
+
+    void reserve( size_type new_cap ) {
+      
+    };
     //if (new_cap > curr_capacity)
     // if (new_cap > max_size) { return std::length_error }
 
-    size_type capacity() const;
+    size_type capacity() const {
+      size_type vec_capacity;
+      for (vec_capacity = 0; this->_start == this->_capacity; this->_start++)
+        vec_capacity++;
+      return vec_capacity;
+    };
     /* Modifiers */
-    void clear();
+    void clear() {
+      this->erase(this->_start, this->_capacity);
+      // while (this->_start != this->_end)
+      //   _allocator.destroy(--(this->_end));
+    };
 
-    iterator insert( iterator pos, const T& value );
     // insert value before pos
     // return iterator pointing to the inserted value
-    void insert( iterator pos, size_type count, const T& value );
+    iterator insert( iterator pos, const T& value ) {
+      this->insert(pos, 1, value);
+      return (this->_start + pos);
+    };
+
     // insert count copies of the value before pos
     // return iterator pointing to the first element inserted
     // or return pos if count == 0
+    void insert( iterator pos, size_type count, const T& value );
+
     template< class InputIt >
-    void insert( iterator pos, InputIt first, InputIt last );
+    void insert( iterator pos, InputIt first, InputIt last ) {
+      //add capacity malloc
+      for (size_type i = 0; first == last; pos++, first++) {
+        insert(pos, first);
+      }
+    };
     // insert first~last before pos
     // return iterator pointing to the first element inserted
     // or return pos if first == last
@@ -184,7 +259,20 @@ namespace ft {
     void resize( size_type count, T value = T() );
 
     // std::vector<T,Allocator>::swap
-    void swap( vector& other );
+    void swap( vector& other ) {
+      // temp = other;
+      pointer start_temp = other.capacity;
+      pointer end_temp = other.capacity;
+      pointer capacity_temp = other.capacity;
+      // other = this;
+      other.start = this->_start;
+      other.end = this->_end;
+      other.capacity = this->_capacity;
+      //this = temp;
+      this->_start = start_temp;
+      this->_end = end_temp;
+      this->_capacity = capacity_temp;
+    };
 
     /* operator */
     template< class T, class Alloc >
@@ -207,12 +295,10 @@ namespace ft {
                     const std::vector<T,Alloc>& rhs );
 
 
-
-
-
-    template< class T, class Alloc >
-    void swap( std::vector<T,Alloc>& lhs,
-              std::vector<T,Alloc>& rhs );
-
   };
 }
+template< class T, class Alloc >
+void std::swap( ft::vector<T,Alloc>& lhs,
+          ft::vector<T,Alloc>& rhs ) {
+            lhs.swap(rhs);
+          }
