@@ -1,5 +1,5 @@
 #include <memory>
-
+#include "iterator.hpp"
 /* std::vector 
 T must meet the requirements of 
 CopyAssignable and CopyConstructible.	
@@ -10,39 +10,64 @@ The type must meet the requirements of Allocator.
 The behavior is undefined 
 if Allocator::value_type is not the same as T. 
 */
+#include <vector>
+
 namespace ft {
   template <class T, class Allocator = std::allocator<T> >
   class vector {
   public:
     /* Member types */
-    typedef T value_type;
-    typedef Allocator allocator_type;
-    typedef std::size_t size_type;
-    typedef std::ptrdiff_t difference_type; //c++11?
-    typedef value_type& reference;
-    typedef const value_type& const_reference;
-    typedef Allocator::pointer pointer;
-    typedef Allocator::const_pointer const_pointer;
-    // typedef iterator LegacyRandomAccessIterator and LegacyContiguousIterator to value_type;
-    // typedef LegacyRandomAccessIterator and LegacyContiguousIterator to const value_type;
-    // typedef reverse_iterator std::reverse_iterator<iterator>;
-    // typedef const_reverse_iterator std::reverse_iterator<const_iterator>;
+    typedef T                                        value_type;
+    typedef Allocator                                allocator_type;
+    typedef typename allocator_type::reference       reference;
+    typedef typename allocator_type::const_reference const_reference;
+    // typedef implementation-defined                   iterator;
+    // typedef implementation-defined                   const_iterator;
+    typedef typename allocator_type::size_type       size_type;
+    typedef typename allocator_type::difference_type difference_type;
+    typedef typename allocator_type::pointer         pointer;
+    typedef typename allocator_type::const_pointer   const_pointer;
+    // typedef std::reverse_iterator<iterator>          reverse_iterator;
+    // typedef std::reverse_iterator<const_iterator>    const_reverse_iterator;
 
     /*
-    iterators_traits
+    =================std::allocator=================
+    멤버 변수
+    value_type T : 할당한 데이터 타입을 의미한다.
+    pointer T* : 데이터 타입의 포인터형이다.
+    const_pointer const T* : 데이터 타입의 상수 포인터형이다.
+    reference T& : 데이터 타입의 레퍼런스이다.
+    const_reference const T& : 데이터 타입의 상수 레퍼런스이다.
+    size_type std::size_t : 할당할 데이터의 개수를 의미한다.
+    difference_type std::ptrdiff_t : 두 포인터 간 차이를 의미한다.
+    rebind "template struct rebind"
+    멤버 함수
+    생성자
+    파괴자
+    address()
+    allocate() : 인수 n만큼의 메모리를 할당하고 첫번째 요소의 포인터를 반환한다. 성능 향상을 위해 인수 hint를 집어넣을 수 있다.
+    deallocate()
+    max_size() : 할당 가능한 최대 크기를 의미한다.
+    construct()
+    destroy()
+    */
 
-    reverse_iterator
+    /*
+[x]    iterators_traits - <iterator> 헤더 내에 구현된 템플릿 클래스
+
+[x]    reverse_iterator
 
     enable_if SFINAE
-    template< bool B, class T = void >
-    struct enable_if;
+      template< bool B, class T = void >
+      struct enable_if;
     
-
     is_integral
-    equal and/or lexicographical_compare
-    std::pair
-    std::make_pair
 
+    equal and/or lexicographical_compare
+    
+    std::pair
+    
+    std::make_pair
 
     */
 
@@ -189,5 +214,5 @@ namespace ft {
     void swap( std::vector<T,Alloc>& lhs,
               std::vector<T,Alloc>& rhs );
 
-  }
+  };
 }
