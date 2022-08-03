@@ -137,23 +137,28 @@ namespace ft {
     };
 
     reference at( size_type pos ) {
-      while (pos--)
-        this->_start++;
-
-      if (!*_start)
+      if (!(pos < size()))
         throw std::out_of_range("vector");
 
-      return (this->_start);
+      return (this->_start[pos]);
     };
 
-    const_reference at( size_type pos ) const;
+    const_reference at( size_type pos ) const {
+      if (!(pos < size()))
+        throw std::out_of_range("vector");
 
-    reference operator[]( size_type pos );
+      return (this->_start[pos]);
+    };
 
-    const_reference operator[]( size_type pos ) const;
+    reference operator[]( size_type pos ) {
+      return (this->_start[pos]);
+    };
+
+    const_reference operator[]( size_type pos ) const {
+      return (this->_start[pos]);
+    };
     /*
-    pos - position of the element to return
-    return - Reference to the requested element.
+      at과 operator[]의 차이는 range를 체크하는 것
     */
 
     // Calling front on an empty container is undefined.
