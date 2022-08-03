@@ -157,11 +157,11 @@ namespace ft {
     };
     
     reference back() {
-      return (this->--_end);
+      return (--this->_end);
     };
 
     const_reference back() const {
-      return (this->--_end);
+      return (--this->_end);
     };
 
     T* data() {
@@ -261,7 +261,7 @@ namespace ft {
     };
     /* Modifiers */
     void clear() {
-      this->erase(this->_start, this->_capacity);
+      this->erase(this->_start, this->_capacity); //@
       // while (this->_start != this->_end)
       //   _allocator.destroy(--(this->_end));
     };
@@ -279,6 +279,9 @@ namespace ft {
     // or return pos if count == 0
     void insert( iterator pos, size_type count, const T& value );
 
+    // insert first~last before pos
+    // return iterator pointing to the first element inserted
+    // or return pos if first == last
     template< class InputIt >
     void insert( iterator pos, InputIt first, InputIt last ) {
       //add capacity malloc
@@ -286,20 +289,34 @@ namespace ft {
         insert(pos, first);
       }
     };
-    // insert first~last before pos
-    // return iterator pointing to the first element inserted
-    // or return pos if first == last
 
-    iterator erase( iterator pos );
-    iterator erase( iterator first, iterator last );
+    iterator erase( iterator pos ) {
+      this->_allocator.destroy(pos);
+
+      for (size_type i = 0; i < this->size - pos; ++i) {//iterator pos -> sizetype pos
+        this->_allocator.construct()
+        this->_allocator.destroy()
+
+      }
+      // this->_allocator.deallocate(this->_end); -> capacity, alloc 유지
+      --this->_end;
+
+      return ;//pos+start
+    };
+
     //erase first ~ last - 1
     /* return Iterator following the last removed element.
     If pos refers to the last element, then the end() iterator is returned.
     If last==end() prior to removal, then the updated end() iterator is returned.
     If [first, last) is an empty range, then last is returned.
     */
+    iterator erase( iterator first, iterator last ) {
+      while (first != last) { //last < first?
+        this->erase(first);
+        first++;
+      }
+    };
 
-    // std::vector<T,Allocator>::push_back
     void push_back( const T& value );
     /*
     Calling push_back will cause reallocation (when size()+1 > capacity()), 
