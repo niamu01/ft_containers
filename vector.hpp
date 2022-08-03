@@ -1,7 +1,10 @@
 #include <memory>
 #include <limits> //std::numeric_limits
 #include <exception> //exception
+#include <stdexcept>  //length_error, out_of_range
 #include "iterator.hpp"
+
+//@ : make private util func
 
 namespace ft { 
   template <class T, class Allocator = std::allocator<T> >
@@ -16,6 +19,7 @@ namespace ft {
     typedef typename allocator_type::const_pointer   const_pointer;
     typedef typename allocator_type::reference       reference;
     typedef typename allocator_type::const_reference const_reference;
+
 /*
 [ ]  iterators_traits - <iterator> 헤더 내에 구현된 템플릿 클래스
 [ ]  reverse_iterator
@@ -48,18 +52,41 @@ namespace ft {
     //constructor
       //(1) empty container constructor (default constructor)
     explicit vector (const allocator_type& alloc = allocator_type())
-    : _start(nullptr),
+    : _allocator(alloc),
+      _start(nullptr),
       _end(nullptr),
       _capacity(nullptr) {};
 
       //(2) fill constructor
     explicit vector (size_type n, const value_type& val = value_type(),
-      const allocator_type& alloc = allocator_type());
+      const allocator_type& alloc = allocator_type())
+      : _allocator(alloc) {
+        _start = this->_allocator.allocate(n);
+
+        while (n--) {
+          this->_allocator.construct(_start, val);
+          this->_start++;
+        }
+
+        this->_end = this->_start;
+        this->_capacity = this->_start; //@ 생성할때니까 2배수로 맞춰주기
+      };
 
       //(3) range constructor
     template <class InputIterator>
       vector (InputIterator first, InputIterator last,
-        const allocator_type& alloc = allocator_type());
+        const allocator_type& alloc = allocator_type())
+        : _allocator(alloc) {
+          size_type n;
+          //@ get size ( first <-> last )
+
+          this->_start = this->_allocator.allocate(n);
+          while (n--) {
+            this->_allocator.construct(_start++, *first++)
+          }
+          this->_end = this->_start;
+          this->_capacity = this->_start; //@ 생성할때니까 2배수로 맞춰주기
+        };
 
       //(4) copy constructor
     vector (const vector& x);
@@ -67,7 +94,7 @@ namespace ft {
     //destructor
     ~vector() {
       this->clear();
-      this->_allocator.deallocate(this->_start, this->_capacity); //capacity - start?
+      this->_allocator.deallocate(this->_start, this->_capacity);
     };
 
     // May throw implementation-defined exceptions. <- ?
@@ -76,18 +103,21 @@ namespace ft {
         this->clear();
         this->insert(this->_start, other.begin(), other.end());
       }
+
       return *this;
     };
 
     void assign( size_type count, const T& value ){
       this->clear();
+
       this->_start = this->_allocator.allocate(count);
       this->_capacity = this->_start + count;
       this->end = this->_start;
-      while (--count) {
+
+      while (count--) {
         this->_alloc.construct(this->_end++, value);
       }
-      //capacity < count?
+      //capacity < count ?
     };
 
     template< class InputIt >
@@ -98,10 +128,12 @@ namespace ft {
     };
 
     reference at( size_type pos ) {
-      while (--pos)
+      while (pos--)
         this->_start++;
+
       if (!*_start)
         throw std::out_of_range("vector");
+
       return (this->_start);
     };
 
@@ -183,25 +215,48 @@ namespace ft {
 
     size_type size() const {
       size_type vec_size;
+
       for (vec_size = 0; this->_start == this->_end; this->_start++)
         vec_size++;
+
       return vec_size;
     };
 
     size_type max_size() const {
-      return (numeric_limits<size_type>::max() / sizeof(value_type));
+      return (std::numeric_limits<size_type>::max() / sizeof(value_type));
     };
 
+    //new_cap은 아무숫자나 들어올 수 있음
     void reserve( size_type new_cap ) {
+      if (new_cap > max_size)
+        throw std::length_error("vector");
+        
+      if (new_cap <= this->_capacity)
+        return;
+
+      ft::vector<> temp;
+      //vec 새로 만들 수 없으면 privete 다시 세팅해주기
+      temp->_allocator.allocate(new_cap);
+      temp->_start = this->_start;
+      temp->_end = this->_end;
+      temp->_capacity = new_cap;
+
+      while (this->size--) {
+        temp->_allocator.construct(this->_start);
+        temp->_allocator.destroy(this->_start);
+        _start++;
+      }
       
+      temp->_allocator.deallocate(this->_start, this->_capacity);
+      this = temp;
     };
-    //if (new_cap > curr_capacity)
-    // if (new_cap > max_size) { return std::length_error }
 
     size_type capacity() const {
       size_type vec_capacity;
+
       for (vec_capacity = 0; this->_start == this->_capacity; this->_start++)
         vec_capacity++;
+
       return vec_capacity;
     };
     /* Modifiers */
@@ -215,6 +270,7 @@ namespace ft {
     // return iterator pointing to the inserted value
     iterator insert( iterator pos, const T& value ) {
       this->insert(pos, 1, value);
+
       return (this->_start + pos);
     };
 
@@ -293,7 +349,6 @@ namespace ft {
     template< class T, class Alloc >
     bool operator>=( const std::vector<T,Alloc>& lhs,
                     const std::vector<T,Alloc>& rhs );
-
 
   };
 }

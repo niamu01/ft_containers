@@ -11,17 +11,33 @@ int main()
 
     a.push_back(1);
     a.push_back(2);
-    a.push_back(3);
 
-    std::vector<int>::reverse_iterator rb_it = a.rbegin();
-    std::vector<int>::reverse_iterator re_it = a.rend();
-    std::vector<int>::iterator b_it = a.begin();
-    std::vector<int>::iterator e_it = a.end();
+    std::cout << a.size() << ", " << a.capacity() << std::endl;
 
-    std::cout << *rb_it << std::endl;
-    std::cout << *re_it << std::endl;
-    std::cout << *b_it << std::endl;
-    std::cout << *e_it << std::endl;
+    a.reserve(1);
+
+    std::cout << a.size() << ", " << a.capacity() << std::endl;
+
+    // int i = 5;
+
+    // while (--i) {
+    //     std::cout << "1" << std::endl;
+    // }
+
+    // i = 5;
+    // while (i--) {
+    //     std::cout << "2" << std::endl;
+    // }
+
+    // std::vector<int>::reverse_iterator rb_it = a.rbegin();
+    // std::vector<int>::reverse_iterator re_it = a.rend();
+    // std::vector<int>::iterator b_it = a.begin();
+    // std::vector<int>::iterator e_it = a.end();
+
+    // std::cout << *rb_it << std::endl;
+    // std::cout << *re_it << std::endl;
+    // std::cout << *b_it << std::endl;
+    // std::cout << *e_it << std::endl;
 
     // try {
 
