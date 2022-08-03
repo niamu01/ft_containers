@@ -49,15 +49,12 @@ namespace ft {
   public:
     /* Member functions */
 
-    //constructor
-      //(1) empty container constructor (default constructor)
     explicit vector (const allocator_type& alloc = allocator_type())
     : _allocator(alloc),
       _start(nullptr),
       _end(nullptr),
       _capacity(nullptr) {};
 
-      //(2) fill constructor
     explicit vector (size_type n, const value_type& val = value_type(),
       const allocator_type& alloc = allocator_type())
       : _allocator(alloc) {
@@ -72,7 +69,6 @@ namespace ft {
         this->_capacity = this->_start; //@ 생성할때니까 2배수로 맞춰주기
       };
 
-      //(3) range constructor
     template <class InputIterator>
       vector (InputIterator first, InputIterator last,
         const allocator_type& alloc = allocator_type())
@@ -91,13 +87,13 @@ namespace ft {
       //(4) copy constructor
     vector (const vector& x);
 
-    //destructor
     ~vector() {
       this->clear();
       this->_allocator.deallocate(this->_start, this->_capacity);
     };
 
     // May throw implementation-defined exceptions. <- ?
+    
     vector& operator=( const vector& other ) {
       if (this != &other) {
         this->clear();
@@ -226,7 +222,6 @@ namespace ft {
       return (std::numeric_limits<size_type>::max() / sizeof(value_type));
     };
 
-    //new_cap은 아무숫자나 들어올 수 있음
     void reserve( size_type new_cap ) {
       if (new_cap > max_size)
         throw std::length_error("vector");
@@ -234,21 +229,18 @@ namespace ft {
       if (new_cap <= this->_capacity)
         return;
 
-      ft::vector<> temp;
-      //vec 새로 만들 수 없으면 privete 다시 세팅해주기
-      temp->_allocator.allocate(new_cap);
-      temp->_start = this->_start;
-      temp->_end = this->_end;
-      temp->_capacity = new_cap;
+      pointer temp = _allocator.allocate(new_cap);
 
-      while (this->size--) {
-        temp->_allocator.construct(this->_start);
-        temp->_allocator.destroy(this->_start);
-        _start++;
+      for (int i = 0; i < size(); i++) {
+        _allocator.construct(&temp[i], _start[i]);
+        _allocator.destroy(this->_start);
       }
-      
-      temp->_allocator.deallocate(this->_start, this->_capacity);
-      this = temp;
+
+      _allocator.deallocate(_start, _capacity);
+
+      _start = temp;
+      _end = _start + size();
+      _capacity = new_cap;
     };
 
     size_type capacity() const {
@@ -261,9 +253,9 @@ namespace ft {
     };
     /* Modifiers */
     void clear() {
-      this->erase(this->_start, this->_capacity); //@
-      // while (this->_start != this->_end)
-      //   _allocator.destroy(--(this->_end));
+      // this->erase(this->_start, this->_capacity); //@
+      while (this->_start != this->_end)
+        _allocator.destroy(--(this->_end));
     };
 
     // insert value before pos
@@ -285,23 +277,12 @@ namespace ft {
     template< class InputIt >
     void insert( iterator pos, InputIt first, InputIt last ) {
       //add capacity malloc
+      // size_type n; //first~last
+      // this->reserve(this->size() + n);
+      
       for (size_type i = 0; first == last; pos++, first++) {
-        insert(pos, first);
+        insert(pos, first);1
       }
-    };
-
-    iterator erase( iterator pos ) {
-      this->_allocator.destroy(pos);
-
-      for (size_type i = 0; i < this->size - pos; ++i) {//iterator pos -> sizetype pos
-        this->_allocator.construct()
-        this->_allocator.destroy()
-
-      }
-      // this->_allocator.deallocate(this->_end); -> capacity, alloc 유지
-      --this->_end;
-
-      return ;//pos+start
     };
 
     //erase first ~ last - 1
@@ -310,11 +291,26 @@ namespace ft {
     If last==end() prior to removal, then the updated end() iterator is returned.
     If [first, last) is an empty range, then last is returned.
     */
+    iterator erase( iterator pos ) {
+      size_type pos_index = _start - pos;
+      this->_allocator.destroy(pos);
+
+      for (size_type i = 0; i < this->size() - pos_index; ++i) {
+        this->_allocator.construct()
+        this->_allocator.destroy()
+      }
+      // this->_allocator.deallocate(this->_end); -> capacity, alloc 유지
+      --this->_end;
+
+      return ;//pos+start
+    };
+
     iterator erase( iterator first, iterator last ) {
-      while (first != last) { //last < first?
+      while (first != last) {
         this->erase(first);
         first++;
       }
+      return (first + _start); //first바뀌기전
     };
 
     void push_back( const T& value );
@@ -322,26 +318,27 @@ namespace ft {
     Calling push_back will cause reallocation (when size()+1 > capacity()), 
     so some implementations also throw std::length_error 
     when push_back causes a reallocation that would exceed max_size 
-    (due to implicitly calling an equivalent of reserve(size()+1)).
+    (due to implicitly calling an equivalent of -(size()+1)).
     */
     
-    // std::vector<T,Allocator>::pop_back
     void pop_back();
 
-    // std::vector<T,Allocator>::resize
-    void resize( size_type count, T value = T() );
+    void resize( size_type count, T value = T() ) {
+      if (this->size() >= count) {
+        // this->erase(count);
+      }
 
-    // std::vector<T,Allocator>::swap
+    };
+
     void swap( vector& other ) {
-      // temp = other;
-      pointer start_temp = other.capacity;
-      pointer end_temp = other.capacity;
-      pointer capacity_temp = other.capacity;
-      // other = this;
+      pointer start_temp = other._start;
+      pointer end_temp = other._end;
+      pointer capacity_temp = other._capacity;
+
       other.start = this->_start;
       other.end = this->_end;
       other.capacity = this->_capacity;
-      //this = temp;
+
       this->_start = start_temp;
       this->_end = end_temp;
       this->_capacity = capacity_temp;
@@ -349,28 +346,40 @@ namespace ft {
 
     /* operator */
     template< class T, class Alloc >
-    bool operator==( const std::vector<T,Alloc>& lhs,
-                    const std::vector<T,Alloc>& rhs );
+    bool operator==( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs ) {
+      return (lhs == rhs);
+    };
+
     template< class T, class Alloc >
-    bool operator!=( const std::vector<T,Alloc>& lhs,
-                    const std::vector<T,Alloc>& rhs );
+    bool operator!=( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs ) {
+      return (lhs != rhs);
+    };
+
     template< class T, class Alloc >
-    bool operator<( const std::vector<T,Alloc>& lhs,
-                    const std::vector<T,Alloc>& rhs );
+    bool operator<( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs ) {
+      return (lhs < rhs);
+    };
+
     template< class T, class Alloc >
-    bool operator<=( const std::vector<T,Alloc>& lhs,
-                    const std::vector<T,Alloc>& rhs );
+    bool operator<=( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs ) {
+      return (lhs <= rhs);
+    };
+
     template< class T, class Alloc >
-    bool operator>( const std::vector<T,Alloc>& lhs,
-                    const std::vector<T,Alloc>& rhs );
+    bool operator>( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs ) {
+      return (lhs > rhs);
+    };
+
     template< class T, class Alloc >
-    bool operator>=( const std::vector<T,Alloc>& lhs,
-                    const std::vector<T,Alloc>& rhs );
+    bool operator>=( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs ) {
+      return (lhs >= rhs);
+    };
+
 
   };
 }
+
 template< class T, class Alloc >
-void std::swap( ft::vector<T,Alloc>& lhs,
-          ft::vector<T,Alloc>& rhs ) {
-            lhs.swap(rhs);
-          }
+void std::swap( ft::vector<T,Alloc>& lhs, ft::vector<T,Alloc>& rhs ) {
+  lhs.swap(rhs);
+}
