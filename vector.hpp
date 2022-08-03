@@ -1,7 +1,8 @@
-#include <memory>
+#include <memory> //allocator
 #include <limits> //std::numeric_limits
 #include <exception> //exception
 #include <stdexcept>  //length_error, out_of_range
+
 #include "iterator.hpp"
 
 //@ : make private util func
@@ -19,26 +20,6 @@ namespace ft {
     typedef typename allocator_type::const_pointer   const_pointer;
     typedef typename allocator_type::reference       reference;
     typedef typename allocator_type::const_reference const_reference;
-
-/*
-[ ]  iterators_traits - <iterator> 헤더 내에 구현된 템플릿 클래스
-[ ]  reverse_iterator
-    // typedef implementation-defined                   iterator;
-    // typedef implementation-defined                   const_iterator;
-    // typedef ft::reverse_iterator<iterator>           reverse_iterator;
-    // typedef ft::reverse_iterator<const_iterator>     const_reverse_iterator;
-
-[ ]  enable_if SFINAE
-    // template< bool B, class T = void >
-    // struct enable_if
-    
-[ ]  is_integral
-
-[ ]  equal and/or lexicographical_compare
-    
-[ ]  std::pair
-[ ]  std::make_pair
-*/
 
   private:
     allocator_type _allocator;
