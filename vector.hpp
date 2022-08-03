@@ -74,7 +74,7 @@ namespace ft {
         const allocator_type& alloc = allocator_type())
         : _allocator(alloc) {
           size_type n;
-          //@ get size ( first <-> last )
+          n = cal_size(first, second);
 
           this->_start = this->_allocator.allocate(n);
           while (n--) {
@@ -103,21 +103,34 @@ namespace ft {
       return *this;
     };
 
-    void assign( size_type count, const T& value ){
+    void assign( size_type count, const T& value ) {
       this->clear();
 
       this->_start = this->_allocator.allocate(count);
-      this->_capacity = this->_start + count;
       this->end = this->_start;
+      this->_capacity = this->_start + count;
 
       while (count--) {
-        this->_alloc.construct(this->_end++, value);
+        this->_allocator.construct(this->_end++, value);
       }
-      //capacity < count ?
     };
 
     template< class InputIt >
-    void assign( InputIt first, InputIt last );
+    void assign( InputIt first, InputIt last ) {
+      size_type n;
+      n = cal_size(first, last);
+
+      this->clear();
+
+      this->_start = this->_allocator.allocate(n);
+      this->_end = this->_start;
+      this->_capacity = this->_start + n;
+
+      while (n--) {
+        this->_allocator.construct(this->_end++, *first++)
+      }
+      // capacity == n 일때 capacity값?
+    };
 
     allocator_type get_allocator() const {
       return (this->_allocator);
@@ -375,6 +388,17 @@ namespace ft {
       return (lhs >= rhs);
     };
 
+  private:
+    size_type cal_size(iterator first, iterator second) {
+      size_type ret;
+
+      while (first != second) {
+        first++;
+        ret++;
+      }
+
+      return ret;
+    };
 
   };
 }
