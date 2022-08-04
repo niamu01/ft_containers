@@ -1,13 +1,16 @@
-// #include "vector.hpp"
-#include <vector>
 #include <iostream>
-#include <memory>
-#include <iterator>
+
+#if 0
+  #include <vector>
+  namespace ft = std;
+#else
+  #include "vector.hpp"
+#endif
 
 int main()
 {
 
-    std::vector<int> a;
+    ft::vector<int> a;
 
     a.push_back(1);
     a.push_back(2);
@@ -15,17 +18,22 @@ int main()
     a.push_back(4);
     a.push_back(5);
 
+    std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
 
-std::vector<int>::iterator print = a.begin();
+//    ft::vector<int>::iterator b_it = a.begin();
+//    ft::vector<int>::iterator e_it = --a.end();
+//    ft::vector<int>::reverse_iterator rb_it = a.rbegin();
+//    ft::vector<int>::reverse_iterator re_it = --a.rend();
 
-    std::vector<int>::iterator it = a.begin() + 2;
-    std::vector<int>::iterator it2 = a.begin() + 1;
-    a.erase(it, it2);
+//     std::cout << *b_it << std::endl;
+//     std::cout << *e_it << std::endl;
+//     std::cout << *rb_it << std::endl;
+//     std::cout << *re_it << std::endl;
 
-    for ( ; print != a.end(); print++)
-        std::cout << *print << std::endl;
+//ft::vector<int>::iterator print = a.begin();
 
-
+//    ft::vector<int>::iterator it = a.begin() + 2;
+//    ft::vector<int>::iterator it2 = a.begin() + 1;
 
 
     // std::cout << a.size() << ", " << a.capacity() << std::endl;
@@ -45,19 +53,11 @@ std::vector<int>::iterator print = a.begin();
     //     std::cout << "2" << std::endl;
     // }
 
-    // std::vector<int>::reverse_iterator rb_it = a.rbegin();
-    // std::vector<int>::reverse_iterator re_it = a.rend();
-    // std::vector<int>::iterator b_it = a.begin();
-    // std::vector<int>::iterator e_it = a.end();
 
-    // std::cout << *rb_it << std::endl;
-    // std::cout << *re_it << std::endl;
-    // std::cout << *b_it << std::endl;
-    // std::cout << *e_it << std::endl;
 
     // try {
 
-    // std::vector<int> a;
+    // ft::vector<int> a;
 
     // a.push_back(1);
     // a.push_back(2);
@@ -72,7 +72,7 @@ std::vector<int>::iterator print = a.begin();
     // std::cout << '\n';
 
     // std::cout << a.at(5) << std::endl;
-    // } catch (std::out_of_range& e) {
+    // } catch (ft::out_of_range& e) {
     //     std::cout << "a: " << e.what() << std::endl;
     // }
 

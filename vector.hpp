@@ -6,16 +6,16 @@
 
 //@ : make private util func
 
-namespace ft { 
+namespace ft {
 
   template <typename T>
   class vector_iterator {
   public:
-    typedef typename T                          value_type;
-    typedef typename ptrdiff_t                  difference_type;
-    typedef typename T*                         pointer;
-    typedef typename T&                         reference;
-    typedef std::random_access_iterator_tag     iterator_category;
+    typedef T                                 value_type;
+    typedef ptrdiff_t                         difference_type;
+    typedef T*                                pointer;
+    typedef T&                                reference;
+    typedef std::random_access_iterator_tag   iterator_category;
 
   private:
     value_type _a;
@@ -84,7 +84,7 @@ namespace ft {
 
     //legacy_bidirectional_iterator
     reference operator--() {
-      --this->_a
+      --this->_a;
 
       return *this;
     };
@@ -96,13 +96,13 @@ namespace ft {
       return temp;
     };
 
-    // *a--
-    reference operator--(pointer) {
-      reference rp = --(*this->_a);
-
-      return (rp);
+//    // *a--
+//    reference operator--(pointer) {
+//      reference rp = --(*this->_a);
+//
+//      return (rp);
 //      return (*this->_a--); //?
-    };
+//    };
 
     //legacy_forward_iterator
     value_type operator++() {
@@ -112,10 +112,10 @@ namespace ft {
       return ip;
     };
 
-    //*i++
-    reference operator++(pointer) {
-      return (*this->_a++); //?
-    };
+//    //*i++
+//    reference operator++(pointer) {
+//      return (*this->_a++); //?
+//    };
 
   };
 
@@ -131,6 +131,8 @@ namespace ft {
     typedef typename allocator_type::const_pointer   const_pointer;
     typedef typename allocator_type::reference       reference;
     typedef typename allocator_type::const_reference const_reference;
+    typedef typename ft::vector_iterator<value_type> iterator;
+    typedef typename ft::vector_iterator<const value_type> const_iterator;
 
   private:
     allocator_type _allocator;
@@ -170,7 +172,7 @@ namespace ft {
 
           this->_start = this->_allocator.allocate(n);
           while (n--) {
-            this->_allocator.construct(_start++, *first++)
+            this->_allocator.construct(_start++, *first++);
           }
           this->_end = this->_start;
           this->_capacity = this->_start;
@@ -181,7 +183,7 @@ namespace ft {
 
     ~vector() {
       this->clear();
-      this->_allocator.deallocate(this->_start, this->_capacity);
+      this->_allocator.deallocate(this->_start, this->size()); //capacity
     };
 
     // May throw implementation-defined exceptions. <- ?
@@ -219,7 +221,7 @@ namespace ft {
       this->_capacity = this->_start + n;
 
       while (n--) {
-        this->_allocator.construct(this->_end++, *first++)
+        this->_allocator.construct(this->_end++, *first++);
       }
       // capacity == n 일때 capacity값?
     };
@@ -321,8 +323,9 @@ namespace ft {
 
     size_type size() const {
       size_type vec_size;
+      pointer vec_start = _start;
 
-      for (vec_size = 0; this->_start == this->_end; this->_start++)
+      for (vec_size = 0; this->_start == this->_end; vec_start++)
         vec_size++;
 
       return vec_size;
@@ -333,10 +336,10 @@ namespace ft {
     };
 
     void reserve( size_type new_cap ) {
-      if (new_cap > max_size)
+      if (new_cap > this->max_size())
         throw std::length_error("vector");
         
-      if (new_cap <= this->_capacity)
+      if (new_cap <= this->size()) //capacity
         return;
 
       pointer temp = _allocator.allocate(new_cap);
@@ -346,17 +349,18 @@ namespace ft {
         _allocator.destroy(this->_start);
       }
 
-      _allocator.deallocate(_start, _capacity);
+      _allocator.deallocate(_start, this->size()); //capacity
 
       _start = temp;
       _end = _start + size();
-      _capacity = new_cap;
+      _capacity = _start + new_cap;
     };
 
     size_type capacity() const {
       size_type vec_capacity;
+      pointer vec_start = _start;
 
-      for (vec_capacity = 0; this->_start == this->_capacity; this->_start++)
+      for (vec_capacity = 0; this->_start == this->_capacity; vec_start++)
         vec_capacity++;
 
       return vec_capacity;
@@ -414,8 +418,8 @@ namespace ft {
       this->_allocator.destroy(pos);
 
       for (size_type i = 0; i < this->size() - pos_index; ++i) {
-        this->_allocator.construct()
-        this->_allocator.destroy()
+        this->_allocator.construct();
+        this->_allocator.destroy();
       }
       // this->_allocator.deallocate(this->_end); -> capacity, alloc 유지
       --this->_end;
@@ -438,9 +442,12 @@ namespace ft {
     (due to implicitly calling an equivalent of -(size()+1)).
     */
     void push_back( const T& value ) {
-      if (this->_capacity == this->_end) {
-        this->reserve(this->capacity() * 2);
+      if (this->size() == 0) {
+        this->reserve(1);
+      } else if (this->_capacity == this->_end) {
+        this->reserve(this->size() * 2); //capacity
       }
+
       this->_allocator.construct(this->_end++, value);
     };
 
@@ -476,36 +483,6 @@ namespace ft {
       this->_capacity = capacity_temp;
     };
 
-    /* operator */
-    template< class T, class Alloc >
-    bool operator==( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs ) {
-      return (lhs == rhs);
-    };
-
-    template< class T, class Alloc >
-    bool operator!=( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs ) {
-      return (lhs != rhs);
-    };
-
-    template< class T, class Alloc >
-    bool operator<( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs ) {
-      return (lhs < rhs);
-    };
-
-    template< class T, class Alloc >
-    bool operator<=( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs ) {
-      return (lhs <= rhs);
-    };
-
-    template< class T, class Alloc >
-    bool operator>( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs ) {
-      return (lhs > rhs);
-    };
-
-    template< class T, class Alloc >
-    bool operator>=( const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs ) {
-      return (lhs >= rhs);
-    };
 
   private:
     size_type cal_size(iterator first, iterator second) {
@@ -521,7 +498,39 @@ namespace ft {
   };
 }
 
+// @
+//template< class T, class Alloc >
+//void std::swap( ft::vector<T,Alloc>& lhs, ft::vector<T,Alloc>& rhs ) {
+//  lhs.swap(rhs);
+//}
+
+/* operator */
 template< class T, class Alloc >
-void std::swap( ft::vector<T,Alloc>& lhs, ft::vector<T,Alloc>& rhs ) {
-  lhs.swap(rhs);
+bool operator==( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
+  return (lhs == rhs);
+}
+
+template< class T, class Alloc >
+bool operator!=( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
+  return (lhs != rhs);
+}
+
+template< class T, class Alloc >
+bool operator<( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
+  return (lhs < rhs);
+}
+
+template< class T, class Alloc >
+bool operator<=( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
+  return (lhs <= rhs);
+}
+
+template< class T, class Alloc >
+bool operator>( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
+  return (lhs > rhs);
+}
+
+template< class T, class Alloc >
+bool operator>=( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
+  return (lhs >= rhs);
 }
