@@ -1,13 +1,124 @@
 #include <memory> //allocator
 #include <limits> //std::numeric_limits
 #include <exception> //exception
-#include <stdexcept>  //length_error, out_of_range
-
-#include "iterator.hpp"
+#include <stdexcept> //length_error, out_of_range
+#include <iterator> //random_access_iterator_tag
 
 //@ : make private util func
 
 namespace ft { 
+
+  template <typename T>
+  class vector_iterator {
+  public:
+    typedef typename T                          value_type;
+    typedef typename ptrdiff_t                  difference_type;
+    typedef typename T*                         pointer;
+    typedef typename T&                         reference;
+    typedef std::random_access_iterator_tag     iterator_category;
+
+  private:
+    value_type _a;
+    reference _r;
+    pointer _p;
+
+    /*
+     * i, a, b => It
+     * r => a value of It&
+     * n => int of difference type
+     */
+
+  public:
+    //legacy_random_access_iterator
+    reference operator+=(difference_type n) {
+      difference_type m = n;
+
+      if (m >= 0)
+        while (m--)
+          ++_r;
+      else
+        while (m++)
+          --_r;
+
+      return (*this->_r);
+    };
+
+    value_type operator+(difference_type n) {
+      value_type temp = this->_a;
+      temp += n;
+
+      return (temp);
+    };
+
+    reference operator-=(difference_type n) {
+      return (this->_r -= n);
+    };
+
+    value_type operator-(difference_type n) {
+      return (this->_a - n);
+    };
+
+    difference_type operator-(value_type i) {
+      return (this->_a - i);
+    };
+
+    reference operator[](difference_type n) {
+      return (this->_r[n]);
+    };
+
+    bool operator<(value_type b) {
+      return (0 < b - this->_a);
+    };
+
+    bool operator>(value_type b) {
+      return (this->_a > b);
+    };
+
+    bool operator<=(value_type b) {
+      return (!(this->_a > b));
+    };
+
+    bool operator>=(value_type b) {
+      return (!(0 < b - this->_a));
+    };
+
+    //legacy_bidirectional_iterator
+    reference operator--() {
+      --this->_a
+
+      return *this;
+    };
+
+    reference operator--(value_type) const {
+      value_type temp = this->_a;
+      --this->_a;
+
+      return temp;
+    };
+
+    // *a--
+    reference operator--(pointer) {
+      reference rp = --(*this->_a);
+
+      return (rp);
+//      return (*this->_a--); //?
+    };
+
+    //legacy_forward_iterator
+    value_type operator++() {
+      value_type ip = this->_a;
+      ++this->_a;
+
+      return ip;
+    };
+
+    //*i++
+    reference operator++(pointer) {
+      return (*this->_a++); //?
+    };
+
+  };
+
   template <class T, class Allocator = std::allocator<T> >
   class vector {
   public:
@@ -47,7 +158,7 @@ namespace ft {
         }
 
         this->_end = this->_start;
-        this->_capacity = this->_start; //@ 생성할때니까 2배수로 맞춰주기
+        this->_capacity = this->_start;
       };
 
     template <class InputIterator>
@@ -55,14 +166,14 @@ namespace ft {
         const allocator_type& alloc = allocator_type())
         : _allocator(alloc) {
           size_type n;
-          n = cal_size(first, second);
+          n = cal_size(first, last);
 
           this->_start = this->_allocator.allocate(n);
           while (n--) {
             this->_allocator.construct(_start++, *first++)
           }
           this->_end = this->_start;
-          this->_capacity = this->_start; //@ 생성할때니까 2배수로 맞춰주기
+          this->_capacity = this->_start;
         };
 
       //(4) copy constructor
@@ -252,15 +363,16 @@ namespace ft {
     };
     /* Modifiers */
     void clear() {
-      // this->erase(this->_start, this->_capacity); //@
       while (this->_start != this->_end)
-        _allocator.destroy(--(this->_end));
+        _allocator.destroy(--this->_end);
     };
 
     // insert value before pos
     // return iterator pointing to the inserted value
     iterator insert( iterator pos, const T& value ) {
-      this->insert(pos, 1, value);
+        this->_allocator.destroy(pos);
+        this->_allocator.deallocate(pos);
+        this->_allocator.construct(pos, value);
 
       return (this->_start + pos);
     };
@@ -268,20 +380,27 @@ namespace ft {
     // insert count copies of the value before pos
     // return iterator pointing to the first element inserted
     // or return pos if count == 0
-    void insert( iterator pos, size_type count, const T& value );
+    void insert( iterator pos, size_type count, const T& value ) {
+      if (this->size() + count > this->_capacity)
+        this->reserve(this->size() + count);
+
+      while (count--)
+        this->insert(pos++, value);
+    };
 
     // insert first~last before pos
     // return iterator pointing to the first element inserted
     // or return pos if first == last
     template< class InputIt >
     void insert( iterator pos, InputIt first, InputIt last ) {
-      //add capacity malloc
-      // size_type n; //first~last
-      // this->reserve(this->size() + n);
+      size_type n;
+      n = this->cal_size(first, last);
+
+      if (this->size() + n > this->_capacity)
+        this->reserve(this->size() + n);
       
-      for (size_type i = 0; first == last; pos++, first++) {
-        insert(pos, first);1
-      }
+      while (first != last)
+        insert(pos++, first++);
     };
 
     //erase first ~ last - 1
@@ -312,21 +431,35 @@ namespace ft {
       return (first + _start); //first바뀌기전
     };
 
-    void push_back( const T& value );
     /*
-    Calling push_back will cause reallocation (when size()+1 > capacity()), 
-    so some implementations also throw std::length_error 
-    when push_back causes a reallocation that would exceed max_size 
+    Calling push_back will cause reallocation (when size()+1 > capacity()),
+    so some implementations also throw std::length_error
+    when push_back causes a reallocation that would exceed max_size
     (due to implicitly calling an equivalent of -(size()+1)).
     */
-    
-    void pop_back();
+    void push_back( const T& value ) {
+      if (this->_capacity == this->_end) {
+        this->reserve(this->capacity() * 2);
+      }
+      this->_allocator.construct(this->_end++, value);
+    };
+
+    void pop_back() {
+      this->_allocator.destroy(--this->_end);
+    };
+
 
     void resize( size_type count, T value = T() ) {
-      if (this->size() >= count) {
-        // this->erase(count);
-      }
+      size_type range = this->size() - count;
 
+      if (range > 0) {
+        while (range--)
+          this->_allocator.destroy(this->_end--);
+      } else {
+//        this->reserve(this->size() + count);
+        while (count--)
+          this->_allocator.construct(this->size() + count, value);
+      }
     };
 
     void swap( vector& other ) {
@@ -385,7 +518,6 @@ namespace ft {
 
       return ret;
     };
-
   };
 }
 

@@ -1,3 +1,9 @@
+#vscode
 .vscode
+
 .DS_Store
+
 *.out
+
+#clion
+.idea
