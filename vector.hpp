@@ -139,18 +139,26 @@ namespace ft {
     pointer _start;
     pointer _end;
     pointer _capacity;
+    size_type _size;
+    size_type _capacity_size;
 
   public:
     explicit vector (const allocator_type& alloc = allocator_type())
     : _allocator(alloc),
       _start(nullptr),
-      _end(nullptr),
-      _capacity(nullptr) {};
+      _end(_start),
+      _capacity(_start),
+      _size(0),
+      _capacity_size(0) {};
 
     explicit vector (size_type n, const value_type& val = value_type(),
       const allocator_type& alloc = allocator_type())
       : _allocator(alloc) {
         _start = this->_allocator.allocate(n);
+
+        _size = n;
+        _capacity_size = cal_cap(_size);
+
 
         while (n--) {
           this->_allocator.construct(_start, val);
@@ -165,8 +173,8 @@ namespace ft {
       vector (InputIterator first, InputIterator last,
         const allocator_type& alloc = allocator_type())
         : _allocator(alloc) {
-          size_type n;
-          n = cal_size(first, last);
+
+          n = distance(first, last);
 
           this->_start = this->_allocator.allocate(n);
           while (n--) {
@@ -209,8 +217,8 @@ namespace ft {
 
     template< class InputIt >
     void assign( InputIt first, InputIt last ) {
-      size_type n;
-      n = cal_size(first, last);
+
+      n = distance(first, last);
 
       this->clear();
 
@@ -395,8 +403,8 @@ namespace ft {
     // or return pos if first == last
     template< class InputIt >
     void insert( iterator pos, InputIt first, InputIt last ) {
-      size_type n;
-      n = this->cal_size(first, last);
+
+      n = this->distance(first, last);
 
       if (this->size() + n > this->_capacity)
         this->reserve(this->size() + n);
@@ -483,7 +491,7 @@ namespace ft {
 
 
   private:
-    size_type cal_size(iterator first, iterator second) {
+    size_type distance(iterator first, iterator second) {
       size_type ret;
 
       while (first != second) {
@@ -493,6 +501,16 @@ namespace ft {
 
       return ret;
     };
+
+    size_type cal_cap(size_type size) {
+      size_type ret = 1;
+
+      while (ret >= size)
+        ret *= 2;
+
+      return ret;
+    };
+
   };
 }
 
