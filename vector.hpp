@@ -141,8 +141,6 @@ namespace ft {
     pointer _capacity;
 
   public:
-    /* Member functions */
-
     explicit vector (const allocator_type& alloc = allocator_type())
     : _allocator(alloc),
       _start(nullptr),
@@ -183,7 +181,7 @@ namespace ft {
 
     ~vector() {
       this->clear();
-      this->_allocator.deallocate(this->_start, this->size()); //capacity
+      this->_allocator.deallocate(this->_start, _capacity - _start);
     };
 
     // May throw implementation-defined exceptions. <- ?
@@ -339,17 +337,17 @@ namespace ft {
       if (new_cap > this->max_size())
         throw std::length_error("vector");
         
-      if (new_cap <= this->size()) //capacity
+      if (new_cap <= _start - _capacity)
         return;
 
       pointer temp = _allocator.allocate(new_cap);
 
-      for (int i = 0; i < size(); i++) {
+      for (size_type i = 0; i < this->size(); i++) {
         _allocator.construct(&temp[i], _start[i]);
         _allocator.destroy(this->_start);
       }
 
-      _allocator.deallocate(_start, this->size()); //capacity
+      _allocator.deallocate(_start, _start - _capacity);
 
       _start = temp;
       _end = _start + size();
@@ -424,7 +422,7 @@ namespace ft {
       // this->_allocator.deallocate(this->_end); -> capacity, alloc 유지
       --this->_end;
 
-      return ;//pos+start
+      return _start + pos; //pos+start
     };
 
     iterator erase( iterator first, iterator last ) {
@@ -445,7 +443,7 @@ namespace ft {
       if (this->size() == 0) {
         this->reserve(1);
       } else if (this->_capacity == this->_end) {
-        this->reserve(this->size() * 2); //capacity
+        this->reserve(_start - _capacity * 2);
       }
 
       this->_allocator.construct(this->_end++, value);

@@ -3,7 +3,9 @@
 
 .DS_Store
 
+#
 *.out
+*.dSYM
 
 #clion
 .idea

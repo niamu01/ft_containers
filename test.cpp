@@ -10,14 +10,9 @@
 int main()
 {
 
-    ft::vector<int> a;
+    ft::vector<int> a(1,'a');
 
-    a.push_back(1);
-    a.push_back(2);
-    a.push_back(3);
-    a.push_back(4);
-    a.push_back(5);
-
+    std::cout << "a";
     std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
 
 //    ft::vector<int>::iterator b_it = a.begin();
