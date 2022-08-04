@@ -343,7 +343,7 @@ namespace ft {
 
       _start = temp;
       _end = _start + size();
-      _capacity = _start + new_cap;
+      _capacity = new_cap;
     };
 
     size_type capacity() const {
@@ -429,8 +429,8 @@ namespace ft {
     void push_back( const T& value ) {
       if (this->size() == 0) {
         this->reserve(1);
-      } else if (this->_capacity == this->_end) {
-        this->reserve(_start - _capacity * 2);
+      } else if (this->_start + this->size() == this->_end) {
+        this->reserve(_capacity * 2);
       }
 
       this->_allocator.construct(this->_end++, value);
