@@ -139,7 +139,7 @@ namespace ft {
     pointer _start;
     pointer _end;
     size_type _size;
-    size_type _capacity_size;
+    size_type _capacity;
 
   public:
     explicit vector (const allocator_type& alloc = allocator_type())
@@ -147,45 +147,44 @@ namespace ft {
       _start(nullptr),
       _end(_start),
       _size(0),
-      _capacity_size(0) {};
+      _capacity(0) {};
 
     explicit vector (size_type n, const value_type& val = value_type(),
       const allocator_type& alloc = allocator_type())
       : _allocator(alloc) {
+        _start = this->_allocator.allocate(_capacity);
+        _end = _start;
         _size = n;
-        _capacity_size = cal_cap(_size);
-        _start = this->_allocator.allocate(_capacity_size);
-        
-        pointer temp_start = _start; //@ _start 변경하지않기 ?
+        _capacity = cal_cap(_size);
 
         while (n--)
-          this->_allocator.construct(_start++, val);
-
-        _end = this->_start;
-        _start = this->temp_start;
+          this->_allocator.construct(_end++, val);
       };
 
     template <class InputIterator>
       vector (InputIterator first, InputIterator last,
         const allocator_type& alloc = allocator_type())
         : _allocator(alloc) {
-          _size = distance(first, last);
-          _capacity_size = cal_cap(_size);
-          _start = this->_allocator.allocate(_capacity_size);
+          _start = this->_allocator.allocate(_capacity);
+          _end = _start;
+
+          size_type n = distance(first, last);
+
+          _size = n;
+          _capacity = cal_cap(_size);
 
           while (n--) {
-            this->_allocator.construct(_start++, *first++);
+            this->_allocator.construct(_end++, *first++);
           }
-
-          this->_end = this->_start;
         };
 
       //(4) copy constructor
     vector (const vector& x);
 
     ~vector() {
-      this->clear();
-      this->_allocator.deallocate(this->_start, _capacity_size);
+      while (_size--)
+        _allocator.destroy(--this->_end);
+      this->_allocator.deallocate(this->_start, _capacity);
     };
 
     // May throw implementation-defined exceptions. <- ?
@@ -204,7 +203,7 @@ namespace ft {
 
       this->_start = this->_allocator.allocate(count);
       this->end = this->_start;
-      this->_capacity_size = this->_start + count;
+      this->_capacity = this->_start + count;
 
       while (count--) {
         this->_allocator.construct(this->_end++, value);
@@ -214,13 +213,13 @@ namespace ft {
     template< class InputIt >
     void assign( InputIt first, InputIt last ) {
 
-      n = distance(first, last);
+      size_type n = distance(first, last);
 
       this->clear();
 
       this->_start = this->_allocator.allocate(n);
       this->_end = this->_start;
-      this->_capacity_size = this->_start + n;
+      this->_capacity = this->_start + n;
 
       while (n--) {
         this->_allocator.construct(this->_end++, *first++);
@@ -319,7 +318,7 @@ namespace ft {
     };
 
     size_type size() const {
-      return (this->size());
+      return (this->_size);
     };
 
     size_type max_size() const {
@@ -330,7 +329,7 @@ namespace ft {
       if (new_cap > this->max_size())
         throw std::length_error("vector");
         
-      if (new_cap <= _capacity_size)
+      if (new_cap <= _capacity)
         return;
 
       pointer temp = _allocator.allocate(new_cap);
@@ -340,15 +339,15 @@ namespace ft {
         _allocator.destroy(this->_start);
       }
 
-      _allocator.deallocate(_start, _capacity_size);
+      _allocator.deallocate(_start, _capacity);
 
       _start = temp;
       _end = _start + size();
-      _capacity_size = _start + new_cap;
+      _capacity = _start + new_cap;
     };
 
     size_type capacity() const {
-      return (_capacity_size);
+      return (_capacity);
     };
 
     /* Modifiers */
@@ -371,7 +370,7 @@ namespace ft {
     // return iterator pointing to the first element inserted
     // or return pos if count == 0
     void insert( iterator pos, size_type count, const T& value ) {
-      if (this->size() + count > this->_capacity_size)
+      if (this->size() + count > this->_capacity)
         this->reserve(cal_cap(this->size()));
 
       while (count--)
@@ -384,9 +383,9 @@ namespace ft {
     template< class InputIt >
     void insert( iterator pos, InputIt first, InputIt last ) {
 
-      n = this->distance(first, last);
+      size_type n = this->distance(first, last);
 
-      if (this->size() + n > this->_capacity_size)
+      if (this->size() + n > this->_capacity)
         this->reserve(this->size() + n);
       
       while (first != last)
@@ -430,8 +429,8 @@ namespace ft {
     void push_back( const T& value ) {
       if (this->size() == 0) {
         this->reserve(1);
-      } else if (this->_capacity_size == this->_end) {
-        this->reserve(_start - _capacity_size * 2);
+      } else if (this->_capacity == this->_end) {
+        this->reserve(_start - _capacity * 2);
       }
 
       this->_allocator.construct(this->_end++, value);
@@ -458,15 +457,15 @@ namespace ft {
     void swap( vector& other ) {
       pointer start_temp = other._start;
       pointer end_temp = other._end;
-      pointer capacity_temp = other._capacity_size;
+      pointer capacity_temp = other._capacity;
 
       other.start = this->_start;
       other.end = this->_end;
-      other.capacity = this->_capacity_size;
+      other.capacity = this->_capacity;
 
       this->_start = start_temp;
       this->_end = end_temp;
-      this->_capacity_size = capacity_temp;
+      this->_capacity = capacity_temp;
     };
 
 
