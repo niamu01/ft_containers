@@ -138,7 +138,6 @@ namespace ft {
     allocator_type _allocator;
     pointer _start;
     pointer _end;
-    pointer _capacity;
     size_type _size;
     size_type _capacity_size;
 
@@ -147,41 +146,38 @@ namespace ft {
     : _allocator(alloc),
       _start(nullptr),
       _end(_start),
-      _capacity(_start),
       _size(0),
       _capacity_size(0) {};
 
     explicit vector (size_type n, const value_type& val = value_type(),
       const allocator_type& alloc = allocator_type())
       : _allocator(alloc) {
-        _start = this->_allocator.allocate(n);
-
         _size = n;
         _capacity_size = cal_cap(_size);
+        _start = this->_allocator.allocate(_capacity_size);
+        
+        pointer temp_start = _start; //@ _start 변경하지않기 ?
 
+        while (n--)
+          this->_allocator.construct(_start++, val);
 
-        while (n--) {
-          this->_allocator.construct(_start, val);
-          this->_start++;
-        }
-
-        this->_end = this->_start;
-        this->_capacity = this->_start;
+        _end = this->_start;
+        _start = this->temp_start;
       };
 
     template <class InputIterator>
       vector (InputIterator first, InputIterator last,
         const allocator_type& alloc = allocator_type())
         : _allocator(alloc) {
+          _size = distance(first, last);
+          _capacity_size = cal_cap(_size);
+          _start = this->_allocator.allocate(_capacity_size);
 
-          n = distance(first, last);
-
-          this->_start = this->_allocator.allocate(n);
           while (n--) {
             this->_allocator.construct(_start++, *first++);
           }
+
           this->_end = this->_start;
-          this->_capacity = this->_start;
         };
 
       //(4) copy constructor
@@ -189,11 +185,11 @@ namespace ft {
 
     ~vector() {
       this->clear();
-      this->_allocator.deallocate(this->_start, _capacity - _start);
+      this->_allocator.deallocate(this->_start, _capacity_size);
     };
 
     // May throw implementation-defined exceptions. <- ?
-    
+
     vector& operator=( const vector& other ) {
       if (this != &other) {
         this->clear();
@@ -208,7 +204,7 @@ namespace ft {
 
       this->_start = this->_allocator.allocate(count);
       this->end = this->_start;
-      this->_capacity = this->_start + count;
+      this->_capacity_size = this->_start + count;
 
       while (count--) {
         this->_allocator.construct(this->_end++, value);
@@ -224,7 +220,7 @@ namespace ft {
 
       this->_start = this->_allocator.allocate(n);
       this->_end = this->_start;
-      this->_capacity = this->_start + n;
+      this->_capacity_size = this->_start + n;
 
       while (n--) {
         this->_allocator.construct(this->_end++, *first++);
@@ -257,9 +253,6 @@ namespace ft {
     const_reference operator[]( size_type pos ) const {
       return (this->_start[pos]);
     };
-    /*
-      at과 operator[]의 차이는 range를 체크하는 것
-    */
 
     // Calling front on an empty container is undefined.
     reference front() {
@@ -322,19 +315,11 @@ namespace ft {
 
     /* capacity */
     bool empty() const {
-      if (this->_start == this->_end)
-        return true;
-      return false;
+      return (this->_start == this->_end);
     };
 
     size_type size() const {
-      size_type vec_size;
-      pointer vec_start = _start;
-
-      for (vec_size = 0; this->_start == this->_end; vec_start++)
-        vec_size++;
-
-      return vec_size;
+      return (this->size());
     };
 
     size_type max_size() const {
@@ -345,7 +330,7 @@ namespace ft {
       if (new_cap > this->max_size())
         throw std::length_error("vector");
         
-      if (new_cap <= _start - _capacity)
+      if (new_cap <= _capacity_size)
         return;
 
       pointer temp = _allocator.allocate(new_cap);
@@ -355,34 +340,29 @@ namespace ft {
         _allocator.destroy(this->_start);
       }
 
-      _allocator.deallocate(_start, _start - _capacity);
+      _allocator.deallocate(_start, _capacity_size);
 
       _start = temp;
       _end = _start + size();
-      _capacity = _start + new_cap;
+      _capacity_size = _start + new_cap;
     };
 
     size_type capacity() const {
-      size_type vec_capacity;
-      pointer vec_start = _start;
-
-      for (vec_capacity = 0; this->_start == this->_capacity; vec_start++)
-        vec_capacity++;
-
-      return vec_capacity;
+      return (_capacity_size);
     };
+
     /* Modifiers */
     void clear() {
-      while (this->_start != this->_end)
+      while (this->size()--)
         _allocator.destroy(--this->_end);
     };
 
     // insert value before pos
     // return iterator pointing to the inserted value
     iterator insert( iterator pos, const T& value ) {
-        this->_allocator.destroy(pos);
-        this->_allocator.deallocate(pos);
-        this->_allocator.construct(pos, value);
+      this->_allocator.destroy(pos);
+      this->_allocator.deallocate(pos);
+      this->_allocator.construct(pos, value);
 
       return (this->_start + pos);
     };
@@ -391,8 +371,8 @@ namespace ft {
     // return iterator pointing to the first element inserted
     // or return pos if count == 0
     void insert( iterator pos, size_type count, const T& value ) {
-      if (this->size() + count > this->_capacity)
-        this->reserve(this->size() + count);
+      if (this->size() + count > this->_capacity_size)
+        this->reserve(cal_cap(this->size()));
 
       while (count--)
         this->insert(pos++, value);
@@ -406,7 +386,7 @@ namespace ft {
 
       n = this->distance(first, last);
 
-      if (this->size() + n > this->_capacity)
+      if (this->size() + n > this->_capacity_size)
         this->reserve(this->size() + n);
       
       while (first != last)
@@ -450,8 +430,8 @@ namespace ft {
     void push_back( const T& value ) {
       if (this->size() == 0) {
         this->reserve(1);
-      } else if (this->_capacity == this->_end) {
-        this->reserve(_start - _capacity * 2);
+      } else if (this->_capacity_size == this->_end) {
+        this->reserve(_start - _capacity_size * 2);
       }
 
       this->_allocator.construct(this->_end++, value);
@@ -478,15 +458,15 @@ namespace ft {
     void swap( vector& other ) {
       pointer start_temp = other._start;
       pointer end_temp = other._end;
-      pointer capacity_temp = other._capacity;
+      pointer capacity_temp = other._capacity_size;
 
       other.start = this->_start;
       other.end = this->_end;
-      other.capacity = this->_capacity;
+      other.capacity = this->_capacity_size;
 
       this->_start = start_temp;
       this->_end = end_temp;
-      this->_capacity = capacity_temp;
+      this->_capacity_size = capacity_temp;
     };
 
 
