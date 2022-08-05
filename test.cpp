@@ -30,28 +30,36 @@ int main()
 
     // std::cout << *iter << std::endl;
 
-
-
 /* push_back, pop_back, size, capacity */
-    // std::cout << "===MAIN TEST===\n";
-    // ft::vector<int> a;
+    ft::vector<int> a;
 
-    // std::cout << "a:\n";
-    // std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
+    std::cout << "a:\n";
+    std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
 
-    // std::cout << "push_back 1 2 3:\n";
-    // a.push_back(1);
-    // a.push_back(2);
-    // a.push_back(3);
+    std::cout << "    push_back 1 2 3:\n";
+    a.push_back(1);
+    a.push_back(2);
+    a.push_back(3);
 
-    // std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
+    std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
 
-    // a.pop_back();
+    a.pop_back();
 
-    // std::cout << "pop_back:\n";
-    // std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
-
-    // std::cout << "\n";
+    std::cout << "    pop_back:\n";
+    std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
+    
+    a.pop_back();
+    std::cout << "    pop_back:\n";
+    std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
+    a.pop_back();
+    std::cout << "    pop_back:\n";
+    std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
+    a.pop_back();
+    std::cout << "    pop_back:\n";
+    std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
+    a.pop_back();
+    std::cout << "    pop_back:\n";
+    std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
 
 /* front, back */
     // ft::vector<int> b;
@@ -59,7 +67,7 @@ int main()
     // std::cout << "b:\n";
     // std::cout << "size: " << b.size() << ", capacity: " << b.capacity() << std::endl;
 
-    // std::cout << "push_back 4 5 6:\n";
+    // std::cout << "    push_back 4 5 6:\n";
     // b.push_back(4);
     // b.push_back(5);
     // b.push_back(6);
@@ -78,7 +86,7 @@ int main()
 /* erase */
     // ft::vector<int> c;
 
-    // std::cout << "push_back 4 5 6:\n";
+    // std::cout << "    push_back 4 5 6:\n";
     // c.push_back(4);
     // c.push_back(5);
     // c.push_back(6);
@@ -102,11 +110,9 @@ int main()
     // std::cout << "erase_it: " << *erase_it3 << std::endl;
 
 /* iterator test */
-    // std::cout << "===ITERATOR TEST===\n";
-
     // ft::vector<int> d;
 
-    // std::cout << "push_back 4 5 6:\n";
+    // std::cout << "    push_back 4 5 6:\n";
     // d.push_back(4);
     // d.push_back(5);
     // d.push_back(6);
@@ -125,11 +131,49 @@ int main()
 
     // std::cout << "rend:\n";
     // std::cout << *re_it << std::endl;
-    // ft::vector<int>::reverse_iterator re_it = --a.rend();
+    // ft::vector<int>::reverse_iterator re_it = a.rend();
 
-/*  */
+/* at, operator test */
+    // ft::vector<int> e;
 
+    // std::cout << "    push_back 7 8 9:\n";
+    // e.push_back(7);
+    // e.push_back(8);
+    // e.push_back(9);
 
+    // std::cout << e.at(1) << std::endl;
+    // std::cout << e[1] << std::endl;
+
+/* max size */
+    // ft::vector<int> f;
+    // ft::vector<double> g;
+    // ft::vector<char> h;
+
+    // std::cout << "int:" << f.max_size() << std::endl;
+    // std::cout << "double:" << g.max_size() << std::endl;
+    // std::cout << "char:" << h.max_size() << std::endl;
+
+/* clear, empty,  */
+    // ft::vector<int> i;
+
+    // std::cout << "empty: " << (i.empty() ? "true" : "false") << std::endl;
+    // std::cout << "size: " << i.size() << "\ncapacity: " << i.capacity() << std::endl;
+
+    // std::cout << "    push_back 1 2 3\n";
+    // i.push_back(1);
+    // i.push_back(2);
+    // i.push_back(3);
+
+    // std::cout << "empty: " << (i.empty() ? "true" : "false") << std::endl;
+    // std::cout << "size: " << i.size() << "\ncapacity: " << i.capacity() << std::endl;
+
+    // i.clear();
+
+    // std::cout << "empty: " << (i.empty() ? "true" : "false") << std::endl;
+    // std::cout << "size: " << i.size() << "\ncapacity: " << i.capacity() << std::endl;
+
+    // ft::vector<int> j;
+    // ft::vector<int> k;
 
 /* test... */
     // try {
@@ -154,4 +198,6 @@ int main()
     // }
 
     // std::cout << "b" << std::endl;
+
+    return 0;
 }

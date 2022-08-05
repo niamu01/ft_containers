@@ -172,14 +172,11 @@ namespace ft {
     vector (const vector& x);
 
     ~vector() {
-      while (_size--)
-        _allocator.destroy(--this->_end);
       this->_allocator.deallocate(this->_start, _capacity);
-      this->clear();
-      // this->_start = nullptr;
-      // this->_end = nullptr;
-      // this->_size = 0;
-      // this->_capacity = 0;
+      this->_start = nullptr;
+      this->_end = nullptr;
+      this->_size = 0;
+      this->_capacity = 0;
     };
 
     // May throw implementation-defined exceptions. <- ?
@@ -347,14 +344,14 @@ namespace ft {
 
     /* Modifiers */
     void clear() {
-      while (this->size()--)
+      while (this->_size--)
         _allocator.destroy(--this->_end);
     };
 
     // insert value before pos
     // return iterator pointing to the inserted value
     iterator insert( iterator pos, const T& value ) {
-      this->_allocator.destroy(pos)
+      this->_allocator.destroy(pos);
       this->_allocator.construct(pos, value);
       
       this->_size++;
@@ -443,7 +440,6 @@ namespace ft {
       this->_allocator.destroy(--this->_end);
       this->_size--;
     };
-
 
     void resize( size_type count, T value = T() ) {
       size_type range = this->_size - count;
