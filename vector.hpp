@@ -98,8 +98,8 @@ namespace ft {
 
     //legacy_forward_iterator
     value_type operator++() {
-      value_type ip = this->_p;
-      ++this->_p;
+      value_type ip = this->*_p;
+      ++this->*_p;
 
       return ip;
     };
