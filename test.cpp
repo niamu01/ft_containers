@@ -1,6 +1,6 @@
 #include <iostream>
 
-#if 1
+#if 0
   #include <vector>
   namespace ft = std;
 #else
@@ -173,41 +173,88 @@ int main()
     // std::cout << "size: " << i.size() << "\ncapacity: " << i.capacity() << std::endl;
 
 /* reserve, resize */
-    ft::vector<int> j;
+    // ft::vector<int> j;
 
-    std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
+    // std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
 
-    std::cout << "    push_back 1 2 3\n";
-    j.push_back(1);
-    j.push_back(2);
-    j.push_back(3);
-    std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
+    // std::cout << "    push_back 1 2 3\n";
+    // j.push_back(1);
+    // j.push_back(2);
+    // j.push_back(3);
+    // std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
 
-    std::cout << "    reserve 6\n";
-    j.reserve(6);
-    std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
-    std::cout << "    reserve 2\n";
-    j.reserve(2);
-    std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
-    std::cout << "    reserve 7\n";
-    j.reserve(7);
-    std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
+    // std::cout << "    reserve 6\n";
+    // j.reserve(6);
+    // std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
+    // std::cout << "    reserve 2\n";
+    // j.reserve(2);
+    // std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
+    // std::cout << "    reserve 7\n";
+    // j.reserve(7);
+    // std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
 
-    std::cout << "    resize 5\n";
-    j.resize(5, 0);
-    std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
-    std::cout << "    resize 1\n";
-    j.resize(1, 0);
-    std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
-    std::cout << "    resize 7\n";
-    j.resize(7, 0);
-    std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
+    // std::cout << "    resize 5\n";
+    // j.resize(5, 0);
+    // std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
+    // std::cout << "    resize 1\n";
+    // j.resize(1, 0);
+    // std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
+    // std::cout << "    resize 7\n";
+    // j.resize(7, 0);
+    // std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
 
+/* insert, assign */
+//     ft::vector<int> k;
 
+//     k.push_back(1);
+//     k.push_back(2);
+//     k.push_back(3);
 
+//     // pos, value
+//     k.insert(2, 14);
+//     // pos, count, value
+//     k.insert(3, 5, 15);
+//     // pos, it, it
 
-/* insert, swap, assign */
-    // ft::vector<int> k;
+//     ft::vector<int>::iterator it = k.begin();
+//     while (it != k.end()) {
+//         std::cout << *it << std::endl;
+//         it++;
+//     }
+
+//     // count, value
+//     k.assign(2, 14);
+//     // it, it
+//     k.assign(2, 14);
+
+// std::cout << "=============" << std::endl;
+
+//     ft::vector<int>::iterator it2 = k.begin();
+//     while (it2 != k.end()) {
+//         std::cout << *it2 << std::endl;
+//         it2++;
+//     }
+
+/* swap */
+    ft::vector<int> l;
+
+    l.push_back(1);
+    l.push_back(2);
+    l.push_back(3);
+
+    std::cout << "l: " << l.front() << std::endl;
+
+    ft::vector<int> m;
+
+    m.push_back(4);
+    m.push_back(5);
+    m.push_back(6);
+
+    std::cout << "m: " << m.front() << std::endl;
+
+    l.swap(m);
+    std::cout << "l: " << l.front() << std::endl;
+    std::cout << "m: " << m.front() << std::endl;
 
 /* test... */
     // try {

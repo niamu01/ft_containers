@@ -453,7 +453,7 @@ namespace ft {
           this->_allocator.construct(this->_start + count + range, value);
           this->_size++;
         }
-      } else { //3 - 5 -> 2칸 해제
+      } else {
         while (range++ < 0) {
           this->_allocator.destroy(this->_end);
           this->_end--;
