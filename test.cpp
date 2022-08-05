@@ -1,6 +1,6 @@
 #include <iostream>
 
-#if 0
+#if 1
   #include <vector>
   namespace ft = std;
 #else
@@ -31,35 +31,35 @@ int main()
     // std::cout << *iter << std::endl;
 
 /* push_back, pop_back, size, capacity */
-    ft::vector<int> a;
+    // ft::vector<int> a;
 
-    std::cout << "a:\n";
-    std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
+    // std::cout << "a:\n";
+    // std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
 
-    std::cout << "    push_back 1 2 3:\n";
-    a.push_back(1);
-    a.push_back(2);
-    a.push_back(3);
+    // std::cout << "    push_back 1 2 3:\n";
+    // a.push_back(1);
+    // a.push_back(2);
+    // a.push_back(3);
 
-    std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
+    // std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
 
-    a.pop_back();
+    // a.pop_back();
 
-    std::cout << "    pop_back:\n";
-    std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
+    // std::cout << "    pop_back:\n";
+    // std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
     
-    a.pop_back();
-    std::cout << "    pop_back:\n";
-    std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
-    a.pop_back();
-    std::cout << "    pop_back:\n";
-    std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
-    a.pop_back();
-    std::cout << "    pop_back:\n";
-    std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
-    a.pop_back();
-    std::cout << "    pop_back:\n";
-    std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
+    // a.pop_back();
+    // std::cout << "    pop_back:\n";
+    // std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
+    // a.pop_back();
+    // std::cout << "    pop_back:\n";
+    // std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
+    // a.pop_back();
+    // std::cout << "    pop_back:\n";
+    // std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
+    // a.pop_back();
+    // std::cout << "    pop_back:\n";
+    // std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
 
 /* front, back */
     // ft::vector<int> b;
@@ -153,7 +153,7 @@ int main()
     // std::cout << "double:" << g.max_size() << std::endl;
     // std::cout << "char:" << h.max_size() << std::endl;
 
-/* clear, empty,  */
+/* clear, empty */
     // ft::vector<int> i;
 
     // std::cout << "empty: " << (i.empty() ? "true" : "false") << std::endl;
@@ -172,7 +172,41 @@ int main()
     // std::cout << "empty: " << (i.empty() ? "true" : "false") << std::endl;
     // std::cout << "size: " << i.size() << "\ncapacity: " << i.capacity() << std::endl;
 
-    // ft::vector<int> j;
+/* reserve, resize */
+    ft::vector<int> j;
+
+    std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
+
+    std::cout << "    push_back 1 2 3\n";
+    j.push_back(1);
+    j.push_back(2);
+    j.push_back(3);
+    std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
+
+    std::cout << "    reserve 6\n";
+    j.reserve(6);
+    std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
+    std::cout << "    reserve 2\n";
+    j.reserve(2);
+    std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
+    std::cout << "    reserve 7\n";
+    j.reserve(7);
+    std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
+
+    std::cout << "    resize 5\n";
+    j.resize(5, 0);
+    std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
+    std::cout << "    resize 1\n";
+    j.resize(1, 0);
+    std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
+    std::cout << "    resize 7\n";
+    j.resize(7, 0);
+    std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
+
+
+
+
+/* insert, swap, assign */
     // ft::vector<int> k;
 
 /* test... */

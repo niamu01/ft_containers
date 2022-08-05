@@ -321,8 +321,11 @@ namespace ft {
       if (new_cap > this->max_size())
         throw std::length_error("vector");
         
-      if (new_cap <= _capacity)
+      if (new_cap <= this->_capacity) {
+        //deallocate?
+        this->_capacity = new_cap;
         return;
+      }
 
       pointer temp = _allocator.allocate(new_cap);
 
@@ -442,16 +445,22 @@ namespace ft {
     };
 
     void resize( size_type count, T value = T() ) {
-      size_type range = this->_size - count;
+      int range = count - this->_size;
 
-      if (range > 0) {
-        while (range--)
-          this->_allocator.destroy(this->_end--);
-      } else {
-//        this->reserve(this->_size + count);
-        while (count--)
-          this->_allocator.construct(this->_size + count, value);
+      if (range >= 0) {
+        while (range--) {
+          this->_allocator.allocate(1);
+          this->_allocator.construct(this->_start + count + range, value);
+          this->_size++;
+        }
+      } else { //3 - 5 -> 2칸 해제
+        while (range++ < 0) {
+          this->_allocator.destroy(this->_end);
+          this->_end--;
+        }
       }
+
+    
     };
 
     void swap( vector& other ) {
