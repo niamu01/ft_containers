@@ -4,8 +4,6 @@
 #include <stdexcept> //length_error, out_of_range
 #include <iterator> //random_access_iterator_tag
 
-//@ : make private util func
-
 namespace ft {
 
   template <typename T>
@@ -18,29 +16,23 @@ namespace ft {
     typedef std::random_access_iterator_tag   iterator_category;
 
   private:
-    value_type _a;
-    reference _r;
     pointer _p;
 
-    /*
-     * i, a, b => It
-     * r => a value of It&
-     * n => int of difference type
-     */
-
   public:
+
+    explicit vector_iterator(pointer ptr) : _p(ptr) {};
+
+    ~vector_iterator() {};
+
+    reference operator*() {
+      return *_p;
+    };
+    
     //legacy_random_access_iterator
     reference operator+=(difference_type n) {
-      difference_type m = n;
+      _p += n;
 
-      if (m >= 0)
-        while (m--)
-          ++_r;
-      else
-        while (m++)
-          --_r;
-
-      return (*this->_r);
+      return (*this->_p);
     };
 
     value_type operator+(difference_type n) {
@@ -51,49 +43,49 @@ namespace ft {
     };
 
     reference operator-=(difference_type n) {
-      return (this->_r -= n);
+      return (this->*_p -= n);
     };
 
     value_type operator-(difference_type n) {
-      return (this->_a - n);
+      return (this->*_p - n);
     };
 
     difference_type operator-(value_type i) {
-      return (this->_a - i);
+      return (this->*_p - i);
     };
 
     reference operator[](difference_type n) {
-      return (this->_r[n]);
+      return (this->_p[n]);
     };
 
     bool operator<(value_type b) {
-      return (0 < b - this->_a);
+      return (0 < b - this->*_p);
     };
 
     bool operator>(value_type b) {
-      return (this->_a > b);
+      return (this->*_p > b);
     };
 
     bool operator<=(value_type b) {
-      return (!(this->_a > b));
+      return (!(this->*_p > b));
     };
 
     bool operator>=(value_type b) {
-      return (!(0 < b - this->_a));
+      return (!(0 < b - this->*_p));
     };
 
     //legacy_bidirectional_iterator
     reference operator--() {
-      --this->_a;
+      --this->_p;
 
-      return *this;
+      return *_p;
     };
 
     reference operator--(value_type) const {
-      value_type temp = this->_a;
-      --this->_a;
+      pointer temp = this->_p;
+      --this->_p;
 
-      return temp;
+      return *temp;
     };
 
 //    // *a--
@@ -106,8 +98,8 @@ namespace ft {
 
     //legacy_forward_iterator
     value_type operator++() {
-      value_type ip = this->_a;
-      ++this->_a;
+      value_type ip = this->_p;
+      ++this->_p;
 
       return ip;
     };
@@ -116,7 +108,6 @@ namespace ft {
 //    reference operator++(pointer) {
 //      return (*this->_a++); //?
 //    };
-
   };
 
   template <class T, class Allocator = std::allocator<T> >
@@ -169,7 +160,6 @@ namespace ft {
           _end = _start;
 
           size_type n = distance(first, last);
-
           _size = n;
           _capacity = cal_cap(_size);
 
@@ -185,6 +175,11 @@ namespace ft {
       while (_size--)
         _allocator.destroy(--this->_end);
       this->_allocator.deallocate(this->_start, _capacity);
+      this->clear();
+      // this->_start = nullptr;
+      // this->_end = nullptr;
+      // this->_size = 0;
+      // this->_capacity = 0;
     };
 
     // May throw implementation-defined exceptions. <- ?
@@ -255,19 +250,19 @@ namespace ft {
 
     // Calling front on an empty container is undefined.
     reference front() {
-      return (this->_start);
+      return *(this->_start);
     };
 
     const_reference front() const {
-      return (this->_start);
+      return *(this->_start);
     };
     
     reference back() {
-      return (--this->_end);
+      return *(this->_end - 1);
     };
 
     const_reference back() const {
-      return (--this->_end);
+      return *(this->_end);
     };
 
     T* data() {
@@ -281,35 +276,35 @@ namespace ft {
     /* iterators */
     //return iterator
     iterator begin() {
-      return (this->_start);
+      return iterator(this->_start);
     };
 
     const_iterator begin() const {
-      return (this->_start);
+      return iterator(this->_start);
     };
 
     iterator end() {
-      return (this->_end);
+      return iterator(this->_end);
     };
 
     const_iterator end() const {
-      return (this->_end);
+      return iterator(this->_end);
     };
 
     iterator rbegin() {
-      return reverse_iterator(this->end());
+      return reverse_iterator(this->_end);
     };
 
     const_iterator rbegin() const {
-      return reverse_iterator(this->end());
+      return reverse_iterator(this->_end);
     };
 
     iterator rend() {
-      return reverse_iterator(this->begin());
+      return reverse_iterator(this->_begin);
     };
 
     const_iterator rend() const {
-      return reverse_iterator(this->begin());
+      return reverse_iterator(this->_begin);
     };
 
     /* capacity */
@@ -359,9 +354,12 @@ namespace ft {
     // insert value before pos
     // return iterator pointing to the inserted value
     iterator insert( iterator pos, const T& value ) {
-      this->_allocator.destroy(pos);
-      this->_allocator.deallocate(pos);
+      this->_allocator.destroy(pos)
       this->_allocator.construct(pos, value);
+      
+      this->_size++;
+      this->_end++;
+      this->capacity = cal_cap(_size);
 
       return (this->_start + pos);
     };
@@ -370,8 +368,8 @@ namespace ft {
     // return iterator pointing to the first element inserted
     // or return pos if count == 0
     void insert( iterator pos, size_type count, const T& value ) {
-      if (this->size() + count > this->_capacity)
-        this->reserve(cal_cap(this->size()));
+      if (this->_size + count > this->_capacity)
+        this->reserve(cal_cap(this->_size));
 
       while (count--)
         this->insert(pos++, value);
@@ -385,11 +383,11 @@ namespace ft {
 
       size_type n = this->distance(first, last);
 
-      if (this->size() + n > this->_capacity)
-        this->reserve(this->size() + n);
+      if (this->_size + n > this->_capacity)
+        this->reserve(cal_cap(this->_size));
       
       while (first != last)
-        insert(pos++, first++);
+        insert(pos++, *first++);
     };
 
     //erase first ~ last - 1
@@ -399,25 +397,28 @@ namespace ft {
     If [first, last) is an empty range, then last is returned.
     */
     iterator erase( iterator pos ) {
-      size_type pos_index = _start - pos;
-      this->_allocator.destroy(pos);
+      size_type pos_index = &(*pos) - _start;
+      this->_allocator.destroy(&(*pos));
 
-      for (size_type i = 0; i < this->size() - pos_index; ++i) {
-        this->_allocator.construct();
-        this->_allocator.destroy();
+      for (size_type i = 0; i < _size - pos_index; ++i) {
+        this->_allocator.construct(_start + pos_index + i, *(_start + pos_index + i + 1));
+        this->_allocator.destroy(_start + pos_index + i + 1);
       }
-      // this->_allocator.deallocate(this->_end); -> capacity, alloc 유지
+      --this->_size;
       --this->_end;
 
-      return _start + pos; //pos+start
+      return iterator(_start + pos_index);
     };
 
     iterator erase( iterator first, iterator last ) {
-      while (first != last) {
-        this->erase(first);
-        first++;
+      iterator temp_first = first;
+
+      while (temp_first != last) {
+        this->erase(temp_first);
+        temp_first++;
       }
-      return (first + _start); //first바뀌기전
+
+      return (first + _start);
     };
 
     /*
@@ -429,42 +430,48 @@ namespace ft {
     void push_back( const T& value ) {
       if (this->size() == 0) {
         this->reserve(1);
-      } else if (this->_start + this->size() == this->_end) {
-        this->reserve(_capacity * 2);
+      } else if (this->_start + this->_size == this->_end) {
+        this->reserve(cal_cap(_size));
       }
 
       this->_allocator.construct(this->_end++, value);
+      this->_size++;
+      this->_capacity = cal_cap(_size);
     };
 
     void pop_back() {
       this->_allocator.destroy(--this->_end);
+      this->_size--;
     };
 
 
     void resize( size_type count, T value = T() ) {
-      size_type range = this->size() - count;
+      size_type range = this->_size - count;
 
       if (range > 0) {
         while (range--)
           this->_allocator.destroy(this->_end--);
       } else {
-//        this->reserve(this->size() + count);
+//        this->reserve(this->_size + count);
         while (count--)
-          this->_allocator.construct(this->size() + count, value);
+          this->_allocator.construct(this->_size + count, value);
       }
     };
 
     void swap( vector& other ) {
       pointer start_temp = other._start;
       pointer end_temp = other._end;
-      pointer capacity_temp = other._capacity;
+      size_type size_temp = other._size;
+      size_type capacity_temp = other._capacity;
 
-      other.start = this->_start;
-      other.end = this->_end;
-      other.capacity = this->_capacity;
+      other._start = this->_start;
+      other._end = this->_end;
+      other._size = this->_size;
+      other._capacity = this->_capacity;
 
       this->_start = start_temp;
       this->_end = end_temp;
+      this->_size = size_temp;
       this->_capacity = capacity_temp;
     };
 
@@ -484,12 +491,11 @@ namespace ft {
     size_type cal_cap(size_type size) {
       size_type ret = 1;
 
-      while (ret >= size)
+      while (ret < size)
         ret *= 2;
 
       return ret;
     };
-
   };
 }
 
