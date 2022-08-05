@@ -9,47 +9,129 @@
 
 int main()
 {
-
-    ft::vector<int> a(1,'a');
-
-    std::cout << "a";
-    std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
-
-//    ft::vector<int>::iterator b_it = a.begin();
-//    ft::vector<int>::iterator e_it = --a.end();
-//    ft::vector<int>::reverse_iterator rb_it = a.rbegin();
-//    ft::vector<int>::reverse_iterator re_it = --a.rend();
-
-//     std::cout << *b_it << std::endl;
-//     std::cout << *e_it << std::endl;
-//     std::cout << *rb_it << std::endl;
-//     std::cout << *re_it << std::endl;
-
-//ft::vector<int>::iterator print = a.begin();
-
-//    ft::vector<int>::iterator it = a.begin() + 2;
-//    ft::vector<int>::iterator it2 = a.begin() + 1;
-
-
-    // std::cout << a.size() << ", " << a.capacity() << std::endl;
-
-    // a.reserve(1);
-
-    // std::cout << a.size() << ", " << a.capacity() << std::endl;
-
     // int i = 5;
+    // int* ptr = &i;
+    // int& ref = i;
+    // ft::vector<int> a;
+    // a.push_back(1);
+    // a.push_back(2);
+    // ft::vector<int>::iterator iter = a.begin();
 
-    // while (--i) {
-    //     std::cout << "1" << std::endl;
-    // }
+    // std::cout << i << std::endl;
 
-    // i = 5;
-    // while (i--) {
-    //     std::cout << "2" << std::endl;
-    // }
+    // std::cout << ptr << std::endl;
+    // std::cout << &ref << std::endl;
+
+    // std::cout << *ptr << std::endl;
+    // std::cout << ref << std::endl;
+
+    // std::cout << &ptr << std::endl;
+    // std::cout << "*ref indirection requires pointer operand" << std::endl;
+
+    // std::cout << *iter << std::endl;
 
 
 
+/* push_back, pop_back, size, capacity */
+    // std::cout << "===MAIN TEST===\n";
+    // ft::vector<int> a;
+
+    // std::cout << "a:\n";
+    // std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
+
+    // std::cout << "push_back 1 2 3:\n";
+    // a.push_back(1);
+    // a.push_back(2);
+    // a.push_back(3);
+
+    // std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
+
+    // a.pop_back();
+
+    // std::cout << "pop_back:\n";
+    // std::cout << "size: " << a.size() << ", capacity: " << a.capacity() << std::endl;
+
+    // std::cout << "\n";
+
+/* front, back */
+    // ft::vector<int> b;
+
+    // std::cout << "b:\n";
+    // std::cout << "size: " << b.size() << ", capacity: " << b.capacity() << std::endl;
+
+    // std::cout << "push_back 4 5 6:\n";
+    // b.push_back(4);
+    // b.push_back(5);
+    // b.push_back(6);
+
+    // std::cout << "b:\n";
+    // std::cout << "size: " << b.size() << ", capacity: " << b.capacity() << std::endl;
+
+    // std::cout << "front:\n";
+    // std::cout << b.front() << std::endl;
+
+    // std::cout << "back:\n";
+    // std::cout << b.back() << std::endl;
+
+    // std::cout << "\n";
+
+/* erase */
+    // ft::vector<int> c;
+
+    // std::cout << "push_back 4 5 6:\n";
+    // c.push_back(4);
+    // c.push_back(5);
+    // c.push_back(6);
+
+    // ft::vector<int>::iterator it = c.begin();
+    // std::cout << "c.begin(): " << *it << std::endl;
+
+    // ft::vector<int>::iterator erase_it1 = c.erase(it);
+    // std::cout << "erase_it: " << *erase_it1 << std::endl;
+
+    // ft::vector<int>::iterator it1 = c.begin();
+    // std::cout << "c.begin(): " << *it1 << std::endl;
+
+    // ft::vector<int>::iterator erase_it2 = c.erase(it);
+    // std::cout << "erase_it: " << *erase_it2 << std::endl;
+
+    // ft::vector<int>::iterator it2 = c.begin();
+    // std::cout << "c.begin(): " << *it2 << std::endl;
+
+    // ft::vector<int>::iterator erase_it3 = c.erase(it);
+    // std::cout << "erase_it: " << *erase_it3 << std::endl;
+
+/* iterator test */
+    // std::cout << "===ITERATOR TEST===\n";
+
+    // ft::vector<int> d;
+
+    // std::cout << "push_back 4 5 6:\n";
+    // d.push_back(4);
+    // d.push_back(5);
+    // d.push_back(6);
+
+    // std::cout << "begin:\n";
+    // ft::vector<int>::iterator b_it = d.begin();
+    // std::cout << *b_it << std::endl;
+
+    // std::cout << "end:\n";
+    // ft::vector<int>::iterator e_it = d.end();
+    // std::cout << *e_it << std::endl;
+
+    // std::cout << "rbegin:\n";
+    // std::cout << *rb_it << std::endl;
+    // ft::vector<int>::reverse_iterator rb_it = a.rbegin();
+
+    // std::cout << "rend:\n";
+    // std::cout << *re_it << std::endl;
+    // ft::vector<int>::reverse_iterator re_it = --a.rend();
+
+/*  */
+
+
+
+/* test... */
     // try {
 
     // ft::vector<int> a;
