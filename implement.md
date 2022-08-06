@@ -18,15 +18,31 @@
     template<class T> struct enable_if<true, T> { typedef T type; };
     enable_if::type이 가능할 경우 Cond는 true가 된다
 
+// #3, enabled via a parameter
+    template<class T>
+    void destroy(T*, typename std::enable_if<std::is_trivially_destructible<T>::value>::type* = 0) {
+        std::cout << "destroying trivially destructible T\n";
+    }
+
 [ ]  is_integral
+    #include <type_traits>
+    
     template< class T >
     struct is_integral;
+
+    std::is_integral<자료형> -> 자료형이 숫자인지 bool 반환
 
     is_integral는 자료형별로 특수화가 되어있고, 
     false_type과 true_type을 상속 받는 빈 구조체로 되어있다
 
     typedef integral_constant<bool,true> true_type;
     typedef integral_constant<bool,false> false_type;
+
+    추가 함수 인수로(연산자 오버로드에는 적용되지 않음)
+    반환 유형으로(생성자 및 소멸자에는 적용되지 않음)
+    클래스 템플릿 또는 함수 템플릿 매개변수로
+
+    
 
 [ ]  equal and/or lexicographical_compare
     

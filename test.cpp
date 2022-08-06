@@ -2,6 +2,7 @@
 
 #if 0
   #include <vector>
+  #include <type_traits>
   namespace ft = std;
 #else
   #include "vector.hpp"
@@ -236,27 +237,27 @@ int main()
 //     }
 
 /* swap */
-    ft::vector<int> l;
+    // ft::vector<int> l;
 
-    l.push_back(1);
-    l.push_back(2);
-    l.push_back(3);
+    // l.push_back(1);
+    // l.push_back(2);
+    // l.push_back(3);
 
-    std::cout << "l: " << l.front() << std::endl;
+    // std::cout << "l: " << l.front() << std::endl;
 
-    ft::vector<int> m;
+    // ft::vector<int> m;
 
-    m.push_back(4);
-    m.push_back(5);
-    m.push_back(6);
+    // m.push_back(4);
+    // m.push_back(5);
+    // m.push_back(6);
 
-    std::cout << "m: " << m.front() << std::endl;
+    // std::cout << "m: " << m.front() << std::endl;
 
-    l.swap(m);
-    std::cout << "l: " << l.front() << std::endl;
-    std::cout << "m: " << m.front() << std::endl;
+    // l.swap(m);
+    // std::cout << "l: " << l.front() << std::endl;
+    // std::cout << "m: " << m.front() << std::endl;
 
-/* test... */
+/* test... - out_of_range error message*/
     // try {
 
     // ft::vector<int> a;
