@@ -3,9 +3,9 @@
 #include <exception> //exception
 #include <stdexcept> //length_error, out_of_range
 #include <iterator> //random_access_iterator_tag
+#include <type_traits> //std::enable_if, std::is_integral -> delete
 
 namespace ft {
-
   template <typename T>
   class vector_iterator {
   public:
@@ -19,7 +19,6 @@ namespace ft {
     pointer _p;
 
   public:
-
     explicit vector_iterator(pointer ptr) : _p(ptr) {};
 
     ~vector_iterator() {};
@@ -203,20 +202,22 @@ namespace ft {
     };
 
     template< class InputIt >
-    void assign( InputIt first, InputIt last ) {
+    void assign( InputIt first, InputIt last, 
+      typename std::enable_if<InputIt, std::is_integral<InputIt>::value>::type* = 0 ) {
+        if () //enable_if
+          throw();
 
-      size_type n = distance(first, last);
+        size_type n = distance(first, last);
 
-      this->clear();
+        this->clear();
 
-      this->_start = this->_allocator.allocate(n);
-      this->_end = this->_start;
-      this->_capacity = this->_start + n;
+        this->_start = this->_allocator.allocate(n);
+        this->_end = this->_start;
+        this->_capacity = this->_start + n;
 
-      while (n--) {
-        this->_allocator.construct(this->_end++, *first++);
+        while (n--) {
+          this->_allocator.construct(this->_end++, *first++);
       }
-      // capacity == n 일때 capacity값?
     };
 
     allocator_type get_allocator() const {
@@ -379,15 +380,17 @@ namespace ft {
     // return iterator pointing to the first element inserted
     // or return pos if first == last
     template< class InputIt >
-    void insert( iterator pos, InputIt first, InputIt last ) {
+    void insert( iterator pos, InputIt first, InputIt last, 
+      typename std::enable_if<InputIt, std::is_integral<InputIt>::value>::type* = 0 ) {
+        if () //enable_if
+          throw();
+        size_type n = this->distance(first, last);
 
-      size_type n = this->distance(first, last);
-
-      if (this->_size + n > this->_capacity)
-        this->reserve(cal_cap(this->_size));
-      
-      while (first != last)
-        insert(pos++, *first++);
+        if (this->_size + n > this->_capacity)
+          this->reserve(cal_cap(this->_size));
+        
+        while (first != last)
+          insert(pos++, *first++);
     };
 
     //erase first ~ last - 1
@@ -459,8 +462,6 @@ namespace ft {
           this->_end--;
         }
       }
-
-    
     };
 
     void swap( vector& other ) {
@@ -479,7 +480,6 @@ namespace ft {
       this->_size = size_temp;
       this->_capacity = capacity_temp;
     };
-
 
   private:
     size_type distance(iterator first, iterator second) {
