@@ -193,8 +193,10 @@ namespace ft {
       this->clear();
 
       this->_start = this->_allocator.allocate(count);
-      this->end = this->_start;
-      this->_capacity = this->_start + count;
+      this->_end = this->_start;
+      this->_size = count;
+      if (this->_capacity < count)
+        this->_capacity = count;
 
       while (count--) {
         this->_allocator.construct(this->_end++, value);
@@ -202,20 +204,19 @@ namespace ft {
     };
 
     template< class InputIt >
-    void assign( InputIt first, InputIt last, 
-      typename std::enable_if<InputIt, std::is_integral<InputIt>::value>::type* = 0 ) {
-        if () //enable_if
-          throw();
-
-        size_type n = distance(first, last);
-
+    void assign( InputIt first, InputIt last,
+      typename std::enable_if<!std::is_integral<InputIt>::value>::type* = 0 ) {
+        size_type count = distance(first, last);
+        // if (_capacity < count)
         this->clear();
 
-        this->_start = this->_allocator.allocate(n);
+        this->_start = this->_allocator.allocate(count);
         this->_end = this->_start;
-        this->_capacity = this->_start + n;
+        this->_size = count;
+        if (this->_capacity < count)
+          this->_capacity = count;
 
-        while (n--) {
+        while (!(first == last)) {
           this->_allocator.construct(this->_end++, *first++);
       }
     };
@@ -348,7 +349,7 @@ namespace ft {
 
     /* Modifiers */
     void clear() {
-      while (this->_size--)
+      while (--this->_size)
         _allocator.destroy(--this->_end);
     };
 
@@ -380,10 +381,8 @@ namespace ft {
     // return iterator pointing to the first element inserted
     // or return pos if first == last
     template< class InputIt >
-    void insert( iterator pos, InputIt first, InputIt last, 
-      typename std::enable_if<InputIt, std::is_integral<InputIt>::value>::type* = 0 ) {
-        if () //enable_if
-          throw();
+    void insert( iterator pos, InputIt first, InputIt last,
+      typename std::enable_if<!std::is_integral<InputIt>::value>::type* = 0 ) {
         size_type n = this->distance(first, last);
 
         if (this->_size + n > this->_capacity)
