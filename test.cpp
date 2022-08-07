@@ -4,32 +4,14 @@
   #include <vector>
   #include <type_traits>
   namespace ft = std;
-#else
+#else  
   #include "vector.hpp"
 #endif
 
 int main()
 {
-    // int i = 5;
-    // int* ptr = &i;
-    // int& ref = i;
-    // ft::vector<int> a;
-    // a.push_back(1);
-    // a.push_back(2);
-    // ft::vector<int>::iterator iter = a.begin();
-
-    // std::cout << i << std::endl;
-
-    // std::cout << ptr << std::endl;
-    // std::cout << &ref << std::endl;
-
-    // std::cout << *ptr << std::endl;
-    // std::cout << ref << std::endl;
-
-    // std::cout << &ptr << std::endl;
-    // std::cout << "*ref indirection requires pointer operand" << std::endl;
-
-    // std::cout << *iter << std::endl;
+/* iterator operator */
+    ft::vector<int>::iterator
 
 /* push_back, pop_back, size, capacity */
     // ft::vector<int> a;
@@ -204,37 +186,71 @@ int main()
     // j.resize(7, 0);
     // std::cout << "size: " << j.size() << "\ncapacity: " << j.capacity() << std::endl;
 
-/* insert, assign */
-//     ft::vector<int> k;
+/* assign - count, value */
+    // ft::vector<int> k;
 
-//     k.push_back(1);
-//     k.push_back(2);
-//     k.push_back(3);
+    // k.push_back(1);
+    // k.push_back(2);
+    // k.push_back(3);
+    // k.push_back(4);
+    // k.push_back(5);
 
-//     // pos, value
-//     k.insert(2, 14);
-//     // pos, count, value
-//     k.insert(3, 5, 15);
-//     // pos, it, it
+    // ft::vector<int>::iterator it3 = k.begin();
+    // while (it3 != k.end()) {
+    //     std::cout << *it3 << ' ';
+    //     it3++;
+    // }
+    // std::cout << "size: " << k.size() << ", capacity: " << k.capacity() << std::endl;
 
-//     ft::vector<int>::iterator it = k.begin();
-//     while (it != k.end()) {
-//         std::cout << *it << std::endl;
-//         it++;
-//     }
+    // // count, value
+    // k.assign(2, 14);
+    // ft::vector<int>::iterator it = k.begin();
+    // while (it != k.end()) {
+    //     std::cout << *it << ' ';
+    //     it++;
+    // }
+    // std::cout << "size: " << k.size() << ", capacity: " << k.capacity() << std::endl;
 
-//     // count, value
-//     k.assign(2, 14);
-//     // it, it
-//     k.assign(2, 14);
+    // k.assign(9, 15);
+    // ft::vector<int>::iterator it2 = k.begin();
+    // while (it2 != k.end()) {
+    //     std::cout << *it2 << ' ';
+    //     it2++;
+    // }
+    // std::cout << "size: " << k.size() << ", capacity: " << k.capacity() << std::endl;
+    // std::cout << k.front() << std::endl;
 
-// std::cout << "=============" << std::endl;
+/* assign - it, it */
+    // ft::vector<int> n;
 
-//     ft::vector<int>::iterator it2 = k.begin();
-//     while (it2 != k.end()) {
-//         std::cout << *it2 << std::endl;
-//         it2++;
-//     }
+    // n.push_back(1);
+    // n.push_back(2);
+    // n.push_back(3);
+    // n.push_back(4);
+    // n.push_back(5);
+
+    // ft::vector<int>::iterator it = ++n.begin();
+    // ft::vector<int>::iterator it2 = --n.end();
+    // std::cout << *it << ", " << *it2 << std::endl;
+
+    // ft::vector<int> o;
+
+    // o.push_back(0);
+    // o.push_back(0);
+    // o.push_back(0);
+
+    // std::cout << "size: " << o.size() << ", capacity: " << o.capacity() << std::endl;
+
+    // o.assign(it, it2);
+
+    // ft::vector<int>::iterator it3 = o.begin();
+    // while (it3 != o.end()) {
+    //     std::cout << *it3 << ' ';
+    //     it3++;
+    // }
+    // std::cout << "size: " << o.size() << ", capacity: " << o.capacity() << std::endl;
+
+/* insert */
 
 /* swap */
     // ft::vector<int> l;
@@ -280,7 +296,29 @@ int main()
     // }
 
     // std::cout << "b" << std::endl;
-/* test... - capacity == size -> change capacity? */
+
+/* test... - capacity == size -> capacity? */
+/* test... - range로 넣을 때 capacity 값 */
+
+/* test... - enable_if */
+// #include <type_traits>
+
+// template<class T>
+// T foo2(T t, typename std::enable_if<!std::is_integral<T>::value >::type* = 0) {
+//     std::cout << "not integral" << std::endl;
+//     return t;
+// }
+
+// template<class T>
+// T foo2(T t, typename std::enable_if<std::is_integral<T>::value >::type* = 0) {
+//     std::cout << "integral" << std::endl;
+//     return t;
+// }
+
+// int main() {
+//     foo2(0.1);
+//     foo2(7);
+// }
 
     return 0;
 }
