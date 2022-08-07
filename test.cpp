@@ -11,7 +11,31 @@
 int main()
 {
 /* iterator operator */
-    // ft::vector<int>::iterator
+    ft::vector<int> vec;
+
+    vec.push_back(1);
+    vec.push_back(2);
+    vec.push_back(3);
+
+    ft::vector<int>::iterator it = vec.begin();
+    ft::vector<int>::iterator it2 = vec.end();
+
+    std::cout << *it << ", " << *it2 << std::endl;
+
+    ++it;
+    --it2;
+
+    std::cout << *it << ", " << *it2 << std::endl;
+
+    it++;
+    it2--;
+
+    std::cout << *it << ", " << *it2 << std::endl;
+
+    *it++;
+    *it2--;
+
+    std::cout << *it << ", " << *it2 << std::endl;
 
 /* push_back, pop_back, size, capacity */
     // ft::vector<int> a;

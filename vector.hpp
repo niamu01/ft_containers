@@ -98,9 +98,9 @@ namespace ft {
 //    };
 
     //legacy_forward_iterator
-    value_type operator++() {
-      value_type ip = this->*_p;
-      ++this->*_p;
+    pointer operator++() {
+      pointer ip = this->_p;
+      ++this->_p;
 
       return ip;
     };
@@ -109,6 +109,32 @@ namespace ft {
 //    reference operator++(pointer) {
 //      return (*this->_a++); //?
 //    };
+
+    //legacy_input_iterator
+    // bool operator!=() {
+
+    // }
+
+    // value_type operator*(reference) {
+
+    // }
+
+    // void operator->() {
+
+    // }
+
+    // value_type operator++(value_type) {
+
+    // }
+
+    //legacy_output_iterator
+    /*
+    *r = o
+    ++r
+    r++
+    *r++
+    */
+    
   };
 
   template <class T, class Allocator = std::allocator<T> >
