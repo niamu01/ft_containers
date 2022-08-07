@@ -11,7 +11,7 @@
 int main()
 {
 /* iterator operator */
-    ft::vector<int>::iterator
+    // ft::vector<int>::iterator
 
 /* push_back, pop_back, size, capacity */
     // ft::vector<int> a;
