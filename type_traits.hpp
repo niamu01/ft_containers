@@ -11,14 +11,7 @@ struct enable_if<true, T> {
   typedef T type;
 };
 
-/* is_integral
-* Checks whether T is an integral type.
-* bool, char, char16_t, char32_t, wchar_t, short, int, long, long long, 
-* or any implementation-defined extended integer types,
-* including any signed, unsigned, and cv-qualified variants.
-* Otherwise, value is false.
-*/
-
+/* is_integral */
 template< class T >
 struct is_integral;
 

@@ -32,10 +32,15 @@ int main()
 
     std::cout << *it << ", " << *it2 << std::endl;
 
-    *it++;
-    *it2--;
+//    *it++;
+//    *it2--;
+//
+//    std::cout << *it << ", " << *it2 << std::endl;
 
-    std::cout << *it << ", " << *it2 << std::endl;
+    for (ft::vector<int>::iterator it3 = vec.begin(); it3 != vec.end(); it3++) {
+      std::cout << *it3 << ' ';
+    }
+    std::cout << std::endl;
 
 /* push_back, pop_back, size, capacity */
     // ft::vector<int> a;

@@ -37,7 +37,7 @@ namespace ft {
     };
 
     value_type operator+(difference_type n) {
-      value_type temp = this->_a;
+      value_type temp = this->*_p;
       temp += n;
 
       return (temp);
@@ -82,58 +82,56 @@ namespace ft {
       return *_p;
     };
 
-    reference operator--(value_type) const {
-      pointer temp = this->_p;
+    reference operator--(value_type) {
+      pointer ip = this->_p;
       --this->_p;
 
-      return *temp;
+      return *ip;
+    };
+
+    //legacy_forward_iterator
+    reference operator++() {
+      ++this->_p;
+
+      return *_p;
+    };
+
+    reference operator++(value_type) {
+      pointer ip = this->_p;
+      ++this->_p;
+
+      return *ip;
     };
 
 //    // *a--
 //    reference operator--(pointer) {
-//      reference rp = --(*this->_a);
+//      pointer ip = this->_p;
+//      --this->_p;
 //
-//      return (rp);
-//      return (*this->_a--); //?
+//      return *ip;
 //    };
-
-    //legacy_forward_iterator
-    pointer operator++() {
-      pointer ip = this->_p;
-      ++this->_p;
-
-      return ip;
-    };
-
+//
 //    //*i++
 //    reference operator++(pointer) {
-//      return (*this->_a++); //?
+//      pointer ip = this->_p;
+//      ++this->_p;
+//
+//      return *ip;
 //    };
 
     //legacy_input_iterator
-    // bool operator!=() {
+//     bool operator!=() {
+//
+//     }
 
-    // }
 
     // value_type operator*(reference) {
 
     // }
 
-    // void operator->() {
+//     void operator->() {
 
-    // }
-
-    // value_type operator++(value_type) {
-
-    // }
-
-    //legacy_output_iterator
-    /*
-    *r = o
-    ++r
-    r++
-    *r++
-    */
+//     }
     
   };
 
