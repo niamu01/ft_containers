@@ -87,13 +87,13 @@ namespace ft {
       return *this;
     };
 
-    // reverse_iterator  operator++(int) {
-    //   Iterator temp = this->current;
+    reverse_iterator  operator++(int) {
+      reverse_iterator temp = *this;
 
-    //   this->current++;
+      this->current++;
 
-    //   return temp;
-    // };
+      return temp;
+    };
 
     reverse_iterator& operator+=(difference_type n) {
       this->current += n;
@@ -111,13 +111,13 @@ namespace ft {
       return *this;  
     };
 
-    // reverse_iterator  operator--(int) {
-    //   Iterator temp = this->current;
+    reverse_iterator  operator--(int) {
+      reverse_iterator temp = *this;
 
-    //   this->current--;
+      this->current--;
 
-    //   return temp;
-    // };
+      return temp;
+    };
 
     reverse_iterator& operator-=(difference_type n) {
       this->current -= n;
