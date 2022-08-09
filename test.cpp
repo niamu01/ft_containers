@@ -32,18 +32,18 @@ int main()
 
     // std::cout << *it << ", " << *it2 << std::endl;
 
-    ft::vector<int>::iterator it3 = vec.rbegin();
-    ft::vector<int>::iterator it4 = vec.rend();
+    ft::vector<int>::reverse_iterator it3 = vec.rbegin();
+    ft::vector<int>::reverse_iterator it4 = vec.rend();
 
     std::cout << *it3 << ", " << *it4 << std::endl;
 
-    ++it3;
-    --it4;
+    --it3;
+    ++it4;
 
     std::cout << *it3 << ", " << *it4 << std::endl;
 
-    it3++;
-    it4--;
+    it3--;
+    it4++;
 
     std::cout << *it3 << ", " << *it4 << std::endl;
 

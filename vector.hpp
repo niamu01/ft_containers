@@ -153,8 +153,8 @@ namespace ft {
     typedef typename allocator_type::const_reference const_reference;
     typedef typename ft::vector_iterator<value_type> iterator;
     typedef typename ft::vector_iterator<const value_type> const_iterator;
-    typedef typename ft::reverse_iterator<value_type> reverse_iterator;
-    typedef typename ft::reverse_iterator<const value_type> const_reverse_iterator;
+    typedef typename ft::reverse_iterator<vector_iterator<value_type> > reverse_iterator;
+    typedef typename ft::reverse_iterator<const vector_iterator<const value_type> > const_reverse_iterator;
 
   private:
     allocator_type _allocator;
@@ -311,7 +311,7 @@ namespace ft {
     };
 
     const_iterator begin() const {
-      return iterator(this->_start);
+      return const_iterator(this->_start);
     };
 
     iterator end() {
@@ -319,23 +319,23 @@ namespace ft {
     };
 
     const_iterator end() const {
-      return iterator(this->_end);
+      return const_iterator(this->_end);
     };
 
-    iterator rbegin() {
-      return reverse_iterator(this->_end);
+    reverse_iterator rbegin() {
+      return reverse_iterator(this->end());
     };
 
-    const_iterator rbegin() const {
-      return reverse_iterator(this->_end);
+    const_reverse_iterator rbegin() const {
+      return const_reverse_iterator(this->end());
     };
 
-    iterator rend() {
-      return reverse_iterator(this->_begin);
+    reverse_iterator rend() {
+      return reverse_iterator(this->begin());
     };
 
-    const_iterator rend() const {
-      return reverse_iterator(this->_begin);
+    const_reverse_iterator rend() const {
+      return const_reverse_iterator(this->begin());
     };
 
     /* capacity */

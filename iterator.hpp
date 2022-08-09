@@ -1,7 +1,6 @@
 namespace ft {
   template<class Iterator>
-  struct iterator_traits
-  {
+  struct iterator_traits {
     typedef typename Iterator::difference_type difference_type;
     typedef typename Iterator::value_type value_type;
     typedef typename Iterator::pointer pointer;
@@ -15,7 +14,7 @@ namespace ft {
     typedef T value_type;
     typedef T* pointer;
     typedef T& reference;
-    typedef random_access_iterator_tag iterator_category;
+    typedef std::random_access_iterator_tag iterator_category;
   };
 
   template<class Category, class T, class Distance = ptrdiff_t,
@@ -54,12 +53,11 @@ namespace ft {
     // typedef	typename ft::iterator_traits<Iter>::iterator_category iterator_category;
     // typedef	typename ft::iterator_traits<Iter>::value_type value_type;
 
-    reverse_iterator() {};
-    explicit reverse_iterator(Iterator x) : current(x) {};
+    explicit reverse_iterator(Iterator x = nullptr) : current(x) {};
     template< class U > reverse_iterator( const reverse_iterator<U>& other ) : current(other.current) {};
 
     template< class U > reverse_iterator& operator=( const reverse_iterator<U>& other ) {
-      this.current = other.current;
+      this->current = other.current;
 
       return *this;
     };
@@ -69,9 +67,9 @@ namespace ft {
     };
 
     reference operator*() const {
-      Iter temp = current;
+      Iterator temp = current;
 
-      return (*--temp);
+      return (--temp);
     };
 
     pointer   operator->() const {
@@ -89,13 +87,13 @@ namespace ft {
       return *this;
     };
 
-    reverse_iterator  operator++(int) {
-      reverse_iterator temp = this->current;
+    // reverse_iterator  operator++(int) {
+    //   Iterator temp = this->current;
 
-      this->current++;
+    //   this->current++;
 
-      return *temp;
-    };
+    //   return temp;
+    // };
 
     reverse_iterator& operator+=(difference_type n) {
       this->current += n;
@@ -113,13 +111,13 @@ namespace ft {
       return *this;  
     };
 
-    reverse_iterator  operator--(int) {
-      reverse_iterator temp = this->current;
+    // reverse_iterator  operator--(int) {
+    //   Iterator temp = this->current;
 
-      this->current--;
+    //   this->current--;
 
-      return *temp;
-    };
+    //   return temp;
+    // };
 
     reverse_iterator& operator-=(difference_type n) {
       this->current -= n;
