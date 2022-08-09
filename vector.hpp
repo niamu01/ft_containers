@@ -2,10 +2,11 @@
 #include <limits> //std::numeric_limits
 #include <exception> //exception
 #include <stdexcept> //length_error, out_of_range
-// #include "type_traits.hpp" //ft::enable_if, ft::is_integral
+#include "iterator.hpp" //ft::reverse_iterator
+#include "type_traits.hpp" //ft::enable_if, ft::is_integral
 
-#include <iterator> //random_access_iterator_tag
-#include <type_traits> //std::enable_if, std::is_integral -> delete
+// #include <iterator> //random_access_iterator_tag
+// #include <type_traits> //std::enable_if, std::is_integral -> delete
 
 namespace ft {
   template <typename T>
@@ -21,7 +22,9 @@ namespace ft {
     pointer _p;
 
   public:
-    explicit vector_iterator(pointer ptr) : _p(ptr) {};
+    explicit vector_iterator(pointer ptr = nullptr) : _p(ptr) {};
+
+    vector_iterator(const vector_iterator<T>& other) : _p(other._p) {};
 
     ~vector_iterator() {};
 
@@ -129,9 +132,10 @@ namespace ft {
 
     // }
 
-//     void operator->() {
-
-//     }
+    
+    pointer operator->() const {
+      return &(operator*());
+    };
     
   };
 
@@ -149,6 +153,8 @@ namespace ft {
     typedef typename allocator_type::const_reference const_reference;
     typedef typename ft::vector_iterator<value_type> iterator;
     typedef typename ft::vector_iterator<const value_type> const_iterator;
+    typedef typename ft::reverse_iterator<value_type> reverse_iterator;
+    typedef typename ft::reverse_iterator<const value_type> const_reverse_iterator;
 
   private:
     allocator_type _allocator;
