@@ -17,30 +17,46 @@ int main()
     vec.push_back(2);
     vec.push_back(3);
 
-    ft::vector<int>::iterator it = vec.begin();
-    ft::vector<int>::iterator it2 = vec.end();
+    // ft::vector<int>::iterator it = vec.begin();
+    // ft::vector<int>::iterator it2 = vec.end();
 
-    std::cout << *it << ", " << *it2 << std::endl;
+    // std::cout << *it << ", " << *it2 << std::endl;
 
-    ++it;
-    --it2;
+    // ++it;
+    // --it2;
 
-    std::cout << *it << ", " << *it2 << std::endl;
+    // std::cout << *it << ", " << *it2 << std::endl;
 
-    it++;
-    it2--;
+    // it++;
+    // it2--;
 
-    std::cout << *it << ", " << *it2 << std::endl;
+    // std::cout << *it << ", " << *it2 << std::endl;
+
+    ft::vector<int>::iterator it3 = vec.rbegin();
+    ft::vector<int>::iterator it4 = vec.rend();
+
+    std::cout << *it3 << ", " << *it4 << std::endl;
+
+    ++it3;
+    --it4;
+
+    std::cout << *it3 << ", " << *it4 << std::endl;
+
+    it3++;
+    it4--;
+
+    std::cout << *it3 << ", " << *it4 << std::endl;
 
 //    *it++;
 //    *it2--;
 //
 //    std::cout << *it << ", " << *it2 << std::endl;
 
-    for (ft::vector<int>::iterator it3 = vec.begin(); it3 != vec.end(); it3++) {
-      std::cout << *it3 << ' ';
-    }
-    std::cout << std::endl;
+/* != test */
+    // for (ft::vector<int>::iterator it3 = vec.begin(); it3 != vec.end(); it3++) {
+    //   std::cout << *it3 << ' ';
+    // }
+    // std::cout << std::endl;
 
 /* push_back, pop_back, size, capacity */
     // ft::vector<int> a;
