@@ -19,9 +19,9 @@ template<class T, T v>
 struct integral_constant {
   typedef T value_type;
 
-  static T value = v;
-  value_type = T;
-  type = integral_constant;
+  static const T value = v;
+  // value_type = T;
+  // type = integral_constant;
 };
 
 typedef integral_constant<bool, true>  true_type;
