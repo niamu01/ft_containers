@@ -370,7 +370,7 @@ namespace ft {
         
       if (new_cap <= this->_capacity) {
         //deallocate?
-        this->_capacity = new_cap;
+        // this->_capacity = new_cap;
         return;
       }
 
