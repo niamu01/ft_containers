@@ -83,14 +83,13 @@ namespace ft {
       return current; //?
     };
 
-    reference operator*() const {
+    reference         operator*() const {
       Iterator temp = current;
-      temp--;
 
-      return *temp;
+      return (*--temp);
     };
 
-    pointer   operator->() const {
+    pointer           operator->() const {
       return (&(operator*()));
       // return std::addreessof(operator*());
     };

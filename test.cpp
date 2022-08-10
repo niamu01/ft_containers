@@ -56,25 +56,24 @@ int main()
     // std::cout << *it3 << ", " << *it4 << std::endl;
 
 /* const iterator */
-    ft::vector<int>::const_iterator c_it1 = vec.begin();
-    ft::vector<int>::const_iterator c_it2 = vec.end();
+    // ft::vector<int>::const_iterator c_it1 = vec.begin();
+    // ft::vector<int>::const_iterator c_it2 = vec.end();
 
-    std::cout << *c_it1 << ", " << *c_it2 << std::endl;
-    
-    // *c_it1 = 100;
     // std::cout << *c_it1 << ", " << *c_it2 << std::endl;
+    
+    // // *c_it1 = 100;
+    // // std::cout << *c_it1 << ", " << *c_it2 << std::endl;
 
-    ft::vector<int>::const_reverse_iterator c_it3 = vec.rbegin();
-    ft::vector<int>::const_reverse_iterator c_it4 = vec.rend();
+    // ft::vector<int>::const_reverse_iterator c_it3 = vec.rbegin();
+    // ft::vector<int>::const_reverse_iterator c_it4 = vec.rend();
 
-    std::cout << *c_it3 << ", " << *c_it4 << std::endl;
-
-    // *c_it3 = 100;
     // std::cout << *c_it3 << ", " << *c_it4 << std::endl;
+
+    // // *c_it3 = 100;
+    // // std::cout << *c_it3 << ", " << *c_it4 << std::endl;
 
 //    *it++;
 //    *it2--;
-//
 //    std::cout << *it << ", " << *it2 << std::endl;
 
 /* != test */

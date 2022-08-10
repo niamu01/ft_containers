@@ -41,24 +41,24 @@ namespace ft {
     };
     
     //legacy_random_access_iterator
-    reference operator+=(difference_type n) {
+    vector_iterator& operator+=(difference_type n) {
       _p += n;
 
       return (*this->_p);
     };
 
-    value_type operator+(difference_type n) {
+    vector_iterator operator+(difference_type n) {
       value_type temp = this->*_p;
       temp += n;
 
       return (temp);
     };
 
-    reference operator-=(difference_type n) {
+    vector_iterator& operator-=(difference_type n) {
       return (this->*_p -= n);
     };
 
-    value_type operator-(difference_type n) {
+    vector_iterator operator-(difference_type n) {
       return (this->*_p - n);
     };
 
@@ -87,31 +87,37 @@ namespace ft {
     };
 
     //legacy_bidirectional_iterator
-    reference operator--() {
+    vector_iterator& operator--() {
       --this->_p;
 
-      return *_p;
+      return *this;
     };
 
-    reference operator--(value_type) {
-      pointer ip = this->_p;
+    // const vector_iterator& operator--() {
+    //   --this->_p;
+
+    //   return *_p;
+    // };
+
+    vector_iterator operator--(value_type) {
+      vector_iterator ip = *this;
       --this->_p;
 
-      return *ip;
+      return ip;
     };
 
     //legacy_forward_iterator
-    reference operator++() {
+    vector_iterator& operator++() {
       ++this->_p;
 
-      return *_p;
+      return *this;
     };
 
-    reference operator++(value_type) {
-      pointer ip = this->_p;
+    vector_iterator operator++(value_type) {
+      vector_iterator ip = *this;
       ++this->_p;
 
-      return *ip;
+      return ip;
     };
 
 //    // *a--
@@ -147,138 +153,6 @@ namespace ft {
     
   };
 
-/* const_vector_iterator 
-  template <typename T>
-  class const_vector_iterator {
-  public:
-    typedef T                                 value_type;
-    typedef ptrdiff_t                         difference_type;
-    typedef T*                                pointer;
-    typedef T&                                reference;
-    typedef std::random_access_iterator_tag   iterator_category;
-
-  private:
-    pointer _p;
-
-  public:
-    explicit const_vector_iterator(pointer ptr = nullptr) : _p(ptr) {};
-
-    const_vector_iterator(const const_vector_iterator<T>& other) : _p(other._p) {};
-
-    ~const_vector_iterator() {};
-
-    reference operator*() {
-      return *_p;
-    };
-    
-    //legacy_random_access_iterator
-    reference operator+=(difference_type n) {
-      _p += n;
-
-      return (*this->_p);
-    };
-
-    value_type operator+(difference_type n) {
-      value_type temp = this->*_p;
-      temp += n;
-
-      return (temp);
-    };
-
-    reference operator-=(difference_type n) {
-      return (this->*_p -= n);
-    };
-
-    value_type operator-(difference_type n) {
-      return (this->*_p - n);
-    };
-
-    difference_type operator-(value_type i) {
-      return (this->*_p - i);
-    };
-
-    reference operator[](difference_type n) {
-      return (this->_p[n]);
-    };
-
-    bool operator<(value_type b) {
-      return (0 < b - this->*_p);
-    };
-
-    bool operator>(value_type b) {
-      return (this->*_p > b);
-    };
-
-    bool operator<=(value_type b) {
-      return (!(this->*_p > b));
-    };
-
-    bool operator>=(value_type b) {
-      return (!(0 < b - this->*_p));
-    };
-
-    //legacy_bidirectional_iterator
-    reference operator--() {
-      --this->_p;
-
-      return *_p;
-    };
-
-    reference operator--(value_type) {
-      pointer ip = this->_p;
-      --this->_p;
-
-      return *ip;
-    };
-
-    //legacy_forward_iterator
-    reference operator++() {
-      ++this->_p;
-
-      return *_p;
-    };
-
-    reference operator++(value_type) {
-      pointer ip = this->_p;
-      ++this->_p;
-
-      return *ip;
-    };
-
-//    // *a--
-//    reference operator--(pointer) {
-//      pointer ip = this->_p;
-//      --this->_p;
-//
-//      return *ip;
-//    };
-//
-//    *i++
-//    reference operator++(pointer) {
-//      pointer ip = this->_p;
-//      ++this->_p;
-//
-//      return *ip;
-//    };
-
-    //legacy_input_iterator
-//     bool operator!=() {
-//
-//     }
-
-
-    // value_type operator*(reference) {
-
-    // }
-
-    
-    pointer operator->() const {
-      return &(operator*());
-    };
-    
-  };*/
-
-
   template <class T, class Allocator = std::allocator<T> >
   class vector {
   public:
@@ -294,7 +168,7 @@ namespace ft {
     typedef typename ft::vector_iterator<value_type> iterator;
     typedef typename ft::vector_iterator<const value_type> const_iterator;
     typedef typename ft::reverse_iterator<vector_iterator<value_type> > reverse_iterator;
-    typedef typename ft::reverse_iterator<const vector_iterator<const value_type> > const_reverse_iterator;
+    typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
   private:
     allocator_type _allocator;
@@ -398,14 +272,14 @@ namespace ft {
     };
 
     reference at( size_type pos ) {
-      if (!(pos < size()))
+      if (!(pos < this->_size))
         throw std::out_of_range("vector");
 
       return (this->_start[pos]);
     };
 
     const_reference at( size_type pos ) const {
-      if (!(pos < size()))
+      if (!(pos < this->_size))
         throw std::out_of_range("vector");
 
       return (this->_start[pos]);
@@ -502,7 +376,7 @@ namespace ft {
 
       pointer temp = _allocator.allocate(new_cap);
 
-      for (size_type i = 0; i < this->size(); i++) {
+      for (size_type i = 0; i < this->_size; i++) {
         _allocator.construct(&temp[i], _start[i]);
         _allocator.destroy(this->_start);
       }
@@ -510,7 +384,7 @@ namespace ft {
       _allocator.deallocate(_start, _capacity);
 
       _start = temp;
-      _end = _start + size();
+      _end = _start + _size;
       _capacity = new_cap;
     };
 
@@ -601,7 +475,7 @@ namespace ft {
     (due to implicitly calling an equivalent of -(size()+1)).
     */
     void push_back( const T& value ) {
-      if (this->size() == 0) {
+      if (this->_size == 0) {
         this->reserve(1);
       } else if (this->_start + this->_size == this->_end) {
         this->reserve(cal_cap(_size));
