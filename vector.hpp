@@ -251,7 +251,7 @@ namespace ft {
 
     template< class InputIt >
     void assign( InputIt first, InputIt last,
-      typename std::enable_if<!std::is_integral<InputIt>::value>::type* = 0 ) {
+      typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = 0 ) {
         size_type count = distance(first, last);
         // if (_capacity < count)
         this->clear();
@@ -427,7 +427,7 @@ namespace ft {
     // or return pos if first == last
     template< class InputIt >
     void insert( iterator pos, InputIt first, InputIt last,
-      typename std::enable_if<!std::is_integral<InputIt>::value>::type* = 0 ) {
+      typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = 0 ) {
         size_type n = this->distance(first, last);
 
         if (this->_size + n > this->_capacity)
