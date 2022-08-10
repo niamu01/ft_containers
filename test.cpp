@@ -17,6 +17,7 @@ int main()
     vec.push_back(2);
     vec.push_back(3);
 
+/* iterator */
     // ft::vector<int>::iterator it = vec.begin();
     // ft::vector<int>::iterator it2 = vec.end();
 
@@ -32,20 +33,44 @@ int main()
 
     // std::cout << *it << ", " << *it2 << std::endl;
 
-    ft::vector<int>::reverse_iterator it3 = vec.rbegin();
-    ft::vector<int>::reverse_iterator it4 = vec.rend();
+    // *it = 100;
+    // std::cout << *it << ", " << *it2 << std::endl;
 
-    std::cout << *it3 << ", " << *it4 << std::endl;
+/* reverse iterator */
+    // ft::vector<int>::reverse_iterator it3 = vec.rbegin();
+    // ft::vector<int>::reverse_iterator it4 = vec.rend();
 
-    --it3;
-    ++it4;
+    // std::cout << *it3 << ", " << *it4 << std::endl;
 
-    std::cout << *it3 << ", " << *it4 << std::endl;
+    // --it3;
+    // ++it4;
 
-    it3--;
-    it4++;
+    // std::cout << *it3 << ", " << *it4 << std::endl;
 
-    std::cout << *it3 << ", " << *it4 << std::endl;
+    // it3--;
+    // it4++;
+
+    // std::cout << *it3 << ", " << *it4 << std::endl;
+
+    // *it3 = 100;
+    // std::cout << *it3 << ", " << *it4 << std::endl;
+
+/* const iterator */
+    ft::vector<int>::const_iterator c_it1 = vec.begin();
+    ft::vector<int>::const_iterator c_it2 = vec.end();
+
+    std::cout << *c_it1 << ", " << *c_it2 << std::endl;
+    
+    // *c_it1 = 100;
+    // std::cout << *c_it1 << ", " << *c_it2 << std::endl;
+
+    // ft::vector<int>::const_reverse_iterator c_it3 = vec.rbegin();
+    // ft::vector<int>::const_reverse_iterator c_it4 = vec.rend();
+
+    // std::cout << *c_it3 << ", " << *c_it4 << std::endl;
+
+    // *c_it3 = 100;
+    // std::cout << *c_it3 << ", " << *c_it4 << std::endl;
 
 //    *it++;
 //    *it2--;
