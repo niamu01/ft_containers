@@ -1,3 +1,6 @@
+#ifndef VECTOR_HPP
+#define VECTOR_HPP
+
 #include <memory> //allocator
 #include <limits> //std::numeric_limits
 #include <exception> //exception
@@ -707,3 +710,5 @@ template< class T, class Alloc >
 bool operator>=( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
   return (lhs >= rhs);
 }
+
+#endif

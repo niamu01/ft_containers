@@ -70,11 +70,11 @@ namespace ft {
 
     template< class U > 
     reverse_iterator( const reverse_iterator<U>& other )
-    : current(other.begin()) {};
+    : current(other.base()) {};
 
     template< class U > 
     reverse_iterator& operator=( const reverse_iterator<U>& other ) {
-      this->current = other.begin();
+      this->current = other.base();
 
       return *this;
     };
@@ -85,8 +85,9 @@ namespace ft {
 
     reference operator*() const {
       Iterator temp = current;
+      temp--;
 
-      return (--temp);
+      return *temp;
     };
 
     pointer   operator->() const {
