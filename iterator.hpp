@@ -53,8 +53,11 @@ namespace ft {
     // typedef	typename ft::iterator_traits<Iter>::iterator_category iterator_category;
     // typedef	typename ft::iterator_traits<Iter>::value_type value_type;
 
-    explicit reverse_iterator(Iterator x = nullptr) : current(x) {};
-    template< class U > reverse_iterator( const reverse_iterator<U>& other ) : current(other.current) {};
+    explicit reverse_iterator(Iterator x = nullptr)
+    : current(x) {};
+
+    template< class U > reverse_iterator( const reverse_iterator<U>& other )
+    : current(other.current) {};
 
     template< class U > reverse_iterator& operator=( const reverse_iterator<U>& other ) {
       this->current = other.current;

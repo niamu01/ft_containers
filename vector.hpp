@@ -139,6 +139,138 @@ namespace ft {
     
   };
 
+/* const_vector_iterator 
+  template <typename T>
+  class const_vector_iterator {
+  public:
+    typedef T                                 value_type;
+    typedef ptrdiff_t                         difference_type;
+    typedef T*                                pointer;
+    typedef T&                                reference;
+    typedef std::random_access_iterator_tag   iterator_category;
+
+  private:
+    pointer _p;
+
+  public:
+    explicit const_vector_iterator(pointer ptr = nullptr) : _p(ptr) {};
+
+    const_vector_iterator(const const_vector_iterator<T>& other) : _p(other._p) {};
+
+    ~const_vector_iterator() {};
+
+    reference operator*() {
+      return *_p;
+    };
+    
+    //legacy_random_access_iterator
+    reference operator+=(difference_type n) {
+      _p += n;
+
+      return (*this->_p);
+    };
+
+    value_type operator+(difference_type n) {
+      value_type temp = this->*_p;
+      temp += n;
+
+      return (temp);
+    };
+
+    reference operator-=(difference_type n) {
+      return (this->*_p -= n);
+    };
+
+    value_type operator-(difference_type n) {
+      return (this->*_p - n);
+    };
+
+    difference_type operator-(value_type i) {
+      return (this->*_p - i);
+    };
+
+    reference operator[](difference_type n) {
+      return (this->_p[n]);
+    };
+
+    bool operator<(value_type b) {
+      return (0 < b - this->*_p);
+    };
+
+    bool operator>(value_type b) {
+      return (this->*_p > b);
+    };
+
+    bool operator<=(value_type b) {
+      return (!(this->*_p > b));
+    };
+
+    bool operator>=(value_type b) {
+      return (!(0 < b - this->*_p));
+    };
+
+    //legacy_bidirectional_iterator
+    reference operator--() {
+      --this->_p;
+
+      return *_p;
+    };
+
+    reference operator--(value_type) {
+      pointer ip = this->_p;
+      --this->_p;
+
+      return *ip;
+    };
+
+    //legacy_forward_iterator
+    reference operator++() {
+      ++this->_p;
+
+      return *_p;
+    };
+
+    reference operator++(value_type) {
+      pointer ip = this->_p;
+      ++this->_p;
+
+      return *ip;
+    };
+
+//    // *a--
+//    reference operator--(pointer) {
+//      pointer ip = this->_p;
+//      --this->_p;
+//
+//      return *ip;
+//    };
+//
+//    //*i++
+//    reference operator++(pointer) {
+//      pointer ip = this->_p;
+//      ++this->_p;
+//
+//      return *ip;
+//    };
+
+    //legacy_input_iterator
+//     bool operator!=() {
+//
+//     }
+
+
+    // value_type operator*(reference) {
+
+    // }
+
+    
+    pointer operator->() const {
+      return &(operator*());
+    };
+    
+  };
+*/
+
   template <class T, class Allocator = std::allocator<T> >
   class vector {
   public:
@@ -152,9 +284,9 @@ namespace ft {
     typedef typename allocator_type::reference       reference;
     typedef typename allocator_type::const_reference const_reference;
     typedef typename ft::vector_iterator<value_type> iterator;
-    typedef typename ft::vector_iterator<const value_type> const_iterator;
+    typedef typename ft::const_vector_iterator<const value_type> const_iterator;
     typedef typename ft::reverse_iterator<vector_iterator<value_type> > reverse_iterator;
-    typedef typename ft::reverse_iterator<const vector_iterator<const value_type> > const_reverse_iterator;
+    typedef typename ft::const_reverse_iterator<const const_vector_iterator<const value_type> > const_reverse_iterator;
 
   private:
     allocator_type _allocator;
@@ -305,7 +437,6 @@ namespace ft {
     };
 
     /* iterators */
-    //return iterator
     iterator begin() {
       return iterator(this->_start);
     };
