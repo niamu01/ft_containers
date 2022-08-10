@@ -1,3 +1,6 @@
+#ifndef ITERATOR_HPP
+#define ITERATOR_HPP
+
 namespace ft {
   template<class Iterator>
   struct iterator_traits {
@@ -14,6 +17,15 @@ namespace ft {
     typedef T value_type;
     typedef T* pointer;
     typedef T& reference;
+    typedef std::random_access_iterator_tag iterator_category;
+  };
+
+  template<class T>
+  struct iterator_traits<const T*> {
+    typedef ptrdiff_t difference_type;
+    typedef T value_type;
+    typedef const T* pointer;
+    typedef const T& reference;
     typedef std::random_access_iterator_tag iterator_category;
   };
 
@@ -56,11 +68,13 @@ namespace ft {
     explicit reverse_iterator(Iterator x = nullptr)
     : current(x) {};
 
-    template< class U > reverse_iterator( const reverse_iterator<U>& other )
-    : current(other.current) {};
+    template< class U > 
+    reverse_iterator( const reverse_iterator<U>& other )
+    : current(other.begin()) {};
 
-    template< class U > reverse_iterator& operator=( const reverse_iterator<U>& other ) {
-      this->current = other.current;
+    template< class U > 
+    reverse_iterator& operator=( const reverse_iterator<U>& other ) {
+      this->current = other.begin();
 
       return *this;
     };
@@ -175,3 +189,5 @@ namespace ft {
         return (reverse_iterator<Iter>(it.base() - n));
   };
 }
+
+#endif

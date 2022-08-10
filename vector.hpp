@@ -12,11 +12,11 @@ namespace ft {
   template <typename T>
   class vector_iterator {
   public:
-    typedef T                                 value_type;
-    typedef ptrdiff_t                         difference_type;
-    typedef T*                                pointer;
-    typedef T&                                reference;
-    typedef std::random_access_iterator_tag   iterator_category;
+    typedef typename ft::iterator_traits<T *>::value_type           value_type;
+    typedef typename ft::iterator_traits<T *>::difference_type      difference_type;
+    typedef typename ft::iterator_traits<T *>::pointer              pointer;
+    typedef typename ft::iterator_traits<T *>::reference            reference;
+    typedef typename ft::iterator_traits<T *>::iterator_category    iterator_category;
 
   private:
     pointer _p;
@@ -24,9 +24,14 @@ namespace ft {
   public:
     explicit vector_iterator(pointer ptr = nullptr) : _p(ptr) {};
 
-    vector_iterator(const vector_iterator<T>& other) : _p(other._p) {};
+    template<typename Iter>
+    vector_iterator(const vector_iterator<Iter>& other) : _p(other.base()) {};
 
     ~vector_iterator() {};
+
+    pointer base() const {
+      return _p;
+    }
 
     reference operator*() {
       return *_p;
@@ -245,7 +250,7 @@ namespace ft {
 //      return *ip;
 //    };
 //
-//    //*i++
+//    *i++
 //    reference operator++(pointer) {
 //      pointer ip = this->_p;
 //      ++this->_p;
@@ -268,8 +273,8 @@ namespace ft {
       return &(operator*());
     };
     
-  };
-*/
+  };*/
+
 
   template <class T, class Allocator = std::allocator<T> >
   class vector {
@@ -284,9 +289,9 @@ namespace ft {
     typedef typename allocator_type::reference       reference;
     typedef typename allocator_type::const_reference const_reference;
     typedef typename ft::vector_iterator<value_type> iterator;
-    typedef typename ft::const_vector_iterator<const value_type> const_iterator;
+    typedef typename ft::vector_iterator<const value_type> const_iterator;
     typedef typename ft::reverse_iterator<vector_iterator<value_type> > reverse_iterator;
-    typedef typename ft::const_reverse_iterator<const const_vector_iterator<const value_type> > const_reverse_iterator;
+    typedef typename ft::reverse_iterator<const vector_iterator<const value_type> > const_reverse_iterator;
 
   private:
     allocator_type _allocator;

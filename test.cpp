@@ -64,10 +64,10 @@ int main()
     // *c_it1 = 100;
     // std::cout << *c_it1 << ", " << *c_it2 << std::endl;
 
-    // ft::vector<int>::const_reverse_iterator c_it3 = vec.rbegin();
-    // ft::vector<int>::const_reverse_iterator c_it4 = vec.rend();
+    ft::vector<int>::const_reverse_iterator c_it3 = vec.rbegin();
+    ft::vector<int>::const_reverse_iterator c_it4 = vec.rend();
 
-    // std::cout << *c_it3 << ", " << *c_it4 << std::endl;
+    std::cout << *c_it3 << ", " << *c_it4 << std::endl;
 
     // *c_it3 = 100;
     // std::cout << *c_it3 << ", " << *c_it4 << std::endl;
