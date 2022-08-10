@@ -492,7 +492,7 @@ namespace ft {
     };
 
     void resize( size_type count, T value = T() ) {
-      int range = count - this->_size;
+      int range = count - this->_capacity;
 
       if (range >= 0) {
         while (range--) {
@@ -504,6 +504,7 @@ namespace ft {
         while (range++ < 0) {
           this->_allocator.destroy(this->_end);
           this->_end--;
+          this->_size--; 
         }
       }
     };
