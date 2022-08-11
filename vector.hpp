@@ -29,10 +29,10 @@ namespace ft {
     explicit vector_iterator(pointer ptr = nullptr) : _p(ptr) {};
 
     template<typename Iter>
-    vector_iterator(const vector_iterator<Iter>& other) : _p(other.base()) {};
+    vector_iterator(const vector_iterator<Iter>& other) : _p(other.base()) {}; //base()? _p?
     
     vector_iterator& operator=(const vector_iterator &x) {
-      _p = x.base();
+      _p = x._p;
       return *this;
     };
 
@@ -57,11 +57,14 @@ namespace ft {
 //      value_type temp = *_p;
 //      temp += n;
 
-      return (vector_iterator(base()+n));
+      return (vector_iterator(base()+n)); //_p+n
     };
 
     vector_iterator& operator-=(difference_type n) {
-      return (this->*_p -= n);
+      // return (this->*_p -= n);
+      _p += n;
+
+      return (*this);
     };
 
     vector_iterator operator-(difference_type n) {
@@ -69,9 +72,9 @@ namespace ft {
       return (vector_iterator(base()-n));
     };
 
-    difference_type operator-(value_type i) {
-      return (this->*_p - i);
-    };
+    // difference_type operator-(value_type i) {
+    //   return (this->*_p - i);
+    // };
 
     reference operator[](difference_type n) {
       return (this->_p[n]);
@@ -140,6 +143,10 @@ namespace ft {
     //legacy_input_iterator
     bool operator!=(const vector_iterator<T>& other) {
       return (!(this->_p == other._p));
+    }
+
+    bool operator==(const vector_iterator<T>& other) {
+      return (this->_p == other._p);
     }
 
     // value_type operator*(reference) {
@@ -566,10 +573,14 @@ namespace ft {
 /* operator */
 template< class T, class Alloc >
 bool operator==( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
-  if (lhs.size() != rhs.size())
-    return false;
-  return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
+  return (lhs.size() != rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
   // return (lhs.base() == rhs.base());
+}
+
+
+template< class T_L, class T_R >
+bool operator==( const ft::vector<T_L>& lhs, const ft::vector<T_R>& rhs ) {
+  return (lhs.base() == rhs.base());
 }
 
 template< class T, class Alloc >

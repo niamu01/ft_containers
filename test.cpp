@@ -15,9 +15,33 @@ int main()
 	ft::vector<int>::const_iterator it_foo = foo.begin();
 	ft::vector<int>::const_iterator it_bar = bar.begin();
 
+	std::cout << "BEFORE SWAP" << std::endl;
+
+	std::cout << "foo contains:" << std::endl;
+	for (ft::vector<int>::iterator it3 = foo.begin(); it3 != foo.end(); it3++) {
+      std::cout << *it3 << ' ';
+    }
+	std::cout << "bar contains:" << std::endl;
+	for (ft::vector<int>::iterator it4 = bar.begin(); it4 != bar.end(); it4++) {
+    std::cout << *it4 << ' ';
+  }
+
+	foo.swap(bar);
+
+	std::cout << "AFTER SWAP" << std::endl;
+
+	std::cout << "foo contains:" << std::endl;
+	for (ft::vector<int>::iterator it2 = foo.begin(); it2 != foo.end(); it2++) {
+      std::cout << *it2 << ' ';
+    }
+	std::cout << "bar contains:" << std::endl;
+	for (ft::vector<int>::iterator it1 = bar.begin(); it1 != bar.end(); it1++) {
+      std::cout << *it1 << ' ';
+    }
+
 	std::cout << "Iterator validity:" << std::endl;
 	std::cout << (it_bar == foo.begin()) << std::endl;
-	std::cout << (it_foo == bar.begin()) << std::endl;
+	std::cout << (it_foo == bar.begin()) << std::endl; //const가 뒤에 있다면...
 
 /* iterator operator */
 //    ft::vector<int> vec;
