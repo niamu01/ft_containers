@@ -48,10 +48,10 @@ namespace ft {
     };
 
     vector_iterator operator+(difference_type n) {
-      value_type temp = this->*_p;
-      temp += n;
+//      value_type temp = *_p;
+//      temp += n;
 
-      return (temp);
+      return (vector_iterator(base()+n));
     };
 
     vector_iterator& operator-=(difference_type n) {
@@ -59,7 +59,8 @@ namespace ft {
     };
 
     vector_iterator operator-(difference_type n) {
-      return (this->*_p - n);
+//      return (this->*_p - n);
+      return (vector_iterator(base()-n));
     };
 
     difference_type operator-(value_type i) {
@@ -137,15 +138,13 @@ namespace ft {
 //    };
 
     //legacy_input_iterator
-//     bool operator!=() {
-//
-//     }
+    bool operator!=(const vector_iterator<T>& other) {
+      return (!(this->_p == other._p));
+    }
 
-
-    // value_type operator*(reference) {
-
-    // }
-
+    value_type operator*(reference) {
+      return (this->_p);
+    }
     
     pointer operator->() const {
       return &(operator*());
@@ -401,14 +400,14 @@ namespace ft {
     // insert value before pos
     // return iterator pointing to the inserted value
     iterator insert( iterator pos, const T& value ) {
-      this->_allocator.destroy(pos);
-      this->_allocator.construct(pos, value);
+      this->_allocator.destroy(pos); //@
+      this->_allocator.construct(pos, value); //@
       
       this->_size++;
       this->_end++;
-      this->capacity = cal_cap(_size);
+      this->_capacity = cal_cap(_size);
 
-      return (this->_start + pos);
+      return (this->_start + pos); //@
     };
 
     // insert count copies of the value before pos
@@ -444,17 +443,26 @@ namespace ft {
     If [first, last) is an empty range, then last is returned.
     */
     iterator erase( iterator pos ) {
-      size_type pos_index = &(*pos) - _start;
-      this->_allocator.destroy(&(*pos));
-
-      for (size_type i = 0; i < _size - pos_index; ++i) {
-        this->_allocator.construct(_start + pos_index + i, *(_start + pos_index + i + 1));
-        this->_allocator.destroy(_start + pos_index + i + 1);
+      size_type i = 0;
+      for (; pos + i != this->end(); i++) {
+        this->_allocator.destroy(pos.base() + i);
+        this->_allocator.construct(pos.base() + i, *(pos + i + 1));
       }
+      this->_allocator.destroy(pos.base() + i);
       --this->_size;
       --this->_end;
-
-      return iterator(_start + pos_index);
+      return ((pos)); //_start + pos or _start + pos - i
+//      size_type pos_index = &(*pos) - _start;
+//      this->_allocator.destroy(&(*pos));
+//
+//      for (size_type i = 0; i < _size - pos_index; ++i) {
+//        this->_allocator.construct(_start + pos_index + i, *(_start + pos_index + i + 1));
+//        this->_allocator.destroy(_start + pos_index + i + 1);
+//      }
+//      --this->_size;
+//      --this->_end;
+//
+//      return iterator(_start + pos_index);
     };
 
     iterator erase( iterator first, iterator last ) {

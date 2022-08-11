@@ -99,7 +99,7 @@ namespace ft {
     };
 
     reverse_iterator& operator++() {
-      this->current++;
+      this->current--;
 
       return *this;
     };
@@ -107,7 +107,7 @@ namespace ft {
     reverse_iterator  operator++(int) {
       reverse_iterator temp = *this;
 
-      this->current++;
+      this->current--;
 
       return temp;
     };
@@ -123,7 +123,7 @@ namespace ft {
     };
 
     reverse_iterator& operator--() {
-      this->current--;
+      this->current++;
 
       return *this;  
     };
@@ -131,7 +131,7 @@ namespace ft {
     reverse_iterator  operator--(int) {
       reverse_iterator temp = *this;
 
-      this->current--;
+      this->current++;
 
       return temp;
     };
