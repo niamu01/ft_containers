@@ -9,6 +9,16 @@
 
 int main()
 {
+	ft::vector<int> foo(3, 15);
+	ft::vector<int> bar(5, 42);
+	
+	ft::vector<int>::const_iterator it_foo = foo.begin();
+	ft::vector<int>::const_iterator it_bar = bar.begin();
+
+	std::cout << "Iterator validity:" << std::endl;
+	std::cout << (it_bar == foo.begin()) << std::endl;
+	std::cout << (it_foo == bar.begin()) << std::endl;
+
 /* iterator operator */
 //    ft::vector<int> vec;
 //
@@ -135,47 +145,47 @@ int main()
 //     std::cout << "\n";
 
 /* erase */
-     ft::vector<int> c;
+  //    ft::vector<int> c;
 
-     std::cout << "    push_back 4 5 6:\n";
-     c.push_back(4);
-     c.push_back(5);
-     c.push_back(6);
+  //    std::cout << "    push_back 4 5 6:\n";
+  //    c.push_back(4);
+  //    c.push_back(5);
+  //    c.push_back(6);
 
-     ft::vector<int>::iterator it1 = c.begin();
-     std::cout << "c.begin(): " << *it1 << std::endl;
-     for (ft::vector<int>::iterator print = c.begin(); print != c.end(); print++) {
-       std::cout << "print: " << *print << ' ';
-     }
-     std::cout << std::endl;
+  //    ft::vector<int>::iterator it1 = c.begin();
+  //    std::cout << "c.begin(): " << *it1 << std::endl;
+  //    for (ft::vector<int>::iterator print = c.begin(); print != c.end(); print++) {
+  //      std::cout << "print: " << *print << ' ';
+  //    }
+  //    std::cout << std::endl;
 
-     ft::vector<int>::iterator erase_it1 = c.erase(it1);
-     std::cout << "erase_it: " << *erase_it1 << std::endl;
-      for (ft::vector<int>::iterator print = c.begin(); print != c.end(); print++) {
-        std::cout << "print: " << *print << ' ';
-      }
-      std::cout << std::endl;
+  //    ft::vector<int>::iterator erase_it1 = c.erase(it1);
+  //    std::cout << "erase_it: " << *erase_it1 << std::endl;
+  //     for (ft::vector<int>::iterator print = c.begin(); print != c.end(); print++) {
+  //       std::cout << "print: " << *print << ' ';
+  //     }
+  //     std::cout << std::endl;
 
-     ft::vector<int>::iterator it2 = c.begin();
-     std::cout << "c.begin(): " << *it2 << std::endl;
-      for (ft::vector<int>::iterator print = c.begin(); print != c.end(); print++) {
-        std::cout << "print: " << *print << ' ';
-      }
-      std::cout << std::endl;
+  //    ft::vector<int>::iterator it2 = c.begin();
+  //    std::cout << "c.begin(): " << *it2 << std::endl;
+  //     for (ft::vector<int>::iterator print = c.begin(); print != c.end(); print++) {
+  //       std::cout << "print: " << *print << ' ';
+  //     }
+  //     std::cout << std::endl;
 
-     ft::vector<int>::iterator erase_it2 = c.erase(it2);
-     std::cout << "erase_it: " << *erase_it2 << std::endl;
-      for (ft::vector<int>::iterator print = c.begin(); print != c.end(); print++) {
-        std::cout << "print: " << *print << ' ';
-      }
-      std::cout << std::endl;
+  //    ft::vector<int>::iterator erase_it2 = c.erase(it2);
+  //    std::cout << "erase_it: " << *erase_it2 << std::endl;
+  //     for (ft::vector<int>::iterator print = c.begin(); print != c.end(); print++) {
+  //       std::cout << "print: " << *print << ' ';
+  //     }
+  //     std::cout << std::endl;
 
-     ft::vector<int>::iterator it3 = c.begin();
-     std::cout << "c.begin(): " << *it3 << std::endl;
-    for (ft::vector<int>::iterator print = c.begin(); print != c.end(); print++) {
-      std::cout << "print: " << *print << ' ';
-      std::cout << std::endl;
-  }
+  //    ft::vector<int>::iterator it3 = c.begin();
+  //    std::cout << "c.begin(): " << *it3 << std::endl;
+  //   for (ft::vector<int>::iterator print = c.begin(); print != c.end(); print++) {
+  //     std::cout << "print: " << *print << ' ';
+  //     std::cout << std::endl;
+  // }
 
 /* iterator test */
 //     ft::vector<int> d;
