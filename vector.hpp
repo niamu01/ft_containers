@@ -220,7 +220,21 @@ namespace ft {
         };
 
       //(4) copy constructor
-    vector (const vector& x);
+    vector (const vector& x)
+    : _allocator(x._allocator) {
+      value_type n = x._size;
+
+      _start = _allocator.allocate(n);
+      _end = _start;
+      _size = x._size;
+      _capacity = x._capacity;
+
+      pointer temp = x._start;
+
+      while (n--) {
+        _allocator.construct(_end++, *temp++);
+      }
+    };
 
     ~vector() {
       this->_allocator.deallocate(this->_start, _capacity);
@@ -400,7 +414,7 @@ namespace ft {
 
     /* Modifiers */
     void clear() {
-      while (--this->_size)
+      while (this->_size--)
         _allocator.destroy(--this->_end);
     };
 
@@ -543,7 +557,7 @@ namespace ft {
 
   private:
     size_type distance(iterator first, iterator second) {
-      size_type ret;
+      size_type ret = 0;
 
       while (first != second) {
         first++;
@@ -577,11 +591,10 @@ bool operator==( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs 
   // return (lhs.base() == rhs.base());
 }
 
-
-template< class T_L, class T_R >
-bool operator==( const ft::vector<T_L>& lhs, const ft::vector<T_R>& rhs ) {
-  return (lhs.base() == rhs.base());
-}
+// template< class T_L, class T_R >
+// bool operator==( const ft::vector<T_L>& lhs, const ft::vector<T_R>& rhs ) {
+//   return (lhs.base() == rhs.base());
+// }
 
 template< class T, class Alloc >
 bool operator!=( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
