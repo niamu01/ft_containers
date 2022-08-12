@@ -11,7 +11,9 @@ clean :
 fclean : clean
 	rm -rf $(NAME)
 
-re : fclean all
+re :
+	make fclean
+	make all
 
 $(NAME) : $(OBJS)
 	clang++ $(CFLAGS) -c $(SRCS)
