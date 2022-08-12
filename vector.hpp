@@ -229,7 +229,7 @@ namespace ft {
       _size = x._size;
       _capacity = x._capacity;
 
-      pointer temp = x._start;
+      pointer temp = x._start; //어..?
 
       while (n--) {
         _allocator.construct(_end++, *temp++);
@@ -398,7 +398,7 @@ namespace ft {
 
       for (size_type i = 0; i < this->_size; i++) {
         _allocator.construct(&temp[i], _start[i]);
-        _allocator.destroy(_start[i]);
+        _allocator.destroy(_start); //[i]?
       }
 
       _allocator.deallocate(_start, _capacity);
@@ -421,22 +421,30 @@ namespace ft {
     // insert value before pos
     // return iterator pointing to the inserted value
     iterator insert( iterator pos, const T& value ) {
-      this->_allocator.destroy(pos); //@
-      this->_allocator.construct(pos, value); //@
-      
+      size_type pos_index = &(*pos) - _start;
+
+      if (_size + 1 > _capacity)
+        this->reserve(cal_cap(_size + 1));
+
+      for (size_type i = 0; i < _size - pos_index; i++) {
+        this->_allocator.construct(_end - i, *(_end - i - 1));
+      }
+//      this->_allocator.destroy(&(*pos)); //@
+      this->_allocator.construct(&(*pos), value);
+
       this->_size++;
       this->_end++;
       this->_capacity = cal_cap(_size);
 
-      return (this->_start + pos); //@
+      return (iterator(this->_start + pos_index));
     };
 
     // insert count copies of the value before pos
     // return iterator pointing to the first element inserted
     // or return pos if count == 0
     void insert( iterator pos, size_type count, const T& value ) {
-      if (this->_size + count > this->_capacity)
-        this->reserve(cal_cap(this->_size));
+//      if (this->_size + count > this->_capacity)
+//        this->reserve(cal_cap(this->_size));
 
       while (count--)
         this->insert(pos++, value);
