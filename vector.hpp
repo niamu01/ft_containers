@@ -5,7 +5,7 @@
 #include <limits> //std::numeric_limits
 #include <exception> //exception
 #include <stdexcept> //length_error, out_of_range
-#include "iterator.hpp" //ft::reverse_iterator
+#include "iterator.hpp" //ft::reverse_iterator, ft::distance
 #include "type_traits.hpp" //ft::enable_if, ft::is_integral
 #include "utils.hpp" //equal
 
@@ -29,7 +29,7 @@ namespace ft {
     explicit vector_iterator(pointer ptr = nullptr) : _p(ptr) {};
 
     template<typename Iter>
-    vector_iterator(const vector_iterator<Iter>& other) : _p(other.base()) {}; //base()? _p?
+    vector_iterator(const vector_iterator<Iter>& other) : _p(other.base()) {};
     
     vector_iterator& operator=(const vector_iterator &x) {
       _p = x._p;
@@ -67,14 +67,13 @@ namespace ft {
       return (*this);
     };
 
-    vector_iterator operator-(difference_type n) {
-//      return (this->*_p - n);
-      return (vector_iterator(base()-n));
+    vector_iterator operator-(difference_type i) {
+      return (vector_iterator(_p - i));
     };
 
-    // difference_type operator-(value_type i) {
-    //   return (this->*_p - i);
-    // };
+//    difference_type operator-(const vector_iterator& i) {
+//      return (this->_p - i.base()); //?!
+//    };
 
     reference operator[](difference_type n) {
       return (this->_p[n]);
@@ -103,7 +102,7 @@ namespace ft {
       return *this;
     };
 
-    vector_iterator operator--(value_type) {
+    vector_iterator operator--(int) {
       vector_iterator ip = *this;
       --this->_p;
 
@@ -117,7 +116,7 @@ namespace ft {
       return *this;
     };
 
-    vector_iterator operator++(value_type) {
+    vector_iterator operator++(int) {
       vector_iterator ip = *this;
       ++this->_p;
 
@@ -156,8 +155,17 @@ namespace ft {
     pointer operator->() const {
       return &(operator*());
     };
-    
   };
+
+  template< class T >
+  typename vector_iterator<T>::difference_type operator+(typename vector_iterator<T>::difference_type n, const vector_iterator<T>& rhs) {
+    return (rhs.base() + n);
+  }
+
+  template< class T >
+  typename vector_iterator<T>::difference_type operator-(const vector_iterator<T>& lhs, const vector_iterator<T>& rhs) {
+    return (lhs.base() - rhs.base());
+  }
 
   template <class T, class Allocator = std::allocator<T> >
   class vector {
@@ -208,7 +216,7 @@ namespace ft {
         const allocator_type& alloc = allocator_type(),
         typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0 )
         : _allocator(alloc) {
-          size_type n = distance(first, last);
+          size_type n = ft::distance(first, last);
           _size = n;
           _capacity = cal_cap(_size);
           _start = this->_allocator.allocate(_capacity);
@@ -249,7 +257,9 @@ namespace ft {
     vector& operator=( const vector& other ) {
       if (this != &other) {
         this->clear();
-        this->insert(this->_start, other.begin(), other.end());
+
+      for (pointer p = other._start; p != other._end; p++)
+        this->push_back(*p);
       }
 
       return *this;
@@ -272,7 +282,7 @@ namespace ft {
     template< class InputIt >
     void assign( InputIt first, InputIt last,
       typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = 0 ) {
-        size_type count = distance(first, last);
+        size_type count = ft::distance(first, last);
         // if (_capacity < count)
         this->clear();
 
@@ -416,17 +426,18 @@ namespace ft {
     void clear() {
       while (this->_size--)
         _allocator.destroy(--this->_end);
+      this->_size = 0;
     };
 
     // insert value before pos
     // return iterator pointing to the inserted value
     iterator insert( iterator pos, const T& value ) {
-      size_type pos_index = &(*pos) - _start;
+      size_type pos_index = ft::distance(pos, _start);
 
       if (_size + 1 > _capacity)
         this->reserve(cal_cap(_size + 1));
 
-      for (size_type i = 0; i < _size - pos_index; i++) {
+      for (size_type i = 0; i <= _size - pos_index; i++) {
         this->_allocator.construct(_end - i, *(_end - i - 1));
       }
 //      this->_allocator.destroy(&(*pos)); //@
@@ -456,11 +467,11 @@ namespace ft {
     template< class InputIt >
     void insert( iterator pos, InputIt first, InputIt last,
       typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = 0 ) {
-        size_type n = this->distance(first, last);
+//        size_type n = ft::distance(first, last);
+//
+//        if (this->_size + n > this->_capacity)
+//          this->reserve(cal_cap(this->_size));
 
-        if (this->_size + n > this->_capacity)
-          this->reserve(cal_cap(this->_size));
-        
         while (first != last)
           insert(pos++, *first++);
     };
@@ -480,7 +491,7 @@ namespace ft {
       this->_allocator.destroy(pos.base() + i);
       --this->_size;
       --this->_end;
-      return ((pos)); //_start + pos or _start + pos - i
+      return (pos); //_start + pos or _start + pos - i
 //      size_type pos_index = &(*pos) - _start;
 //      this->_allocator.destroy(&(*pos));
 //
@@ -495,14 +506,13 @@ namespace ft {
     };
 
     iterator erase( iterator first, iterator last ) {
-      iterator temp_first = first;
+      size_type n = ft::distance(first, last);
 
-      while (temp_first != last) {
-        this->erase(temp_first);
-        temp_first++;
+      while (n--) {
+        this->erase(last--);
       }
 
-      return (first + _start);
+      return (first);
     };
 
     /*
@@ -562,19 +572,7 @@ namespace ft {
       this->_size = size_temp;
       this->_capacity = capacity_temp;
     };
-
   private:
-    size_type distance(iterator first, iterator second) {
-      size_type ret = 0;
-
-      while (first != second) {
-        first++;
-        ret++;
-      }
-
-      return ret;
-    };
-
     size_type cal_cap(size_type size) {
       size_type ret = 1;
 
