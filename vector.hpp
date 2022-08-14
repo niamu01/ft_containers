@@ -30,140 +30,96 @@ namespace ft {
 
     template<typename Iter>
     vector_iterator(const vector_iterator<Iter>& other) : _p(other.base()) {};
-    
-    vector_iterator& operator=(const vector_iterator &x) {
-      _p = x._p;
-      return *this;
-    };
 
     ~vector_iterator() {};
 
+    vector_iterator& operator=(const vector_iterator &x) {
+      if (this != &x)
+        _p = x._p;
+      return *this;
+    };
+
+    //todo: check const
     pointer base() const {
       return _p;
     };
 
-    reference operator*() {
+    reference operator*() const {
       return *_p;
     };
-    
-    //legacy_random_access_iterator
+
+    pointer operator->() const {
+      return &(operator*());
+    };
+
+    vector_iterator& operator++() {
+      ++_p;
+
+      return (*this);
+    };
+
+    vector_iterator operator++(int) {
+      vector_iterator ip = *this;
+      ++(*this); //++_p;
+
+      return (ip);
+    };
+
+    vector_iterator& operator--() {
+      --_p;
+
+      return (*this);
+    };
+
+    vector_iterator operator--(int) {
+      vector_iterator ip = *this;
+      --(*this); //--_p;
+
+      return (ip);
+    };
+
+    bool operator==(const vector_iterator<T>& other) const { return (this->_p == other._p); };
+    bool operator!=(const vector_iterator<T>& other) const { return (this->_p != other._p); };
+    bool operator< (const vector_iterator<T>& other) const { return (this->_p < other._p); };
+    bool operator> (const vector_iterator<T>& other) const { return (this->_p > other._p); };
+    bool operator<=(const vector_iterator<T>& other) const { return (this->_p <= other._p); };
+    bool operator>=(const vector_iterator<T>& other) const { return (this->_p >= other._p); };
+//    bool operator< (value_type b) { return (0 < b - this->*_p); };
+//    bool operator> (value_type b) { return (this->*_p > b); };
+//    bool operator<=(value_type b) { return (!(this->*_p > b)); };
+//    bool operator>=(value_type b) { return (!(0 < b - this->*_p)); };
+
     vector_iterator& operator+=(difference_type n) {
       _p += n;
 
       return (*this->_p);
     };
 
-    vector_iterator operator+(difference_type n) {
-//      value_type temp = *_p;
-//      temp += n;
-
+    vector_iterator operator+ (difference_type n) const { //check const
       return (vector_iterator(base()+n)); //_p+n
     };
 
     vector_iterator& operator-=(difference_type n) {
-      // return (this->*_p -= n);
       _p += n;
 
       return (*this);
     };
 
-    vector_iterator operator-(difference_type i) {
+    vector_iterator operator- (difference_type i) {
       return (vector_iterator(_p - i));
     };
 
-//    difference_type operator-(const vector_iterator& i) {
-//      return (this->_p - i.base()); //?!
-//    };
-
-    reference operator[](difference_type n) {
-      return (this->_p[n]);
-    };
-
-    bool operator<(value_type b) {
-      return (0 < b - this->*_p);
-    };
-
-    bool operator>(value_type b) {
-      return (this->*_p > b);
-    };
-
-    bool operator<=(value_type b) {
-      return (!(this->*_p > b));
-    };
-
-    bool operator>=(value_type b) {
-      return (!(0 < b - this->*_p));
-    };
-
-    //legacy_bidirectional_iterator
-    vector_iterator& operator--() {
-      --this->_p;
-
-      return *this;
-    };
-
-    vector_iterator operator--(int) {
-      vector_iterator ip = *this;
-      --this->_p;
-
-      return ip;
-    };
-
-    //legacy_forward_iterator
-    vector_iterator& operator++() {
-      ++this->_p;
-
-      return *this;
-    };
-
-    vector_iterator operator++(int) {
-      vector_iterator ip = *this;
-      ++this->_p;
-
-      return ip;
-    };
-
-//    // *a--
-//    reference operator--(pointer) {
-//      pointer ip = this->_p;
-//      --this->_p;
-//
-//      return *ip;
-//    };
-//
-//    //*i++
-//    reference operator++(pointer) {
-//      pointer ip = this->_p;
-//      ++this->_p;
-//
-//      return *ip;
-//    };
-
-    //legacy_input_iterator
-    bool operator!=(const vector_iterator<T>& other) {
-      return (!(this->_p == other._p));
-    }
-
-    bool operator==(const vector_iterator<T>& other) {
-      return (this->_p == other._p);
-    }
-
-    // value_type operator*(reference) {
-    //   return (this->_p);
-    // }
-
-    pointer operator->() const {
-      return &(operator*());
-    };
+    reference operator[](difference_type n) { return (this->_p[n]); };
   };
 
+  /*  NON-MEMBER OPERATOR OVERLOADS  */
   template< class T >
-  typename vector_iterator<T>::difference_type operator+(typename vector_iterator<T>::difference_type n, const vector_iterator<T>& rhs) {
+  typename vector_iterator<T>::difference_type operator+ (typename vector_iterator<T>::difference_type n, const vector_iterator<T>& rhs) {
     return (rhs.base() + n);
   }
 
   template< class T >
-  typename vector_iterator<T>::difference_type operator-(const vector_iterator<T>& lhs, const vector_iterator<T>& rhs) {
+  typename vector_iterator<T>::difference_type operator- (const vector_iterator<T>& lhs, const vector_iterator<T>& rhs) {
     return (lhs.base() - rhs.base());
   }
 
