@@ -1,8 +1,9 @@
 #ifndef UTILITY_HPP
 #define UTILITY_HPP
 
-namespace ft {
 //  make pair, pair
+
+namespace ft {
   template <class T1, class T2>
   struct pair {
     /*  MEMBER TYPES  */
@@ -10,31 +11,40 @@ namespace ft {
     typedef T2 second_type;
 
     /*  MEMBER OBJECTS  */
-    T1 first;
-    T2 second;
+    first_type first;
+    second_type second;
 
     /*  MEMBER FUNCTIONS  */
     /*
      * Default constructor.
      * Value-initializes both elements of the pair, first and second.
      */
-    pair();
+    pair() {
+      first();
+      second();
+    };
 
     /*
      * Initializes first with x and second with y.
      */
-    pair(const T1 &x, const T2 &y);
+    pair(const T1 &x, const T2 &y) {
+      first(x);
+      second(y);
+    };
 
     /*
      * Initializes first with p.first and second with p.second.
      */
     template<class U1, class U2>
-    pair(const pair<U1, U2> &p);
+    pair(const pair<U1, U2> &p) {
+      first(p.first);
+      second(p.second);
+    };
 
     /*
      * Copy constructor is implicitly declared
      */
-    pair(const pair &p) = default;
+    pair(const pair &p) = default; //todo: default
 
     /*The assignment operator is implicitly declared.
      * Using this assignment operator makes the program ill-formed
@@ -43,9 +53,10 @@ namespace ft {
      * or an array type of such class.
      */
     pair &operator=(const pair &other) {
-
+      first = other.first;
+      second = other.second;
     };
-  };
+  }; //struct pair
 
   /*  NON-MEMBER FUNCTIONS  */
   /*
