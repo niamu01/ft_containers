@@ -540,11 +540,10 @@ namespace ft {
   };
 }
 
-// @
-//template< class T, class Alloc >
-//void std::swap( ft::vector<T,Alloc>& lhs, ft::vector<T,Alloc>& rhs ) {
-//  lhs.swap(rhs);
-//}
+template< class T, class Alloc >
+void swap( ft::vector<T,Alloc>& lhs, ft::vector<T,Alloc>& rhs ) {
+  lhs.swap(rhs);
+}
 
 /* operator */
 template< class T, class Alloc >
