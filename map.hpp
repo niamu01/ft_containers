@@ -1,22 +1,16 @@
 #ifndef MAP_HPP
 #define MAP_HPP
 
-#include <utility> //std::pair -> delete
-
 #include <functional> //std::less
-#include "utility.hpp" //ft::pair
+#include "utility.hpp" //ft::pair, ft::make_pair
 #include "iterator.hpp" //ft::reverse_iterator, ft::distance
-
-/*for ref: todo: delete*/
-#include <utility>
-#include <map>
 
 namespace ft {
   template <typename T> // T -> pair
   class map_iterator {
   public:
 
-  };
+  }; //map_iterator
 
   template<
       class Key,
@@ -43,6 +37,11 @@ namespace ft {
     typedef typename ft::reverse_iterator<iterator> reverse_iterator;
     typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
+    template< class U >
+    struct rebind {
+      typedef std::allocator <U> other;
+    };
+
   private:
     struct Node {
       ft::pair<const Key, T>  content;
@@ -52,7 +51,7 @@ namespace ft {
     };
 
   public:
-  /* Member classes */
+  /* MEMBER CLASS */
     class value_compare {
     friend class map;
 
@@ -70,49 +69,70 @@ namespace ft {
         return (comp(lhs.first, rhs.first));
       };
 
-
 //        : public binary_function<value_type, value_type, bool> {
 //      value_compare(key_compare c);
+
     }; //class value_compare
 
   private:
+    rebind<Node>            _allocator;
+    Compare                 _comp;
     Node*                   _root;
-    Node*                   _lastElem;
     size_type               _size;
-    allocator_type          _allocPair;
-    key_compare             _comp;
-    ft::allocator<Node>     _allocNode;
+
 
   public:
-    /*
-     * constructor
-     * destructor
-     * operator=
-     * get_allocator
-     *
-     * at
-     * operator[]
-     *
-     * begin
-     * end
-     * rbegin
-     * rend
-     *
-     * empty
-     * size
-     * max_size
-     * clear
-     * insert
-     * erase
-     * swap
-     * count
-     * find
-     * equal_range
-     * lower_bound
-     * upper_bound
-     * key_comp
-     * value_comp
-     * */
+//     * constructor
+    map();1
+
+    explicit map( const Compare& comp,
+      const Allocator& alloc = Allocator() )
+      : _comp(comp), _allocator(alloc) {
+
+    };
+
+    template< class InputIt >
+    map( InputIt first, InputIt last,
+      const Compare& comp = Compare(), const Allocator& alloc = Allocator() )
+      : _comp(comp), _allocator(alloc) {
+        size_type n = ft::distance(first, last);
+    };
+
+    map( const map& other ) {
+//    std::allocator_traits<allocator_type>::select_on_container_copy_construction(
+//        other.get_allocator())
+    };
+
+//     * destructor
+    ~map() {};
+//     * operator=
+    map& operator=( const map& other );
+//     * get_allocator
+    allocator_type get_allocator() const;
+//     *
+//     * at
+//     * operator[]
+//     *
+//     * begin
+//     * end
+//     * rbegin
+//     * rend
+//     *
+//     * empty
+//     * size
+//     * max_size
+//     * clear
+//     * insert
+//     * erase
+//     * swap
+//     * count
+//     * find
+//     * equal_range
+//     * lower_bound
+//     * upper_bound
+//     * key_comp
+//     * value_comp
+
   }; //class map
 
   /* NON-MEMBER FUNCTIONS */
