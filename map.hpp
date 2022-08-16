@@ -5,6 +5,8 @@
 #include "utility.hpp" //ft::pair, ft::make_pair
 #include "iterator.hpp" //ft::reverse_iterator, ft::distance
 
+#include "tree.hpp" //ft::tree
+
 namespace ft {
   template <typename T> // T -> pair
   class map_iterator {
@@ -18,7 +20,9 @@ namespace ft {
       class Compare = std::less <Key>,
       class Allocator = std::allocator <std::pair<const Key, T> >
   >
-  class map {
+class map
+: public tree<Key, ft::pair<const Key, T>, Compare, Allocator>
+  {
   public:
     typedef Key key_type;
     typedef T mapped_type;
@@ -83,7 +87,7 @@ namespace ft {
 
   public:
 //     * constructor
-    map();1
+    map();
 
     explicit map( const Compare& comp,
       const Allocator& alloc = Allocator() )
@@ -109,29 +113,60 @@ namespace ft {
     map& operator=( const map& other );
 //     * get_allocator
     allocator_type get_allocator() const;
-//     *
 //     * at
+  T& at( const Key& key );
+  const T& at( const Key& key ) const;
 //     * operator[]
-//     *
+  T& operator[]( const Key& key );
 //     * begin
+  iterator begin();
+  const_iterator begin() const;
 //     * end
+  iterator end();
+  const_iterator end() const;
 //     * rbegin
+  reverse_iterator rbegin();
+  const_reverse_iterator rbegin() const;
 //     * rend
-//     *
+  reverse_iterator rend();
+  const_reverse_iterator rend() const;
 //     * empty
+  bool empty() const;
 //     * size
+  size_type size() const;
 //     * max_size
+  size_type max_size() const;
 //     * clear
+  void clear();
 //     * insert
+  std::pair<iterator, bool> insert( const value_type& value );
+
+  template< class InputIt >
+  void insert( InputIt first, InputIt last );
 //     * erase
+  void erase( iterator pos );
+  void erase( iterator first, iterator last );
+  size_type erase( const Key& key );
 //     * swap
+  void swap( map& other );
 //     * count
+  size_type count( const Key& key ) const;
 //     * find
+  iterator find( const Key& key );
+  const_iterator find( const Key& key ) const;
 //     * equal_range
+  std::pair<iterator,iterator> equal_range( const Key& key );
+  std::pair<const_iterator,const_iterator> equal_range( const Key& key ) const;
 //     * lower_bound
+  iterator lower_bound( const Key& key );
+  const_iterator lower_bound( const Key& key ) const;
 //     * upper_bound
+  iterator upper_bound( const Key& key );
+  const_iterator upper_bound( const Key& key ) const;
 //     * key_comp
+  key_compare key_comp() const;
 //     * value_comp
+  ft::map::value_compare value_comp() const;
 
   }; //class map
 
@@ -144,27 +179,27 @@ namespace ft {
 
   template< class Key, class T, class Compare, class Alloc >
   bool operator!=( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs ) {
-    return (!(lhs == rhs));
+    return !(operator==(lhs, rhs));
   };
 
   template< class Key, class T, class Compare, class Alloc >
   bool operator< ( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs ) {
-    return
+    return (lhs < rhs);
   };
 
   template< class Key, class T, class Compare, class Alloc >
   bool operator<=( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs ) {
-    return
+    return ();
   };
 
   template< class Key, class T, class Compare, class Alloc >
   bool operator> ( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs ) {
-    return
+    return ();
   };
 
   template< class Key, class T, class Compare, class Alloc >
   bool operator>= ( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs ) {
-    return
+    return ();
   };
 //  operator==, !=, <, <=, >, >=, std::swap
 
