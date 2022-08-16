@@ -96,7 +96,7 @@ namespace ft {
 
     pointer operator->() const {
       return (&(operator*()));
-      // return std::addreessof(operator*());
+      // return std::addressof(operator*());
     };
 
     reference operator[](difference_type n) const {

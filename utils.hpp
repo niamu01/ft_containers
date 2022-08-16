@@ -39,6 +39,7 @@ namespace ft {
   The types Type1 and Type2 must be such that objects of types InputIt1 and InputIt2 
   can be dereferenced and then implicitly converted to Type1 and Type2 respectively.​
   */
-}
+
+} //namespace
 
 #endif
