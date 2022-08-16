@@ -40,6 +40,27 @@ namespace ft {
   can be dereferenced and then implicitly converted to Type1 and Type2 respectively.​
   */
 
+  template <typename T>
+  struct use_self
+  {
+    typedef T result_type;
+
+    const result_type& operator()(const T& x) const
+    { return x; }
+  };
+
+
+  template <typename Pair>
+  struct use_first
+  {
+//    typedef Pair argument_type;
+    typedef typename Pair::first_type result_type;
+
+    const result_type& operator()(const Pair& x) const
+    { return x.first; }
+  };
+
+
 } //namespace
 
 #endif
