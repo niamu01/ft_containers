@@ -160,7 +160,7 @@ namespace ft {
       const allocator_type& alloc = allocator_type())
       : _allocator(alloc) {
         _size = n;
-        _capacity = cal_cap(_size);
+        _capacity = _size;
         _start = this->_allocator.allocate(_capacity);
         _end = _start;
 
