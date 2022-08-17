@@ -7,7 +7,7 @@
 #include <stdexcept> //length_error, out_of_range
 #include "iterator.hpp" //ft::reverse_iterator, ft::distance
 #include "type_traits.hpp" //ft::enable_if, ft::is_integral
-#include "utils.hpp" //equal
+#include "algorithm.hpp" //ft::equal
 
 // #include <iterator> //random_access_iterator_tag
 // #include <type_traits> //std::enable_if, std::is_integral -> delete
@@ -39,7 +39,6 @@ namespace ft {
       return *this;
     };
 
-    //todo: check const
     pointer base() const {
       return _p;
     };

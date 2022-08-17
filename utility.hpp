@@ -13,43 +13,24 @@ namespace ft {
     second_type second;
 
     /*  MEMBER FUNCTIONS  */
-    /*
-     * Default constructor.
-     * Value-initializes both elements of the pair, first and second.
-     */
     pair() {
       first();
       second();
     };
 
-    /*
-     * Initializes first with x and second with y.
-     */
     pair(const T1 &x, const T2 &y) {
       first(x);
       second(y);
     };
 
-    /*
-     * Initializes first with p.first and second with p.second.
-     */
     template<class U1, class U2>
     pair(const pair<U1, U2> &p) {
       first(p.first);
       second(p.second);
     };
 
-    /*
-     * Copy constructor is implicitly declared
-     */
-    pair(const pair &p) = default; //todo: default
+    pair(const pair &p) = default; //defalut
 
-    /*The assignment operator is implicitly declared.
-     * Using this assignment operator makes the program ill-formed
-     * if either T1 or T2 is a const-qualified type, or a reference type,
-     * or a class type with an inaccessible copy assignment operator,
-     * or an array type of such class.
-     */
     pair &operator=(const pair &other) {
       first = other.first;
       second = other.second;
@@ -57,9 +38,6 @@ namespace ft {
   }; //struct pair
 
   /*  NON-MEMBER FUNCTIONS  */
-  /*
-   * Creates a std::pair object, deducing the target type from the types of arguments.
-   */
   template< class T1, class T2 >
   ft::pair<T1,T2> make_pair( T1 t, T2 u ) {
     ft::pair<T1, T2> p;

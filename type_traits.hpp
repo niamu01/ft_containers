@@ -1,8 +1,6 @@
 #ifndef TYPE_TRAITS_HPP
 #define TYPE_TRAITS_HPP
 
-// #include <type_traits>
-
 namespace ft {
 
 /* enable_if */
@@ -22,7 +20,7 @@ namespace ft {
   struct integral_constant {
     typedef T value_type;
 
-    static const T value = v;
+    static const value_type value = v;
     // value_type = T;
     // type = integral_constant;
   };
@@ -77,7 +75,6 @@ namespace ft {
 
   template <>
   struct is_integral<unsigned long long> : public true_type {};
-
 }
 
 #endif

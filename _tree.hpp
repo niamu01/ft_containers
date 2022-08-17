@@ -2,7 +2,7 @@
 #define _TREE_HPP
 
 #include <functional> //std::less
-#include "utils.hpp" //ft::use_first
+#include "algorithm.hpp" //ft::use_first
 #include "utility.hpp" //ft::pair, ft::make_pair
 #include "iterator.hpp" //ft::reverse_iterator, ft::distance
 #include "type_traits.hpp" //ft::enable_if, ft::is_integral

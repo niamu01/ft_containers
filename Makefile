@@ -1,6 +1,6 @@
 NAME = ft_containers
 CFLAGS = -Wall -Wextra -Werror -g
-SRCS = test.cpp
+SRCS = vector_test.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 .PHONY : all
