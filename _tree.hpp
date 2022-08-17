@@ -1,9 +1,11 @@
-#ifndef TREE_HPP
-#define TREE_HPP
+#ifndef _TREE_HPP
+#define _TREE_HPP
 
 #include <functional> //std::less
 #include "utils.hpp" //ft::use_first
 #include "utility.hpp" //ft::pair, ft::make_pair
+#include "iterator.hpp" //ft::reverse_iterator, ft::distance
+#include "type_traits.hpp" //ft::enable_if, ft::is_integral
 
 //template <typename Compare, bool = is_empty<Compare>::value>
 //struct rb_base_compare_ebo
@@ -187,7 +189,7 @@ template <typename Key,
   bool     bMutableIterators = true, //map: true, set: false
   bool     bUniqueKeys = true //map,set: true, multi: false
   >
-class tree {
+class _tree {
   //: tree_base<Key, Value, Compare, ExtractKey, bUniqueKeys,
   //tree<Key, Value, Compare, Allocator, ExtractKey, bMutableIterators, bUniqueKeys> >
 
@@ -232,139 +234,154 @@ private: //public:
     Node*                       _right;
   };
 
-  Node*             _anchor;
-  Node*             _root;
-  size_type         _size;
   allocator_type    _allocator;
+  key_compare       _compare;
+  size_type         _size;
+  Node*             _anchor;
+  Node*             _root; // == anchor->parent
 
 public:
-  tree();
-
-  explicit tree( const Compare& comp,
-                const Allocator& alloc = Allocator() );
+  explicit _tree( const Compare& comp,
+    const Allocator& alloc = Allocator() )
+    : _compare(comp),
+      _allocator(alloc),
+      _size(0),
+      _anchor(nullptr),
+      _root(nullptr) {};
 
   template< class InputIt >
-  tree( InputIt first, InputIt last,
+  _tree( InputIt first, InputIt last,
   const Compare& comp = Compare(),
-  const Allocator& alloc = Allocator() );
+  const Allocator& alloc = Allocator() )
+  : _compare(comp),
+    _allocator(alloc) {
+    _size = ft::distance(first, last);
+    _anchor->_left = this->begin();
+    _anchor->_right = this->end();
+    _anchor->_parent = this->get_root();
+    _root = _anchor->_parent;
+    };
 
-  tree(const tree& other);
+  _tree(const _tree& other) {
+    _compare = other._compare;
+    _allocator = other._allocator;
+    _size = other._size;
+    _anchor = other._anchor; //deep copy
+    _root = other._root;
+  };
 
-  ~tree();
+  ~_tree();
 
-  tree& operator=(const tree& other);
+  _tree& operator=(const _tree& other);
 
-  allocator_type        get_allocator() const;
+  allocator_type        get_allocator() const {
+    return _allocator;
+  };
 //  void                  set_allocator(const allocator_type& allocator);
 
 //element access
   const key_compare& key_comp() const;
   key_compare&       key_comp();
 
-  void swap(tree& x);
+  void swap(_tree& x);
 
 // iterators
-  iterator        begin();
-  const_iterator  begin() const;
+  iterator        begin() {
+    if (_size == 0)
+        return nullptr;
+    return (iterator(tree_min(_root)));
+  };
 
-  iterator        end();
-  const_iterator  end() const;
+  const_iterator  begin() const {
+    if (_size == 0)
+      return nullptr;
+    return (const_iterator(tree_min(_root)));
+  };
 
-  reverse_iterator        rbegin();
-  const_reverse_iterator  rbegin() const;
+  iterator        end() {
+    if (_size == 0)
+      return nullptr;
+    return (++iterator(tree_max(_root)));
+  };
 
-  reverse_iterator        rend();
-  const_reverse_iterator  rend() const;
+  const_iterator  end() const {
+    if (_size == 0)
+      return nullptr;
+    return (++const_iterator(tree_max(_root)));
+  };
+
+  reverse_iterator        rbegin() {
+    if (_size == 0)
+      return nullptr;
+    return (reverse_iterator(end()));
+  };
+
+  const_reverse_iterator  rbegin() const {
+    if (_size == 0)
+      return nullptr;
+    return (const_reverse_iterator(end()));
+  };
+
+  reverse_iterator        rend() {
+    if (_size == 0)
+      return nullptr;
+    return (reverse_iterator(begin()));
+  };
+
+  const_reverse_iterator  rend() const {
+    if (_size == 0)
+      return nullptr;
+    return (const_reverse_iterator(begin()));
+  };
 
 public:
-  bool      empty() const EA_NOEXCEPT;
-  size_type size() const EA_NOEXCEPT;
+  bool      empty() const;
+  size_type size() const;
 
-  template <class... Args>
-  insert_return_type emplace(Args&&... args);
-
-  template <class... Args>
-  iterator emplace_hint(const_iterator position, Args&&... args);
-
-  // Standard conversion overload to avoid the overhead of mismatched 'pair<const Key, Value>' types.
-  template <class P, class = typename eastl::enable_if<eastl::is_constructible<value_type, P&&>::value>::type>
-  insert_return_type insert(P&& otherValue);
-
-  // Currently limited to value_type instead of P because it collides with insert(InputIterator, InputIterator).
-  // To allow this to work with templated P we need to implement a compile-time specialization for the
-  // case that P&& is const_iterator and have that specialization handle insert(InputIterator, InputIterator)
-  // instead of insert(InputIterator, InputIterator). Curiously, neither libstdc++ nor libc++
-  // implement this function either, which suggests they ran into the same problem I did here
-  // and haven't yet resolved it (at least as of March 2014, GCC 4.8.1).
-  iterator insert(const_iterator hint, value_type&& value);
-
-  /// map::insert and set::insert return a pair, while multimap::insert and
-  /// multiset::insert return an iterator.
-  insert_return_type insert(const value_type& value);
-
-  // C++ standard: inserts value if and only if there is no element with
-  // key equivalent to the key of t in containers with unique keys; always
-  // inserts value in containers with equivalent keys. Always returns the
-  // iterator pointing to the element with key equivalent to the key of value.
-  // iterator position is a hint pointing to where the insert should start
-  // to search. However, there is a potential defect/improvement report on this behaviour:
-  // LWG issue #233 (http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2005/n1780.html)
-  // We follow the same approach as SGI STL/STLPort and use the position as
-  // a forced insertion position for the value when possible.
-  iterator insert(const_iterator position, const value_type& value);
-
-  void insert(std::initializer_list<value_type> ilist);
+  std::pair<iterator, bool> insert(const value_type& value);
 
   template <typename InputIterator>
   void insert(InputIterator first, InputIterator last);
-
-  // TODO(rparolin):
-  // insert_return_type insert(node_type&& nh);
-  // iterator insert(const_iterator hint, node_type&& nh);
-
-  template <class M> pair<iterator, bool> insert_or_assign(const key_type& k, M&& obj);
-  template <class M> pair<iterator, bool> insert_or_assign(key_type&& k, M&& obj);
-  template <class M> iterator             insert_or_assign(const_iterator hint, const key_type& k, M&& obj);
-  template <class M> iterator             insert_or_assign(const_iterator hint, key_type&& k, M&& obj);
 
   iterator         erase(const_iterator position);
   iterator         erase(const_iterator first, const_iterator last);
   reverse_iterator erase(const_reverse_iterator position);
   reverse_iterator erase(const_reverse_iterator first, const_reverse_iterator last);
 
-  // For some reason, multiple STL versions make a specialization
-  // for erasing an array of key_types. I'm pretty sure we don't
-  // need this, but just to be safe we will follow suit.
-  // The implementation is trivial. Returns void because the values
-  // could well be randomly distributed throughout the tree and thus
-  // a return value would be nearly meaningless.
-  void erase(const key_type* first, const key_type* last);
-
   void clear();
-  void reset_lose_memory(); // This is a unilateral reset to an initially empty state. No destructors are called, no deallocation occurs.
 
   iterator       find(const key_type& key);
   const_iterator find(const key_type& key) const;
-
-  /// Implements a find whereby the user supplies a comparison of a different type
-  /// than the tree's value_type. A useful case of this is one whereby you have
-  /// a container of string objects but want to do searches via passing in char pointers.
-  /// The problem is that without this kind of find, you need to do the expensive operation
-  /// of converting the char pointer to a string so it can be used as the argument to the
-  /// find function.
-  ///
-  /// Example usage (note that the compare uses string as first type and char* as second):
-  ///     set<string> strings;
-  ///     strings.find_as("hello", less_2<string, const char*>());
-  ///
-  template <typename U, typename Compare2> iterator       find_as(const U& u, Compare2 compare2);
-  template <typename U, typename Compare2> const_iterator find_as(const U& u, Compare2 compare2) const;
 
   iterator       lower_bound(const key_type& key);
   const_iterator lower_bound(const key_type& key) const;
 
   iterator       upper_bound(const key_type& key);
   const_iterator upper_bound(const key_type& key) const;
+
+/*  PRIVATE FUNCTION  */
+private:
+  Node* tree_min(Node* node) {
+    while (node->_parent)
+      node = node->_parent;
+    while (node->_left)
+      node = node->_left;
+    return node;
+  };
+
+  Node* tree_max(Node* node) {
+    while (node->_parent)
+      node = node->_parent;
+    while (node->_right)
+      node = node->_right;
+    return node;
+  };
+
+  Node* get_root(Node* node) {
+    while (node->_parent)
+      node = node->_parent;
+    return node;
+  }
 
 };
 

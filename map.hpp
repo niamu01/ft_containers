@@ -5,7 +5,7 @@
 #include "utility.hpp" //ft::pair, ft::make_pair
 #include "iterator.hpp" //ft::reverse_iterator, ft::distance
 
-#include "tree.hpp" //ft::tree
+#include "_tree.hpp" //ft::tree
 
 namespace ft {
   template <typename T> // T -> pair
@@ -21,7 +21,7 @@ template<
     class Allocator = std::allocator <std::pair<const Key, T> >
 >
 class map
-: public tree<Key, ft::pair<const Key, T>, Compare, Allocator>
+: public _tree<Key, ft::pair<const Key, T>, Compare, Allocator>
   {
   public:
     typedef Key key_type;
@@ -139,7 +139,7 @@ class map
 //     * clear
   void clear();
 //     * insert
-  std::pair<iterator, bool> insert( const value_type& value );
+  ft::pair<iterator, bool> insert( const value_type& value );
 
   template< class InputIt >
   void insert( InputIt first, InputIt last );
@@ -155,8 +155,8 @@ class map
   iterator find( const Key& key );
   const_iterator find( const Key& key ) const;
 //     * equal_range
-  std::pair<iterator,iterator> equal_range( const Key& key );
-  std::pair<const_iterator,const_iterator> equal_range( const Key& key ) const;
+  ft::pair<iterator,iterator> equal_range( const Key& key );
+  ft::pair<const_iterator,const_iterator> equal_range( const Key& key ) const;
 //     * lower_bound
   iterator lower_bound( const Key& key );
   const_iterator lower_bound( const Key& key ) const;
@@ -188,7 +188,7 @@ class map
 
   template< class Key, class T, class Compare, class Alloc >
   bool operator< ( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs ) {
-    return (lhs < rhs);
+    return ();
   };
 
   template< class Key, class T, class Compare, class Alloc >
