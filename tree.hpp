@@ -3,7 +3,7 @@
 
 #include <functional> //std::less
 #include "utils.hpp" //ft::use_first
-#include "utility.hpp" //ft::pair
+#include "utility.hpp" //ft::pair, ft::make_pair
 
 //template <typename Compare, bool = is_empty<Compare>::value>
 //struct rb_base_compare_ebo
@@ -67,26 +67,118 @@
 //  tree_base(const Compare& compare) {};
 //};
 //
-struct tree_node {
-  typedef tree_node node_type;
-
-public:
-  node_type*  NodeRight;
-  node_type*  NodeLeft;
-  node_type*  NodeParent;
-  char        color;
-};
+//struct tree_node {
+//  typedef tree_node node_type;
+//
+//public:
+//  node_type*  NodeRight;
+//  node_type*  NodeLeft;
+//  node_type*  NodeParent;
+//  char        color;
+//};
 
 template <typename Value>
-struct rbtree_node : public tree_node {
+struct tree_node {
   Value mValue;
+  tree_node* left;
+  tree_node* right;
+  tree_node* parent;
+  //char     color;
 };
 
-//template <typename Key,
-//    typename T,
-//    typename Compare = std::less<Key>,
-//    typename Allocator = std::allocator<T>
-//    >
+template <typename T, typename Pointer = T*, typename Reference = T&>
+struct tree_iterator
+{
+//  typedef std::size_t                                             size_type;
+  typedef std::ptrdiff_t                                          difference_type;
+  typedef T                                                       value_type;
+  typedef T*                                                      pointer;
+  typedef T&                                                      reference;
+  typedef tree_node<T>                                            node_type;
+  typedef tree_iterator<T, pointer, reference>                    this_type;
+  typedef tree_iterator<T, pointer, reference>                    iterator;
+  typedef tree_iterator<T, const pointer, const reference>        const_iterator;
+//  typedef rbtree_node_base                                        base_node_type;
+  typedef std::bidirectional_iterator_tag                         iterator_category;
+
+private: //public:
+  node_type* _node;
+
+public:
+  explicit tree_iterator(const node_type* pNode = nullptr) : _node(pNode) {};
+
+  tree_iterator(const iterator& other) : _node(other._node) {};
+
+  ~tree_iterator() {};
+
+  tree_iterator& operator=(const iterator& x) {
+    if (this != &x)
+      _node = x._node;
+    return *this;
+  };
+
+  node_type* base() const {
+    return _node;
+  };
+
+  reference operator*() const {
+    return (_node->value);
+  };
+
+  pointer operator->() const {
+    return &(_node->value);
+  };
+
+  tree_iterator& operator++() { //if (_node == begin())
+    if (_node->right) {
+      _node = _node->right;
+      while (_node->left)
+        _node = _node->left;
+    } else {
+      if (_node == _node->parent->left)
+        _node = _node->parent;
+      else {
+        while (_node->parent && _node != _node->parent->left)
+          _node = _node->parent;
+        if (_node->parent)
+          _node = _node->parent;
+      }
+    }
+    return (*this);
+  };
+
+  tree_iterator operator++(int) {
+    tree_iterator temp(*this);
+    this->operator++();
+    return (temp);
+  };
+
+  tree_iterator& operator--() { //if (_node == end())
+    if (_node->left) {
+      _node = _node->left;
+      while (_node->right)
+        _node = _node->right;
+    } else {
+      if (_node == _node->parent->right)
+        _node = _node->parent;
+      else {
+        while (_node->parent && _node != _node->parent->right)
+          _node = _node->parent;
+        if (_node->parent)
+          _node = _node->parent;
+      }
+    }
+  };
+
+  tree_iterator  operator--(int) {
+    tree_iterator temp(*this);
+    this->operator--();
+    return (temp);
+  };
+}; // tree_iterator
+
+/*  TREE  */
+
 template <typename Key,
   typename Value,
   typename Compare = std::less<Key>,
@@ -95,35 +187,55 @@ template <typename Key,
   bool     bMutableIterators = true, //map: true, set: false
   bool     bUniqueKeys = true //map,set: true, multi: false
   >
-class tree //: tree_base<Key, Value, Compare, ExtractKey, bUniqueKeys,
+class tree {
+  //: tree_base<Key, Value, Compare, ExtractKey, bUniqueKeys,
   //tree<Key, Value, Compare, Allocator, ExtractKey, bMutableIterators, bUniqueKeys> >
-  {
-public:
-  typedef ptrdiff_t                   difference_type;
-  typedef u_int64_t                   size_type;
-  typedef Key                         key_type;
-  typedef Value                       value_type;
-  typedef rbtree_node<value_type>     node_type;
-  typedef value_type&                 reference;
-  typedef const value_type&           const_reference;
-  typedef value_type*                 pointer;
-  typedef const value_type*           const_pointer;
-
-  typedef Allocator                   allocator_type;
-  typedef Compare                     key_compare;
-
-//  typedef integral_constant<bool, bUniqueKeys>                                            has_unique_keys_type;
-//  typedef typename tree_node::extract_key                                                 extract_key;
-
-//  typedef <value_type>                              iterator;
-//  typedef <const value_type>                        const_iterator;
-//  typedef std::reverse_iterator<iterator>           reverse_iterator;
-//  typedef std::reverse_iterator<const_iterator>     const_reverse_iterator;
 
 public:
-  tree_node         mAnchor;
-  size_type         mnSize;
-  allocator_type    mAllocator;
+//  typedef tree<
+//          Key, ft::pair<const Key,
+//          Value>, Compare, Allocator,
+//          ft::use_first<ft::pair<const Key, Value> >,
+//          true, true>                                   base_type;
+  typedef Key                                           key_type;
+  typedef Value                                         value_type;
+  typedef ft::pair<const key_type, value_type>          node_type;
+  typedef Compare                                       key_compare;
+  typedef Allocator                                     allocator_type;
+  typedef value_type&                                   reference;
+  typedef const value_type&                             const_reference;
+  typedef value_type*                                   pointer;
+  typedef const value_type*                             const_pointer;
+  typedef u_int64_t                                     size_type; //size_t
+  typedef ptrdiff_t                                     difference_type;
+
+//  typedef rbtree_node<value_type>           node_type;
+
+//  typedef integral_constant<bool, bUniqueKeys>           has_unique_keys_type;
+//  typedef typename tree_node::extract_key                extract_key;
+
+  typedef tree_iterator<value_type>                 iterator;
+  typedef tree_iterator<const value_type>           const_iterator;
+  typedef std::reverse_iterator<iterator>           reverse_iterator;
+  typedef std::reverse_iterator<const_iterator>     const_reverse_iterator;
+
+  template< class U >
+  struct rebind {
+    typedef std::allocator <U> other;
+  };
+
+private: //public:
+  struct Node {
+    ft::pair<const Key, Value>  _content;
+    Node*                       _parent;
+    Node*                       _left;
+    Node*                       _right;
+  };
+
+  Node*             _anchor;
+  Node*             _root;
+  size_type         _size;
+  allocator_type    _allocator;
 
 public:
   tree();
@@ -146,27 +258,23 @@ public:
 //  void                  set_allocator(const allocator_type& allocator);
 
 //element access
-  const key_compare& key_comp() const { return get_compare(); }
-  key_compare&       key_comp()       { return get_compare(); }
+  const key_compare& key_comp() const;
+  key_compare&       key_comp();
 
   void swap(tree& x);
 
 // iterators
   iterator        begin();
   const_iterator  begin() const;
-  const_iterator  cbegin() const;
 
   iterator        end();
   const_iterator  end() const;
-  const_iterator  cend() const;
 
   reverse_iterator        rbegin();
   const_reverse_iterator  rbegin() const;
-  const_reverse_iterator  crbegin() const;
 
   reverse_iterator        rend();
   const_reverse_iterator  rend() const;
-  const_reverse_iterator  crend() const;
 
 public:
   bool      empty() const EA_NOEXCEPT;
