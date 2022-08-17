@@ -79,13 +79,15 @@
 //  char        color;
 //};
 
-template <typename Value>
+template <typename T>
 struct tree_node {
-  Value mValue;
-  tree_node* left;
-  tree_node* right;
-  tree_node* parent;
-  //char     color;
+  typedef T value_type;
+
+  value_type      value;
+  tree_node*      left;
+  tree_node*      right;
+  tree_node*      parent;
+  //char          color;
 };
 
 template <typename T, typename Pointer = T*, typename Reference = T&>
@@ -184,15 +186,9 @@ public:
 template <typename Key,
   typename Value,
   typename Compare = std::less<Key>,
-  typename Allocator = std::allocator<Value>,
-  typename ExtractKey = ft::use_first<ft::pair<Key, Value> >,
-  bool     bMutableIterators = true, //map: true, set: false
-  bool     bUniqueKeys = true //map,set: true, multi: false
+  typename Allocator = std::allocator<Value>
   >
 class _tree {
-  //: tree_base<Key, Value, Compare, ExtractKey, bUniqueKeys,
-  //tree<Key, Value, Compare, Allocator, ExtractKey, bMutableIterators, bUniqueKeys> >
-
 public:
 //  typedef tree<
 //          Key, ft::pair<const Key,
@@ -201,7 +197,8 @@ public:
 //          true, true>                                   base_type;
   typedef Key                                           key_type;
   typedef Value                                         value_type;
-  typedef ft::pair<const key_type, value_type>          node_type;
+  typedef tree_node<ft::pair<key_type, value_type> >    node_type;
+//  typedef ft::pair<const key_type, value_type>          node_type;
   typedef Compare                                       key_compare;
   typedef Allocator                                     allocator_type;
   typedef value_type&                                   reference;
@@ -274,90 +271,123 @@ public:
 
   _tree& operator=(const _tree& other);
 
-  allocator_type        get_allocator() const {
+  allocator_type get_allocator() const {
     return _allocator;
   };
-//  void                  set_allocator(const allocator_type& allocator);
 
-//element access
-  const key_compare& key_comp() const;
-  key_compare&       key_comp();
+  const key_compare& key_comp() const {
+    return _compare;
+  };
 
-  void swap(_tree& x);
+  key_compare& key_comp() {
+    return _compare;
+  };
 
-// iterators
-  iterator        begin() {
+  void swap(_tree& x) {
+    _tree temp = this;
+    this = x;
+    x = temp; //deep
+  };
+
+/*  ITERATORS  */
+  iterator begin() {
     if (_size == 0)
         return nullptr;
     return (iterator(tree_min(_root)));
   };
 
-  const_iterator  begin() const {
+  const_iterator begin() const {
     if (_size == 0)
       return nullptr;
     return (const_iterator(tree_min(_root)));
   };
 
-  iterator        end() {
+  iterator end() {
     if (_size == 0)
       return nullptr;
     return (++iterator(tree_max(_root)));
   };
 
-  const_iterator  end() const {
+  const_iterator end() const {
     if (_size == 0)
       return nullptr;
     return (++const_iterator(tree_max(_root)));
   };
 
-  reverse_iterator        rbegin() {
+  reverse_iterator rbegin() {
     if (_size == 0)
       return nullptr;
     return (reverse_iterator(end()));
   };
 
-  const_reverse_iterator  rbegin() const {
+  const_reverse_iterator rbegin() const {
     if (_size == 0)
       return nullptr;
     return (const_reverse_iterator(end()));
   };
 
-  reverse_iterator        rend() {
+  reverse_iterator rend() {
     if (_size == 0)
       return nullptr;
     return (reverse_iterator(begin()));
   };
 
-  const_reverse_iterator  rend() const {
+  const_reverse_iterator rend() const {
     if (_size == 0)
       return nullptr;
     return (const_reverse_iterator(begin()));
   };
 
 public:
-  bool      empty() const;
-  size_type size() const;
+  bool empty() const {
+    return (_size == 0);
+  };
+
+  size_type size() const {
+    return _size;
+  };
 
   std::pair<iterator, bool> insert(const value_type& value);
 
   template <typename InputIterator>
   void insert(InputIterator first, InputIterator last);
 
-  iterator         erase(const_iterator position);
-  iterator         erase(const_iterator first, const_iterator last);
+  iterator erase(const_iterator position);
+  iterator erase(const_iterator first, const_iterator last);
   reverse_iterator erase(const_reverse_iterator position);
   reverse_iterator erase(const_reverse_iterator first, const_reverse_iterator last);
 
-  void clear();
+  void clear() {
+    for(iterator it = this->begin(); it != this->end(); it++)
+      _allocator.destory(it);
+    _allocator.deallocate(this->begin(), _size);
+  };
 
-  iterator       find(const key_type& key);
-  const_iterator find(const key_type& key) const;
+  iterator find(const key_type& key) {
+    return iterator(search(key, _root));
+  };
 
-  iterator       lower_bound(const key_type& key);
-  const_iterator lower_bound(const key_type& key) const;
+  const_iterator find(const key_type& key) const {
+    return const_iterator(search(key, _root));
+  };
 
-  iterator       upper_bound(const key_type& key);
-  const_iterator upper_bound(const key_type& key) const;
+  //first element that is not less than key. (key <= return)
+  iterator lower_bound(const key_type& key) {
+    return (find(key));
+  };
+
+  const_iterator lower_bound(const key_type& key) const {
+    return (find(key));
+  };
+
+  //first element that is greater than key. (key > return)
+  iterator upper_bound(const key_type& key) {
+    return (++find(key));
+  };
+
+  const_iterator upper_bound(const key_type& key) const {
+    return (++find(key));
+  };
 
 /*  PRIVATE FUNCTION  */
 private:
@@ -381,7 +411,17 @@ private:
     while (node->_parent)
       node = node->_parent;
     return node;
-  }
+  };
+
+  key_type search(key_type key, node_type* node) {
+    if (node && node->left && _compare(key, node->value.first))
+      search(key, node->left);
+    else if (node && node->right && _compare(node->value.first, key))
+      search(key, node->right);
+    else
+      return nullptr;
+    return node;
+  };
 
 };
 
