@@ -15,17 +15,20 @@ namespace ft {
   }; //map_iterator
 
 template<
-    class Key,
-    class T,
-    class Compare = std::less<Key>,
-    class Allocator = std::allocator <std::pair<const Key, T> >
+  class     Key,
+  class     Value,
+  class     Compare = std::less<Key>,
+  class     Allocator = std::allocator <std::pair<const Key, Value> >,
+  typename  ExtractKey = ft::use_first<ft::pair<Key, Value> >,
+  bool      bMutableIterators = true, //map: true, set: false
+  bool      bUniqueKeys = true //map,set: true, multi: false
 >
 class map
-: public _tree<Key, ft::pair<const Key, T>, Compare, Allocator>
+: public _tree<Key, ft::pair<const Key, Value>, Compare, Allocator>
   {
   public:
     typedef Key key_type;
-    typedef T mapped_type;
+    typedef Value mapped_type;
     typedef pair<const key_type, mapped_type> value_type;
     typedef Compare key_compare;
     typedef Allocator allocator_type;
@@ -36,8 +39,8 @@ class map
     typedef typename allocator_type::size_type size_type;
     typedef typename allocator_type::difference_type difference_type;
 
-    typedef typename ft::map_iterator<Key, T, Compare, Allocator> iterator;
-    typedef typename ft::map_iterator<const Key, T, Compare, Allocator> const_iterator;
+    typedef typename ft::map_iterator<Key, Value, Compare, Allocator> iterator;
+    typedef typename ft::map_iterator<const Key, Value, Compare, Allocator> const_iterator;
     typedef typename ft::reverse_iterator<iterator> reverse_iterator;
     typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
@@ -48,7 +51,7 @@ class map
 
   private:
     struct Node {
-      ft::pair<const Key, T>  content;
+      ft::pair<const Key, Value>  content;
       Node*                   parent;
       Node*                   left;
       Node*                   right;
@@ -114,10 +117,10 @@ class map
 //     * get_allocator
     allocator_type get_allocator() const;
 //     * at
-  T& at( const Key& key );
-  const T& at( const Key& key ) const;
+  reference at( const Key& key );
+  const reference at( const Key& key ) const;
 //     * operator[]
-  T& operator[]( const Key& key );
+  reference operator[]( const Key& key );
 //     * begin
   iterator begin();
   const_iterator begin() const;
@@ -168,10 +171,18 @@ class map
 //     * value_comp
   ft::map::value_compare value_comp() const;
 
-
   private:
-    Compare& get_compare() { return Compare; }
-    const Compare& get_compare() const { return Compare; }
+    Compare& get_compare() { return _comp; }
+    const Compare& get_compare() const { return _comp; }
+
+    template <typename Pair>
+    struct use_first
+    {
+      typedef typename Pair::first_type result_type;
+
+      const result_type& operator()(const Pair& x) const
+      { return x.first; }
+    };
   }; //class map
 
   /* NON-MEMBER FUNCTIONS */
