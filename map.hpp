@@ -14,12 +14,12 @@ namespace ft {
 
   }; //map_iterator
 
-  template<
-      class Key,
-      class T,
-      class Compare = std::less <Key>,
-      class Allocator = std::allocator <std::pair<const Key, T> >
-  >
+template<
+    class Key,
+    class T,
+    class Compare = std::less<Key>,
+    class Allocator = std::allocator <std::pair<const Key, T> >
+>
 class map
 : public tree<Key, ft::pair<const Key, T>, Compare, Allocator>
   {
@@ -168,6 +168,10 @@ class map
 //     * value_comp
   ft::map::value_compare value_comp() const;
 
+
+  private:
+    Compare& get_compare() { return Compare; }
+    const Compare& get_compare() const { return Compare; }
   }; //class map
 
   /* NON-MEMBER FUNCTIONS */
