@@ -212,13 +212,25 @@ namespace ft {
     // May throw implementation-defined exceptions. <- ?
 
     vector& operator=( const vector& other ) {
+
       if (this != &other) {
         this->clear();
-//        this->insert(this->begin(), other._start, other._end);
-      for (pointer p = other._start; p != other._end; p++)
-        this->push_back(*p); //todo
-      }
 
+        for(const_iterator it = other.begin(); it != other.end(); it++)
+          this->push_back(*it);
+
+//        for (pointer p = other._start; p != other._end; p++)
+//          this->push_back(*p);
+
+//        const_iterator first = other.begin();
+//        const_iterator second = other.end();
+//        while (*first != *second) {
+//          this->push_back(*first++);
+//        }
+
+//        this->insert(this->begin(), other._start, other._end);
+        this->_capacity = other._size;
+      }
       return *this;
     };
 
@@ -480,11 +492,12 @@ namespace ft {
           this->_allocator.allocate(1);
           this->_allocator.construct(this->_start + count + range, value);
           this->_size++;
+          this->_end++;
         }
       } else {
         while (range++ < 0) {
-          this->_allocator.destroy(this->_end);
           this->_end--;
+          this->_allocator.destroy(this->_end);
           this->_size--;
         }
       }
