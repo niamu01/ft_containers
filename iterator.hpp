@@ -148,20 +148,6 @@ namespace ft {
     };
   };
 
-  typedef size_t size_type;
-
-  template<class iterator>
-  size_type distance(iterator first, iterator second) {
-    size_type ret = 0;
-
-    while (first != second) {
-      first++;
-      ret++;
-    }
-
-    return ret;
-  };
-
   template <class Iterator1, class Iterator2>
   bool operator==(const reverse_iterator<Iterator1>& lhs, const reverse_iterator<Iterator2>& rhs) {
     return (lhs.base() == rhs.base());
@@ -202,6 +188,20 @@ namespace ft {
     reverse_iterator<Iter>
       operator+( typename reverse_iterator<Iter>::difference_type n, const reverse_iterator<Iter>& it ) {
         return (reverse_iterator<Iter>(it.base() - n));
+  };
+
+  typedef size_t size_type;
+
+  template<class iterator>
+  size_type distance(iterator first, iterator second) {
+    size_type ret = 0;
+
+    while (*first != *second) {
+      *first++;
+      ret++;
+    }
+
+    return ret;
   };
 
 } //namespace
