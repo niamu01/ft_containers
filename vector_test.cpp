@@ -7,6 +7,57 @@
   #include "vector.hpp"
 #endif
 
+/* todo:
+ * iterator != const_iterator
+ */
+
+void	is_empty(ft::vector<int> const &vct)
+{
+std::cout << "is_empty: " << vct.empty() << std::endl;
+}
+
+int		main(void)
+{
+  const int start_size = 7;
+  ft::vector<int> vct(start_size, 20);
+  ft::vector<int> vct2;
+  ft::vector<int>::iterator it = vct.begin();
+
+  for (int i = 2; i < start_size; ++i)
+    it[i] = (start_size - i) * 3;
+  std::cout << vct.size() << ", " << vct.capacity() << std::endl;
+
+  vct.resize(10, 42);
+  std::cout << vct.size() << ", " << vct.capacity() << std::endl;
+
+  vct.resize(18, 43);
+  std::cout << vct.size() << ", " << vct.capacity() << std::endl;
+  vct.resize(10);
+  std::cout << vct.size() << ", " << vct.capacity() << std::endl;
+  vct.resize(23, 44);
+  std::cout << vct.size() << ", " << vct.capacity() << std::endl;
+  vct.resize(5);
+  std::cout << vct.size() << ", " << vct.capacity() << std::endl;
+  vct.reserve(5);
+  std::cout << vct.size() << ", " << vct.capacity() << std::endl;
+  vct.reserve(3);
+  std::cout << vct.size() << ", " << vct.capacity() << std::endl;
+  vct.resize(57);
+  std::cout << vct.size() << ", " << vct.capacity() << std::endl;
+  vct.resize(5);
+  std::cout << vct.size() << ", " << vct.capacity() << std::endl;
+
+  is_empty(vct2);
+  vct2 = vct;
+  is_empty(vct2);
+  vct.reserve(vct.capacity() + 1);
+  std::cout << vct.size() << ", " << vct.capacity() << std::endl;
+  std::cout << vct2.size() << ", " << vct2.capacity() << std::endl;
+
+  vct2.resize(0);
+  is_empty(vct2);
+  std::cout << vct2.size() << ", " << vct2.capacity() << std::endl;
+
 /* iterator operator */
 //    ft::vector<int> vec;
 //
