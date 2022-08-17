@@ -175,7 +175,7 @@ namespace ft {
         : _allocator(alloc) {
           size_type n = ft::distance(first, last);
           _size = n;
-          _capacity = cal_cap(_size);
+          _capacity = cal_cap(_size, _capacity);
           _start = this->_allocator.allocate(_capacity);
           _end = _start;
 
@@ -214,9 +214,9 @@ namespace ft {
     vector& operator=( const vector& other ) {
       if (this != &other) {
         this->clear();
-
+//        this->insert(this->begin(), other._start, other._end);
       for (pointer p = other._start; p != other._end; p++)
-        this->push_back(*p);
+        this->push_back(*p); //todo
       }
 
       return *this;
@@ -387,10 +387,10 @@ namespace ft {
     // insert value before pos
     // return iterator pointing to the inserted value
     iterator insert( iterator pos, const T& value ) {
-      size_type pos_index = ft::distance(pos, _start);
+      size_type pos_index = ft::distance(pos, iterator(_start));
 
       if (_size + 1 > _capacity)
-        this->reserve(cal_cap(_size + 1));
+        this->reserve(cal_cap(_size + 1, _capacity));
 
       for (size_type i = 0; i <= _size - pos_index; i++) {
         this->_allocator.construct(_end - i, *(_end - i - 1));
@@ -398,7 +398,7 @@ namespace ft {
       this->_allocator.construct(&(*pos), value);
       this->_size++;
       this->_end++;
-      this->_capacity = cal_cap(_size);
+      this->_capacity = cal_cap(_size, _capacity);
 
       return (iterator(this->_start + pos_index));
     };
@@ -459,12 +459,12 @@ namespace ft {
       if (this->_size == 0) {
         this->reserve(1);
       } else if (this->_start + this->_size == this->_end) {
-        this->reserve(cal_cap(_size));
+        this->reserve(cal_cap(_size, _capacity));
       }
 
       this->_allocator.construct(this->_end++, value);
       this->_size++;
-      this->_capacity = cal_cap(_size);
+      this->_capacity = cal_cap(_size, _capacity);
     };
 
     void pop_back() {
@@ -473,7 +473,7 @@ namespace ft {
     };
 
     void resize( size_type count, T value = T() ) {
-      int range = count - this->_capacity;
+      int range = count - this->_size;
 
       if (range >= 0) {
         while (range--) {
@@ -485,9 +485,10 @@ namespace ft {
         while (range++ < 0) {
           this->_allocator.destroy(this->_end);
           this->_end--;
-          this->_size--; 
+          this->_size--;
         }
       }
+      this->_capacity = cal_cap(_size, _capacity);
     };
 
     void swap( vector& other ) {
@@ -507,13 +508,17 @@ namespace ft {
       this->_capacity = capacity_temp;
     };
   private:
-    size_type cal_cap(size_type size) {
-      size_type ret = 1;
+    size_type cal_cap(size_type size, size_type capacity) {
+      if (capacity == 0)
+        capacity = 1;
 
-      while (ret < size)
-        ret *= 2;
+      if (size > capacity)
+        capacity *= 2;
 
-      return ret;
+      if (size > capacity)
+        capacity = size;
+
+      return capacity;
     };
   };
 }
