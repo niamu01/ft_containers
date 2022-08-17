@@ -44,6 +44,8 @@ namespace ft {
     };
 
     reference operator*() const {
+//    pointer temp = _p;
+//    return *--temp;
       return *_p;
     };
 
@@ -79,8 +81,8 @@ namespace ft {
 
     bool operator==(const vector_iterator<T>& other) const { return (this->_p == other._p); };
     bool operator!=(const vector_iterator<T>& other) const { return (this->_p != other._p); };
-    bool operator< (const vector_iterator<T>& other) const { return (this->_p < other._p); };
-    bool operator> (const vector_iterator<T>& other) const { return (this->_p > other._p); };
+    bool operator< (const vector_iterator<T>& other) const { return (this->_p <  other._p); };
+    bool operator> (const vector_iterator<T>& other) const { return (this->_p >  other._p); };
     bool operator<=(const vector_iterator<T>& other) const { return (this->_p <= other._p); };
     bool operator>=(const vector_iterator<T>& other) const { return (this->_p >= other._p); };
 //    bool operator< (value_type b) { return (0 < b - this->*_p); };
@@ -192,7 +194,7 @@ namespace ft {
       _size = x._size;
       _capacity = x._capacity;
 
-      pointer temp = x._start; //어..?
+      pointer temp = x._start;
 
       while (n--) {
         _allocator.construct(_end++, *temp++);
@@ -354,8 +356,6 @@ namespace ft {
         throw std::length_error("vector");
         
       if (new_cap <= this->_capacity) {
-        //deallocate?
-        // this->_capacity = new_cap;
         return;
       }
 
@@ -395,9 +395,7 @@ namespace ft {
       for (size_type i = 0; i <= _size - pos_index; i++) {
         this->_allocator.construct(_end - i, *(_end - i - 1));
       }
-//      this->_allocator.destroy(&(*pos)); //@
       this->_allocator.construct(&(*pos), value);
-
       this->_size++;
       this->_end++;
       this->_capacity = cal_cap(_size);
@@ -409,9 +407,6 @@ namespace ft {
     // return iterator pointing to the first element inserted
     // or return pos if count == 0
     void insert( iterator pos, size_type count, const T& value ) {
-//      if (this->_size + count > this->_capacity)
-//        this->reserve(cal_cap(this->_size));
-
       while (count--)
         this->insert(pos++, value);
     };
@@ -422,11 +417,6 @@ namespace ft {
     template< class InputIt >
     void insert( iterator pos, InputIt first, InputIt last,
       typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = 0 ) {
-//        size_type n = ft::distance(first, last);
-//
-//        if (this->_size + n > this->_capacity)
-//          this->reserve(cal_cap(this->_size));
-
         while (first != last)
           insert(pos++, *first++);
     };
@@ -446,18 +436,7 @@ namespace ft {
       this->_allocator.destroy(pos.base() + i);
       --this->_size;
       --this->_end;
-      return (pos); //_start + pos or _start + pos - i
-//      size_type pos_index = &(*pos) - _start;
-//      this->_allocator.destroy(&(*pos));
-//
-//      for (size_type i = 0; i < _size - pos_index; ++i) {
-//        this->_allocator.construct(_start + pos_index + i, *(_start + pos_index + i + 1));
-//        this->_allocator.destroy(_start + pos_index + i + 1);
-//      }
-//      --this->_size;
-//      --this->_end;
-//
-//      return iterator(_start + pos_index);
+      return (pos);
     };
 
     iterator erase( iterator first, iterator last ) {
@@ -550,11 +529,6 @@ bool operator==( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs 
   return (lhs.size() != rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
   // return (lhs.base() == rhs.base());
 }
-
-// template< class T_L, class T_R >
-// bool operator==( const ft::vector<T_L>& lhs, const ft::vector<T_R>& rhs ) {
-//   return (lhs.base() == rhs.base());
-// }
 
 template< class T, class Alloc >
 bool operator!=( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
