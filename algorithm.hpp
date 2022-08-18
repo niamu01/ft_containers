@@ -2,7 +2,6 @@
 #define ALGORITHM_HPP
 
 namespace ft {
-  // Returns true if the range [first1, last1) is equal to the range [first2, first2 + (last1 - first1)), and false otherwise.
   template< class InputIt1, class InputIt2 >
   bool equal( InputIt1 first1, InputIt1 last1, InputIt2 first2 ) {
     for (; first1 != last1; first1++, first2++) {
@@ -12,31 +11,37 @@ namespace ft {
     return true;
   };
 
-  template< class InputIt1, class InputIt2, class BinaryPredicate >
-  bool equal( InputIt1 first1, InputIt1 last1, InputIt2 first2, BinaryPredicate p ) {
-    (void)p;
-    for (; first1 != last1; first1++, first2++) {
-      if (!pred(*first1, *first2))
-        return false;
+//  template< class InputIt1, class InputIt2, class BinaryPredicate >
+//  bool equal( InputIt1 first1, InputIt1 last1, InputIt2 first2, BinaryPredicate p ) {
+//    (void)p;
+//    for (; first1 != last1; first1++, first2++) {
+//      if (!pred(*first1, *first2))
+//        return false;
+//    }
+//    return true;
+//  };
+
+  template<class InputIt1, class InputIt2>
+  bool lexicographical_compare(InputIt1 first1, InputIt1 last1,
+                               InputIt2 first2, InputIt2 last2) {
+    for ( ; (first1 != last1) && (first2 != last2); ++first1, (void) ++first2 ) {
+      if (*first1 < *first2) return true;
+      if (*first2 < *first1) return false;
     }
-    return true;
-  };
+    return (first1 == last1) && (first2 != last2);
+  }
 
-  /* p:
-  binary predicate which returns ​true if the elements should be treated as equal.
-  The signature of the predicate function should be equivalent to the following:
+//  template<class InputIt1, class InputIt2, class Compare>
+//  bool lexicographical_compare(InputIt1 first1, InputIt1 last1,
+//                               InputIt2 first2, InputIt2 last2,
+//                               Compare comp) {
+//    for ( ; (first1 != last1) && (first2 != last2); ++first1, (void) ++first2 ) {
+//      if (comp(*first1, *first2)) return true;
+//      if (comp(*first2, *first1)) return false;
+//    }
+//    return (first1 == last1) && (first2 != last2);
+//  }
 
-    bool pred(const Type1 &a, const Type2 &b);
-
-  While the signature does not need to have const &, 
-  the function must not modify the objects passed to it 
-  and must be able to accept all values of type (possibly const) Type1 and Type2 
-  regardless of value category (thus, Type1 & is not allowed, 
-  nor is Type1 unless for Type1 a move is equivalent to a copy (since C++11)).
-
-  The types Type1 and Type2 must be such that objects of types InputIt1 and InputIt2 
-  can be dereferenced and then implicitly converted to Type1 and Type2 respectively.​
-  */
 
 } //namespace
 
