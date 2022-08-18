@@ -211,6 +211,7 @@ namespace ft {
       _end(_start),
       _size(0),
       _capacity(0) {};
+//    { (void)alloc; vector(0); };
 
     explicit vector (size_type n, const value_type& val = value_type(),
       const allocator_type& alloc = allocator_type())
@@ -229,13 +230,13 @@ namespace ft {
         const allocator_type& alloc = allocator_type(),
         typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0 )
         : _allocator(alloc) {
-          size_type n = ft::distance(first, last);
-          _size = n;
+          difference_type diff = ft::distance(first, last);
+          _size = diff;
           _capacity = cal_cap(_size, 0);
           _start = this->_allocator.allocate(_capacity);
           _end = _start;
 
-          while (n--) {
+          while (diff--) {
             this->_allocator.construct(_end++, *first++);
           }
         };
@@ -307,15 +308,15 @@ namespace ft {
     template< class InputIt >
     void assign( InputIt first, InputIt last,
       typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = 0 ) {
-        size_type count = ft::distance(first, last);
-        // if (_capacity < count)
+        difference_type diff = ft::distance(first, last);
+        // if (_capacity < diff)
         this->clear();
 
-        this->_start = this->_allocator.allocate(count);
+        this->_start = this->_allocator.allocate(diff);
         this->_end = this->_start;
-        this->_size = count;
-        if (this->_capacity < count)
-          this->_capacity = count;
+        this->_size = diff;
+        if (this->_capacity < diff)
+          this->_capacity = diff;
 
         while (!(first == last)) {
           this->_allocator.construct(this->_end++, *first++);
@@ -455,20 +456,17 @@ namespace ft {
     // insert value before pos
     // return iterator pointing to the inserted value
     iterator insert( iterator pos, const T& value ) {
-      size_type pos_index = ft::distance(pos, iterator(_start));
-
+      difference_type diff = ft::distance(this->begin(), pos);
       if (_size + 1 > _capacity)
         this->reserve(cal_cap(_size + 1, _capacity));
-
-      for (size_type i = 0; i <= _size - pos_index; i++) {
+      for (size_type i = 0; i <= _size - diff; i++) {
         this->_allocator.construct(_end - i, *(_end - i - 1));
       }
       this->_allocator.construct(&(*pos), value);
       this->_size++;
       this->_end++;
       this->_capacity = cal_cap(_size, _capacity);
-
-      return iterator(this->_start + pos_index);
+      return iterator(this->_start + diff);
     };
 
     // insert count copies of the value before pos
@@ -508,9 +506,9 @@ namespace ft {
     };
 
     iterator erase( iterator first, iterator last ) {
-      size_type n = ft::distance(first, last);
+      difference_type diff = ft::distance(first, last);
 
-      while (n--) {
+      while (diff--) {
         this->erase(last--);
       }
 
