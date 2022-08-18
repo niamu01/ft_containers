@@ -308,7 +308,7 @@ namespace ft {
     template< class InputIt >
     void assign( InputIt first, InputIt last,
       typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = 0 ) {
-        difference_type diff = ft::distance(first, last);
+        size_type diff = ft::distance(first, last);
         // if (_capacity < diff)
         this->clear();
 
@@ -456,17 +456,17 @@ namespace ft {
     // insert value before pos
     // return iterator pointing to the inserted value
     iterator insert( iterator pos, const T& value ) {
-      difference_type diff = ft::distance(this->begin(), pos);
+      difference_type size = ft::distance(this->begin(), pos);
       if (_size + 1 > _capacity)
         this->reserve(cal_cap(_size + 1, _capacity));
-      for (size_type i = 0; i <= _size - diff; i++) {
+      for (size_type i = 0; i <= _size - size; i++) {
         this->_allocator.construct(_end - i, *(_end - i - 1));
       }
-      this->_allocator.construct(&(*pos), value);
+      this->_allocator.construct(_start + size, value);
       this->_size++;
       this->_end++;
       this->_capacity = cal_cap(_size, _capacity);
-      return iterator(this->_start + diff);
+      return iterator(this->_start + size);
     };
 
     // insert count copies of the value before pos
@@ -579,7 +579,7 @@ namespace ft {
       if (capacity == 0)
         capacity = 1;
 
-      if (size > capacity)
+      if (size >= capacity)
         capacity *= 2;
 
       if (size > capacity)

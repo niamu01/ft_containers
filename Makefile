@@ -1,5 +1,5 @@
 NAME = a.out
-CFLAGS = -Wall -Wextra -Werror -g
+CXXFLAGS = -Wall -Wextra -Werror -g
 SRCS = vector_test.cpp
 OBJS = $(SRCS:.cpp=.o)
 
@@ -7,8 +7,8 @@ OBJS = $(SRCS:.cpp=.o)
 all : $(NAME)
 
 $(NAME) : $(OBJS)
-	c++ $(CFLAGS) -c $(SRCS)
-	c++ $(CFLAGS) $(OBJS) -o $(NAME)
+	c++ $(CXXFLAGS) -c $(SRCS)
+	c++ $(CXXFLAGS) $(OBJS) -o $(NAME)
 
 .PHONY : clean
 clean :
