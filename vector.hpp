@@ -117,24 +117,68 @@ namespace ft {
   };
 
   /*  NON-MEMBER OPERATOR OVERLOADS  */
+//  template< class Iter >
+//    typename vector_iterator<Iter>::difference_type
+//      operator+ (typename vector_iterator<Iter>::difference_type n, const vector_iterator<Iter>& it) {
+//    return vector_iterator<Iter>(it.base() + n);
+//  }
   template< class Iter >
-    typename vector_iterator<Iter>::difference_type
-      operator+ (typename vector_iterator<Iter>::difference_type n, const vector_iterator<Iter>& it) {
-//    return it.base() + n;
-    return vector_iterator<Iter>(it.base() + n);
+  vector_iterator<Iter> operator+ (
+    typename vector_iterator<Iter>::difference_type n,
+    const vector_iterator<Iter>& it) {
+      return vector_iterator<Iter>(it.base() + n);
   }
 
   template< class Iterator >
-    typename vector_iterator<Iterator>::difference_type
-      operator- (const vector_iterator<Iterator>& lhs, const vector_iterator<Iterator>& rhs) {
-    return lhs.base() - rhs.base();
+  typename vector_iterator<Iterator>::difference_type operator- (
+    const vector_iterator<Iterator>& lhs,
+    const vector_iterator<Iterator>& rhs) {
+      return lhs.base() - rhs.base();
+  }
+
+  /*  CONST_ITERATOR (OPERATOR) ITERATOR  */
+  template< class Iterator_L, class Iterator_R >
+    typename vector_iterator<Iterator_L>::difference_type operator- (
+      const vector_iterator<Iterator_L>& lhs,
+      const vector_iterator<Iterator_R>& rhs) {
+        return lhs.base() - rhs.base();
   }
 
   template< class Iterator_L, class Iterator_R >
-    typename vector_iterator<Iterator_L>::difference_type
-      operator- (const vector_iterator<Iterator_L>& lhs, const vector_iterator<Iterator_R>& rhs) {
-    return lhs.base() - rhs.base();
-  }
+  bool operator==(const vector_iterator<Iterator_L>& lhs,
+                  const vector_iterator<Iterator_R>& rhs) {
+    return lhs.base() == rhs.base();
+  };
+
+  template< class Iterator_L, class Iterator_R >
+  bool operator!=(const vector_iterator<Iterator_L>& lhs,
+                  const vector_iterator<Iterator_R>& rhs) {
+    return lhs.base() != rhs.base();
+  };
+
+  template< class Iterator_L, class Iterator_R >
+  bool operator< (const vector_iterator<Iterator_L>& lhs,
+                  const vector_iterator<Iterator_R>& rhs) {
+    return lhs.base() < rhs.base();
+  };
+
+  template< class Iterator_L, class Iterator_R >
+  bool operator> (const vector_iterator<Iterator_L>& lhs,
+                  const vector_iterator<Iterator_R>& rhs) {
+    return lhs.base() > rhs.base();
+  };
+
+  template< class Iterator_L, class Iterator_R >
+  bool operator<=(const vector_iterator<Iterator_L>& lhs,
+                  const vector_iterator<Iterator_R>& rhs) {
+    return lhs.base() <= rhs.base();
+  };
+
+  template< class Iterator_L, class Iterator_R >
+  bool operator>=(const vector_iterator<Iterator_L>& lhs,
+                  const vector_iterator<Iterator_R>& rhs) {
+    return lhs.base() >= rhs.base();
+  };
 
   template <class T, class Allocator = std::allocator<T> >
   class vector {
@@ -557,32 +601,32 @@ void swap( ft::vector<T,Alloc>& lhs, ft::vector<T,Alloc>& rhs ) {
 template< class T, class Alloc >
 bool operator==( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
   return lhs.size() != rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin());
-  // return lhs.base() == rhs.base();
 }
 
 template< class T, class Alloc >
 bool operator!=( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
-  return lhs.base() != rhs.base();
+  return !(operator==(lhs, rhs));
 }
 
 template< class T, class Alloc >
-bool operator<( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
-  return lhs.base() < rhs.base();
+bool operator< ( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
+  return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 }
+
+template< class T, class Alloc >
+bool operator> ( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
+  return !ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()) && operator!=(lhs, rhs);
+}
+//== -> 0
 
 template< class T, class Alloc >
 bool operator<=( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
-  return lhs.base() <= rhs.base();
-}
-
-template< class T, class Alloc >
-bool operator>( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
-  return lhs.base() > rhs.base();
+  return !(operator>(lhs, rhs));
 }
 
 template< class T, class Alloc >
 bool operator>=( const ft::vector<T>& lhs, const ft::vector<T,Alloc>& rhs ) {
-  return lhs.base() >= rhs.base();
+  return !(operator<(lhs, rhs));
 }
 
 #endif
