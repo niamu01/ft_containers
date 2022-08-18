@@ -1,4 +1,4 @@
-NAME = ft_containers
+NAME = a.out
 CFLAGS = -Wall -Wextra -Werror -g
 SRCS = vector_test.cpp
 OBJS = $(SRCS:.cpp=.o)
