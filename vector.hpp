@@ -456,7 +456,17 @@ namespace ft {
     // insert value before pos
     // return iterator pointing to the inserted value
     iterator insert( iterator pos, const T& value ) {
-      difference_type size = ft::distance(this->begin(), pos);
+      if (_end == NULL) {
+        _start = _allocator.allocate(1);
+        _end = _start;
+        _allocator.construct(_start, value);
+        _size++;
+        _end++;
+        _capacity = cal_cap(_size, _capacity);
+        return iterator(this->_start);
+      }
+
+      difference_type size = ft::distance(this->begin(), pos) + 1;
       if (_size + 1 > _capacity)
         this->reserve(cal_cap(_size + 1, _capacity));
       for (size_type i = 0; i <= _size - size; i++) {
