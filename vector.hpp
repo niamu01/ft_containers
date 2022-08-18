@@ -85,10 +85,10 @@ namespace ft {
     bool operator> (const vector_iterator<T>& other) const { return (this->_p >  other._p); };
     bool operator<=(const vector_iterator<T>& other) const { return (this->_p <= other._p); };
     bool operator>=(const vector_iterator<T>& other) const { return (this->_p >= other._p); };
-//    bool operator< (value_type b) { return (0 < b - this->*_p); };
-//    bool operator> (value_type b) { return (this->*_p > b); };
-//    bool operator<=(value_type b) { return (!(this->*_p > b)); };
-//    bool operator>=(value_type b) { return (!(0 < b - this->*_p)); };
+//    bool operator< (value_type b) { return 0 < b - this->*_p); ;
+//    bool operator> (value_type b) { return this->*_p > b); ;
+//    bool operator<=(value_type b) { return !(this->*_p > b)); ;
+//    bool operator>=(value_type b) { return !(0 < b - this->*_p)); ;
 
     vector_iterator& operator+=(difference_type n) {
       _p += n;
@@ -97,7 +97,7 @@ namespace ft {
     };
 
     vector_iterator operator+ (difference_type n) const { //check const
-      return (vector_iterator(base()+n)); //_p+n
+      return vector_iterator(base()+n); //_pn
     };
 
     vector_iterator& operator-=(difference_type n) {
@@ -107,7 +107,7 @@ namespace ft {
     };
 
     vector_iterator operator- (difference_type i) {
-      return (vector_iterator(_p - i));
+      return vector_iterator(_p - i);
     };
 
     reference operator[](difference_type n) {
@@ -119,20 +119,20 @@ namespace ft {
   template< class Iter >
     typename vector_iterator<Iter>::difference_type
       operator+ (typename vector_iterator<Iter>::difference_type n, const vector_iterator<Iter>& it) {
-//    return (it.base() + n);
-    return (vector_iterator<Iter>(it.base() + n));
+//    return it.base() + n;
+    return vector_iterator<Iter>(it.base() + n);
   }
 
   template< class Iterator >
     typename vector_iterator<Iterator>::difference_type
       operator- (const vector_iterator<Iterator>& lhs, const vector_iterator<Iterator>& rhs) {
-    return (lhs.base() - rhs.base());
+    return lhs.base() - rhs.base();
   }
 
   template< class Iterator_L, class Iterator_R >
     typename vector_iterator<Iterator_L>::difference_type
       operator- (const vector_iterator<Iterator_L>& lhs, const vector_iterator<Iterator_R>& rhs) {
-    return (lhs.base() - rhs.base());
+    return lhs.base() - rhs.base();
   }
 
   template <class T, class Allocator = std::allocator<T> >
@@ -278,29 +278,29 @@ namespace ft {
     };
 
     allocator_type get_allocator() const {
-      return (this->_allocator);
+      return this->_allocator;
     };
 
     reference at( size_type pos ) {
       if (!(pos < this->_size))
         throw std::out_of_range("vector");
 
-      return (this->_start[pos]);
+      return this->_start[pos];
     };
 
     const_reference at( size_type pos ) const {
       if (!(pos < this->_size))
         throw std::out_of_range("vector");
 
-      return (this->_start[pos]);
+      return this->_start[pos];
     };
 
     reference operator[]( size_type pos ) {
-      return (this->_start[pos]);
+      return this->_start[pos];
     };
 
     const_reference operator[]( size_type pos ) const {
-      return (this->_start[pos]);
+      return this->_start[pos];
     };
 
     // Calling front on an empty container is undefined.
@@ -321,11 +321,11 @@ namespace ft {
     };
 
     T* data() {
-      return (this->_start);
+      return this->_start;
     };
 
     const T* data() const {
-      return (this->_start);
+      return this->_start;
     };
 
     /* iterators */
@@ -363,15 +363,15 @@ namespace ft {
 
     /* capacity */
     bool empty() const {
-      return (this->_start == this->_end);
+      return this->_start == this->_end;
     };
 
     size_type size() const {
-      return (this->_size);
+      return this->_size;
     };
 
     size_type max_size() const {
-      return (std::numeric_limits<size_type>::max() / sizeof(value_type));
+      return std::numeric_limits<size_type>::max() / sizeof(value_type);
     };
 
     void reserve( size_type new_cap ) {
@@ -397,7 +397,7 @@ namespace ft {
     };
 
     size_type capacity() const {
-      return (_capacity);
+      return _capacity;
     };
 
     /* Modifiers */
@@ -423,7 +423,7 @@ namespace ft {
       this->_end++;
       this->_capacity = cal_cap(_size, _capacity);
 
-      return (iterator(this->_start + pos_index));
+      return iterator(this->_start + pos_index);
     };
 
     // insert count copies of the value before pos
@@ -459,7 +459,7 @@ namespace ft {
       this->_allocator.destroy(pos.base() + i);
       --this->_size;
       --this->_end;
-      return (pos);
+      return pos;
     };
 
     iterator erase( iterator first, iterator last ) {
@@ -469,7 +469,7 @@ namespace ft {
         this->erase(last--);
       }
 
-      return (first);
+      return first;
     };
 
     /*
@@ -555,33 +555,33 @@ void swap( ft::vector<T,Alloc>& lhs, ft::vector<T,Alloc>& rhs ) {
 /* operator */
 template< class T, class Alloc >
 bool operator==( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
-  return (lhs.size() != rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
-  // return (lhs.base() == rhs.base());
+  return lhs.size() != rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin());
+  // return lhs.base() == rhs.base();
 }
 
 template< class T, class Alloc >
 bool operator!=( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
-  return (lhs.base() != rhs.base());
+  return lhs.base() != rhs.base();
 }
 
 template< class T, class Alloc >
 bool operator<( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
-  return (lhs.base() < rhs.base());
+  return lhs.base() < rhs.base();
 }
 
 template< class T, class Alloc >
 bool operator<=( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
-  return (lhs.base() <= rhs.base());
+  return lhs.base() <= rhs.base();
 }
 
 template< class T, class Alloc >
 bool operator>( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
-  return (lhs.base() > rhs.base());
+  return lhs.base() > rhs.base();
 }
 
 template< class T, class Alloc >
 bool operator>=( const ft::vector<T>& lhs, const ft::vector<T,Alloc>& rhs ) {
-  return (lhs.base() >= rhs.base());
+  return lhs.base() >= rhs.base();
 }
 
 #endif
