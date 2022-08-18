@@ -231,7 +231,7 @@ namespace ft {
         : _allocator(alloc) {
           size_type n = ft::distance(first, last);
           _size = n;
-          _capacity = cal_cap(_size, _capacity);
+          _capacity = cal_cap(_size, 0);
           _start = this->_allocator.allocate(_capacity);
           _end = _start;
 
