@@ -114,13 +114,13 @@ namespace ft {
     };
 
     reverse_iterator& operator+=(difference_type n) {
-      this->_current += n;
+      this->_current -= n;
 
       return (*this);
     };
 
     reverse_iterator  operator+ (difference_type n) const {
-      return (reverse_iterator(base()+n));
+      return (reverse_iterator(base()-n));
     };
 
     reverse_iterator& operator--() {
@@ -138,13 +138,13 @@ namespace ft {
     };
 
     reverse_iterator& operator-=(difference_type n) {
-      this->_current -= n;
+      this->_current += n;
 
       return (*this);
     };
 
     reverse_iterator  operator- (difference_type n) const {
-      return (reverse_iterator(base()-n));
+      return (reverse_iterator(base()+n));
     };
   };
 
@@ -178,16 +178,16 @@ namespace ft {
     return (lhs.base() <= rhs.base());
   };
 
-  template< class Iterator >
-    typename reverse_iterator<Iterator>::difference_type
-      operator-( const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs ) {
-        return (rhs.base() - lhs.base());
-  };
-
   template< class Iter >
     reverse_iterator<Iter>
-      operator+( typename reverse_iterator<Iter>::difference_type n, const reverse_iterator<Iter>& it ) {
+      operator+ ( typename reverse_iterator<Iter>::difference_type n, const reverse_iterator<Iter>& it ) {
         return (reverse_iterator<Iter>(it.base() - n));
+  };
+
+  template< class Iterator >
+    typename reverse_iterator<Iterator>::difference_type
+      operator- ( const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs ) {
+        return (rhs.base() - lhs.base());
   };
 
   typedef size_t size_type;
