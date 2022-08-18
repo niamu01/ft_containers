@@ -96,8 +96,8 @@ namespace ft {
       return *this;
     };
 
-    vector_iterator operator+ (difference_type n) const { //check const
-      return vector_iterator(base()+n); //_pn
+    vector_iterator operator+ (difference_type n) const {
+      return vector_iterator(base()+n);
     };
 
     vector_iterator& operator-=(difference_type n) {
@@ -106,8 +106,9 @@ namespace ft {
       return *this;
     };
 
-    vector_iterator operator- (difference_type i) {
-      return vector_iterator(_p - i);
+    vector_iterator operator- (difference_type n) const {
+//      return vector_iterator(_p - n);
+      return vector_iterator(base()-n);
     };
 
     reference operator[](difference_type n) {
