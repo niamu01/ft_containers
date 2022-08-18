@@ -55,10 +55,7 @@ namespace ft {
                       typename iterator_traits<Iterator>::pointer,
                       typename iterator_traits<Iterator>::reference>
   {
-  protected:
-    Iterator _current; //the underlying iterator of which base() returns a copy
-
-  public:
+	public:
     typedef Iterator                                            iterator_type;
     typedef typename iterator_traits<Iterator>::difference_type difference_type;
     typedef typename iterator_traits<Iterator>::reference       reference;
@@ -66,7 +63,12 @@ namespace ft {
     // typedef	typename ft::iterator_traits<Iter>::iterator_category iterator_category;
     // typedef	typename ft::iterator_traits<Iter>::value_type value_type;
 
-    explicit reverse_iterator(Iterator x = nullptr) : _current(x) {};
+	protected:
+		iterator_type _current; //the underlying iterator of which base() returns a copy
+
+	public:
+    explicit reverse_iterator() : _current() {};
+    explicit reverse_iterator(iterator_type x) : _current(x) {};
 
     template< class U > 
     reverse_iterator( const reverse_iterator<U>& other ) : _current(other.base()) {};
