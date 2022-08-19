@@ -521,12 +521,13 @@ namespace ft {
 
     iterator erase( iterator first, iterator last ) {
       difference_type diff = ft::distance(first, last);
+      iterator temp_first = first;
 
       while (diff--) {
-        this->erase(last--);
+        this->erase(first);
       }
 
-      return first;
+      return temp_first;
     };
 
     void push_back( const T& value ) {
