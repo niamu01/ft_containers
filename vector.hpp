@@ -101,7 +101,7 @@ namespace ft {
     };
 
     vector_iterator& operator-=(difference_type n) {
-      _p += n;
+      _p -= n;
 
       return *this;
     };
