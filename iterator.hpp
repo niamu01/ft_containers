@@ -98,7 +98,7 @@ namespace ft {
     };
 
     reference operator[](difference_type n) const {
-      return base()[-n-1];
+      return base()[-n-1]; //base()[-n-1]
     };
 
     reverse_iterator& operator++() {
@@ -116,13 +116,13 @@ namespace ft {
     };
 
     reverse_iterator& operator+=(difference_type n) {
-      this->_current -= n;
+      *this = operator+(n);
 
       return *this;
     };
 
     reverse_iterator  operator+ (difference_type n) const {
-      return reverse_iterator(base()-n);
+      return reverse_iterator(_current-n);
     };
 
     reverse_iterator& operator--() {
@@ -140,13 +140,13 @@ namespace ft {
     };
 
     reverse_iterator& operator-=(difference_type n) {
-      this->_current += n;
+      *this = operator-(n);
 
       return *this;
     };
 
     reverse_iterator  operator- (difference_type n) const {
-      return reverse_iterator(base()+n);
+      return reverse_iterator(_current+n);
     };
   };
 
