@@ -439,7 +439,12 @@ namespace ft {
     };
 
     iterator insert( iterator pos, const T& value ) {
-      size_type n = &(*pos) - _start;
+      size_type n;
+      if (_size == 0)
+        n = 0;
+      else
+        n = &(*pos) - _start;
+
       insert(pos, 1, value);
 
       return (iterator(_start + n));
@@ -449,7 +454,7 @@ namespace ft {
       size_type n;
       pointer temp_end = _end;
 
-      if (_end == NULL) {
+      if (_size == 0) {
         n = 0;
         _start = _allocator.allocate(count);
         _end = _start + count;
@@ -470,13 +475,36 @@ namespace ft {
 
       _size += count;
       _capacity = cal_cap(_size, _capacity);
-};
+    };
 
     template< class InputIt >
     void insert( iterator pos, InputIt first, InputIt last,
       typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = 0 ) {
-      while (first != last)
-        insert(pos++, *first++);
+        size_type n;
+        pointer temp_end = _end;
+        size_type count = ft::distance(first, last);
+
+        if (_size == 0) {
+          n = 0;
+          _start = _allocator.allocate(count);
+          _end = _start + count;
+          temp_end = _start;
+        } else {
+          n = &(*pos) - _start;
+          _end = _end + count;
+        }
+
+        for (size_type i = 0; i < _size - n + count; ++i) {
+          this->_allocator.construct(temp_end + count - i, *(temp_end - i));
+          this->_allocator.destroy(temp_end - i);
+        }
+
+        for (size_type j = 0; j < count; j++) {
+          _allocator.construct(_start + n + j, *first++);
+        }
+
+        _size += count;
+        _capacity = cal_cap(_size, _capacity);
     };
 
     iterator erase( iterator pos ) {
