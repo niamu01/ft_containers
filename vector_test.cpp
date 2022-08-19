@@ -3,7 +3,7 @@
 #if 0
   #include <vector>
   namespace ft = std;
-#else  
+#else
   #include "vector.hpp"
 #endif
 
@@ -55,6 +55,7 @@ int		main(void)
   printSize(vct);
 
   vct2.insert(vct2.end(), 42);
+  printSize(vct2);
   vct2.insert(vct2.begin(), 2, 21);
   printSize(vct2);
 

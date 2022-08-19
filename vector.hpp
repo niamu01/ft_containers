@@ -211,7 +211,6 @@ namespace ft {
       _end(_start),
       _size(0),
       _capacity(0) {};
-//    { (void)alloc; vector(0); };
 
     explicit vector (size_type n, const value_type& val = value_type(),
       const allocator_type& alloc = allocator_type())
@@ -226,22 +225,21 @@ namespace ft {
       };
 
     template <class InputIterator>
-      vector (InputIterator first, InputIterator last,
-        const allocator_type& alloc = allocator_type(),
-        typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0 )
-        : _allocator(alloc) {
-          difference_type diff = ft::distance(first, last);
-          _size = diff;
-          _capacity = cal_cap(_size, 0);
-          _start = this->_allocator.allocate(_capacity);
-          _end = _start;
+    vector (InputIterator first, InputIterator last,
+      const allocator_type& alloc = allocator_type(),
+      typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0 )
+      : _allocator(alloc) {
+        difference_type diff = ft::distance(first, last);
+        _size = diff;
+        _capacity = cal_cap(_size, 0);
+        _start = this->_allocator.allocate(_capacity);
+        _end = _start;
 
-          while (diff--) {
-            this->_allocator.construct(_end++, *first++);
-          }
-        };
+        while (diff--) {
+          this->_allocator.construct(_end++, *first++);
+        }
+      };
 
-      //(4) copy constructor
     vector (const vector& x)
     : _allocator(x._allocator) {
       value_type n = x._size;
@@ -266,26 +264,13 @@ namespace ft {
       this->_capacity = 0;
     };
 
-    // May throw implementation-defined exceptions. <- ?
-
     vector& operator=( const vector& other ) {
-
       if (this != &other) {
         this->clear();
 
         for(const_iterator it = other.begin(); it != other.end(); it++)
           this->push_back(*it);
 
-//        for (pointer p = other._start; p != other._end; p++)
-//          this->push_back(*p);
-
-//        const_iterator first = other.begin();
-//        const_iterator second = other.end();
-//        while (*first != *second) {
-//          this->push_back(*first++);
-//        }
-
-//        this->insert(this->begin(), other._start, other._end);
         this->_capacity = other._size;
       }
       return *this;
@@ -309,7 +294,7 @@ namespace ft {
     void assign( InputIt first, InputIt last,
       typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = 0 ) {
         size_type diff = ft::distance(first, last);
-        // if (_capacity < diff)
+
         this->clear();
 
         this->_start = this->_allocator.allocate(diff);
@@ -432,7 +417,7 @@ namespace ft {
 
       for (size_type i = 0; i < this->_size; i++) {
         _allocator.construct(&temp[i], _start[i]);
-        _allocator.destroy(_start); //[i]?
+        _allocator.destroy(_start[i]); //[i]?
       }
 
       _allocator.deallocate(_start, _capacity);
@@ -453,56 +438,47 @@ namespace ft {
       this->_size = 0;
     };
 
-    // insert value before pos
-    // return iterator pointing to the inserted value
     iterator insert( iterator pos, const T& value ) {
-      if (_end == NULL) {
-        _start = _allocator.allocate(1);
-        _end = _start;
-        _allocator.construct(_start, value);
-        _size++;
-        _end++;
-        _capacity = cal_cap(_size, _capacity);
-        return iterator(this->_start);
-      }
+      size_type n = &(*pos) - _start;
+      insert(pos, 1, value);
 
-      difference_type size = ft::distance(this->begin(), pos) + 1;
-      if (_size + 1 > _capacity)
-        this->reserve(cal_cap(_size + 1, _capacity));
-      for (size_type i = 0; i <= _size - size; i++) {
-        this->_allocator.construct(_end - i, *(_end - i - 1));
-      }
-      this->_allocator.construct(_start + size, value);
-      this->_size++;
-      this->_end++;
-      this->_capacity = cal_cap(_size, _capacity);
-      return iterator(this->_start + size);
+      return (iterator(_start + n));
     };
 
-    // insert count copies of the value before pos
-    // return iterator pointing to the first element inserted
-    // or return pos if count == 0
     void insert( iterator pos, size_type count, const T& value ) {
-      while (count--)
-        this->insert(pos++, value);
-    };
+      size_type n;
+      pointer temp_end = _end;
 
-    // insert first~last before pos
-    // return iterator pointing to the first element inserted
-    // or return pos if first == last
+      if (_end == NULL) {
+        n = 0;
+        _start = _allocator.allocate(count);
+        _end = _start + count;
+        temp_end = _start;
+      } else {
+        n = &(*pos) - _start;
+        _end = _end + count;
+      }
+
+      for (size_type i = 0; i < _size - n + count; ++i) {
+        this->_allocator.construct(temp_end + count - i, *(temp_end - i));
+        this->_allocator.destroy(temp_end - i);
+      }
+
+      for (size_type j = 0; j < count; j++) {
+        _allocator.construct(_start + n + j, value);
+      }
+
+      _size += count;
+      _capacity = cal_cap(_size, _capacity);
+};
+
     template< class InputIt >
     void insert( iterator pos, InputIt first, InputIt last,
       typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = 0 ) {
-        while (first != last)
-          insert(pos++, *first++);
+      while (first != last)
+        insert(pos++, *first++);
     };
 
-    //erase first ~ last - 1
-    /* return Iterator following the last removed element.
-    If pos refers to the last element, then the end() iterator is returned.
-    If last==end() prior to removal, then the updated end() iterator is returned.
-    If [first, last) is an empty range, then last is returned.
-    */
     iterator erase( iterator pos ) {
       size_type i = 0;
       for (; pos + i != this->end(); i++) {
@@ -525,12 +501,6 @@ namespace ft {
       return first;
     };
 
-    /*
-    Calling push_back will cause reallocation (when size()+1 > capacity()),
-    so some implementations also throw std::length_error
-    when push_back causes a reallocation that would exceed max_size
-    (due to implicitly calling an equivalent of -(size()+1)).
-    */
     void push_back( const T& value ) {
       if (this->_size == 0) {
         this->reserve(1);
