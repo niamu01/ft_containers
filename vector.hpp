@@ -417,7 +417,7 @@ namespace ft {
 
       for (size_type i = 0; i < this->_size; i++) {
         _allocator.construct(&temp[i], _start[i]);
-        _allocator.destroy(_start[i]); //[i]?
+        _allocator.destroy(_start); //[i]?
       }
 
       _allocator.deallocate(_start, _capacity);
