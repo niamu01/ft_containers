@@ -43,41 +43,46 @@ void getinfo(const ft::vector<int>& vec) {
   std::cout << "end===================" << std::endl;
 }
 
+#define TESTED_TYPE int
 
 int		main(void)
 {
-  ft::vector<int> vct(10);
-  ft::vector<int> vct2;
-  ft::vector<int> vct3;
+  const int size = 5;
+  ft::vector<TESTED_TYPE> vct(size);
+  ft::vector<TESTED_TYPE>::reverse_iterator it = vct.rbegin();
+  ft::vector<TESTED_TYPE>::const_reverse_iterator ite = vct.rbegin();
+  std::cout << *(it) << std::endl;
 
-  for (unsigned long int i = 0; i < vct.size(); ++i)
-    vct[i] = (vct.size() - i) * 3;
-  printSize(vct);
+  for (int i = 0; i < size; ++i)
+    it[i] = (size - i) * 5;
 
-  vct2.insert(vct2.end(), 42);
-  printSize(vct2);
-  vct2.insert(vct2.begin(), 2, 21);
-  printSize(vct2);
+  std::cout << *(it) << std::endl;
+  it = it + 1;
+  std::cout << *(it) << std::endl;
+  it = it + 1;
+  std::cout << *(it) << std::endl;
+  it = it + 1;
+  std::cout << *(it) << std::endl;
+  it = it + 1;
+  std::cout << *(it) << std::endl;
+  it = it + 1;
+  std::cout << *(it) << std::endl;
+  it = it - 4;
+  std::cout << *(it) << std::endl;
 
-  vct2.insert(vct2.end() - 2, 42);
-  printSize(vct2);
+  std::cout << *(it += 2) << std::endl;
+  std::cout << *(it -= 1) << std::endl;
 
-  vct2.insert(vct2.end(), 2, 84);
-  printSize(vct2);
+  *(it -= 2) = 42;
+  *(it += 2) = 21;
 
-  vct2.resize(4);
-  printSize(vct2);
+  std::cout << "const_ite +=/-=: " << *(ite += 2) << " | " << *(ite -= 2) << std::endl;
 
-  vct2.insert(vct2.begin() + 2, vct.begin(), vct.end());
-  vct.clear();
-  printSize(vct2);
+  std::cout << "(it == const_it): " << (ite == it) << std::endl;
+  std::cout << "(const_ite - it): " << (ite - it) << std::endl;
+  std::cout << "(ite + 3 == it): " << (ite + 3 == it) << std::endl;
 
-  printSize(vct);
-
-  for (int i = 0; i < 5; ++i)
-    vct3.insert(vct3.end(), i);
-  vct3.insert(vct3.begin() + 1, 2, 111);
-  printSize(vct3);
+  printSize(vct, true);
 
 //  const int size = 5;
 //  ft::vector<int> vct(size);
