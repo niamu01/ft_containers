@@ -458,9 +458,11 @@ namespace ft {
       return (iterator(_start + n));
     };
 
+    //todo: fix
     void insert( iterator pos, size_type count, const T& value ) {
       size_type n;
       pointer temp_end = _end;
+      size_type n_pos = ft::distance(begin(), pos);
 
       if (_size == 0) {
         n = 0;
@@ -472,13 +474,13 @@ namespace ft {
         _end = _end + count;
       }
 
-      for (size_type i = 0; i < _size - n + count; ++i) {
-        this->_allocator.construct(temp_end + count - i, *(temp_end - i));
-        this->_allocator.destroy(temp_end - i);
+      for (size_type i = 0; i < count; ++i) {
+        this->_allocator.construct(_start + n_pos - i, *(_start + n_pos - i - 1));
+        this->_allocator.destroy(_start + n_pos - i - 1);
       }
 
       for (size_type j = 0; j < count; j++) {
-        _allocator.construct(_start + n + j, value);
+        _allocator.construct(_start + n_pos - j, value);
       }
 
       _size += count;
@@ -488,31 +490,35 @@ namespace ft {
     template< class InputIt >
     void insert( iterator pos, InputIt first, InputIt last,
       typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = 0 ) {
-        size_type n;
-        pointer temp_end = _end;
-        size_type count = ft::distance(first, last);
+//        size_type count = ft::distance(first, last);
 
-        if (_size == 0) {
-          n = 0;
-          _start = _allocator.allocate(count);
-          _end = _start + count;
-          temp_end = _start;
-        } else {
-          n = &(*pos) - _start;
-          _end = _end + count;
-        }
+        while (first != last)
+          insert(pos, 1, *last--);
 
-        for (size_type i = 0; i < _size - n + count; ++i) {
-          this->_allocator.construct(temp_end + count - i, *(temp_end - i));
-          this->_allocator.destroy(temp_end - i);
-        }
-
-        for (size_type j = 0; j < count; j++) {
-          _allocator.construct(_start + n + j, *first++);
-        }
-
-        _size += count;
-        _capacity = cal_cap(_size, _capacity);
+//        size_type n = 0;
+//        pointer temp_end = _end;
+//        size_type count = ft::distance(first, last);
+//
+//        if (_size == 0) {
+//          _start = _allocator.allocate(count);
+//          _end = _start + count;
+//          temp_end = _start;
+//        } else {
+//          n = &(*pos) - _start;
+//          _end = _end + count;
+//        }
+//
+//        for (size_type i = 0; i < _size - n + count; ++i) {
+//          this->_allocator.construct(_start + _size - n + count - i, *(_start + _size - n + count - i));
+//          this->_allocator.destroy(_start + _size - n - i);
+//        }
+//
+//        for (size_type j = 0; j < count; j++) {
+//          _allocator.construct(_start + n + j, *first++);
+//        }
+//
+//        _size += count;
+//        _capacity = cal_cap(_size, _capacity);
     };
 
     iterator erase( iterator pos ) {
