@@ -271,8 +271,12 @@ namespace ft {
         for(const_iterator it = other.begin(); it != other.end(); it++)
           this->push_back(*it);
 
+//      this->insert(this->end(), other.begin(), other.end());
+
+        this->_size = other._size;
         this->_capacity = other._size;
       }
+
       return *this;
     };
 
@@ -407,7 +411,7 @@ namespace ft {
 
     void reserve( size_type new_cap ) {
       if (new_cap > this->max_size())
-        throw std::length_error("vector");
+        throw std::length_error("reserve");
         
       if (new_cap <= this->_capacity) {
         return;
@@ -416,6 +420,10 @@ namespace ft {
       pointer temp = _allocator.allocate(new_cap);
 
       for (size_type i = 0; i < this->_size; i++) {
+//        std::cout
+//        << "start: " << _start[i]
+//        << "temp: " << &temp[i]
+//        << std::endl;
         _allocator.construct(&temp[i], _start[i]);
         _allocator.destroy(_start); //[i]?
       }
@@ -548,15 +556,21 @@ namespace ft {
     };
 
     void resize( size_type count, T value = T() ) {
+      if (count > this->max_size())
+        throw (std::length_error("resize"));
+
+      if (_size == 0)
+        return;
+
       int range = count - this->_size;
 
       if (range >= 0) {
-        while (range--) {
-          this->_allocator.allocate(1);
-          this->_allocator.construct(this->_start + count + range, value);
-          this->_size++;
-          this->_end++;
-        }
+        this->insert(this->end(), range, value);
+//        while (range--) {
+//          this->_allocator.allocate(1);
+//          this->_allocator.construct(this->_start + _size, value);
+//          this->_size++;
+//          this->_end++;
       } else {
         while (range++ < 0) {
           this->_end--;
@@ -607,7 +621,7 @@ void swap( ft::vector<T,Alloc>& lhs, ft::vector<T,Alloc>& rhs ) {
 /* operator */
 template< class T, class Alloc >
 bool operator==( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
-  return lhs.size() != rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin());
+  return lhs.size() == rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin());
 }
 
 template< class T, class Alloc >
