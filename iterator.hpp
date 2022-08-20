@@ -87,9 +87,9 @@ namespace ft {
     };
 
     reference operator*() const {
-//    Iterator temp = _current;
-//    return *--temp;
-      return *_current;
+    Iterator temp = _current;
+    return *--temp;
+//      return *_current;
     };
 
     pointer operator->() const {
