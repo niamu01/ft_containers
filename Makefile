@@ -1,5 +1,6 @@
 NAME = a.out
-CXXFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
+CXXFLAGS = -Wall -Wextra -Werror
+CXXFLAGS += -g -fsanitize=address
 SRCS = vector_test.cpp
 OBJS = $(SRCS:.cpp=.o)
 
