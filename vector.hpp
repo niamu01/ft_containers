@@ -458,33 +458,48 @@ namespace ft {
       return (iterator(_start + n));
     };
 
-    //todo: fix
     void insert( iterator pos, size_type count, const T& value ) {
-      size_type n;
-      pointer temp_end = _end;
-      size_type n_pos = ft::distance(begin(), pos);
+      if (count == 0)
+        return ;
 
-      if (_size == 0) {
-        n = 0;
-        _start = _allocator.allocate(count);
-        _end = _start + count;
-        temp_end = _start;
+      if (count > this->max_size())
+        throw (std::length_error("insert"));
+
+      size_type pos_idx = &(*pos) - _start;
+
+      if (_capacity - _size >= count) {
+        for (size_type i = 0; i < _size - pos_idx; i++)
+          _allocator.construct(_end - i + (count - 1), *(_end - i - 1));
+        _end += count;
+        while (count--)
+          _allocator.construct(&(*pos) + (count - 1), value);
       } else {
-        n = &(*pos) - _start;
-        _end = _end + count;
-      }
+        pointer new_start;
+        pointer new_end;
+        int new_capacity;
 
-      for (size_type i = 0; i < count; ++i) {
-        this->_allocator.construct(_start + n_pos - i, *(_start + n_pos - i - 1));
-        this->_allocator.destroy(_start + n_pos - i - 1);
-      }
+        new_capacity = (_size + count) * 2; //*2
+        new_start = _allocator.allocate(new_capacity);
+        new_end = new_start + _size + count;
 
-      for (size_type j = 0; j < count; j++) {
-        _allocator.construct(_start + n_pos - j, value);
-      }
+        for (int i = 0; i < pos_idx; i++)
+          _allocator.construct(new_start + i, *(_start + i));
 
-      _size += count;
-      _capacity = cal_cap(_size, _capacity);
+        for (size_type j = 0; j < count; j++)
+          _allocator.construct(new_start + pos_idx + j, value);
+
+        for (size_type m = 0; m < (_size - pos_idx); m++)
+          _allocator.construct(new_end - m - 1, *(_end - m - 1));
+
+        for (size_type n = 0; n < _size; n++)
+          _allocator.destroy(_start + n);
+        _allocator.deallocate(_start, _capacity);
+
+        _start = new_start;
+        _end = new_end;
+        _size = _size + count;
+        _capacity = new_capacity;
+      }
     };
 
     template< class InputIt >
