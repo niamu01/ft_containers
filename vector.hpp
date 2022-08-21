@@ -478,7 +478,7 @@ namespace ft {
         pointer new_end;
         size_type new_capacity;
 
-        new_capacity = (_size + count) * 2; //*2
+        new_capacity = cal_cap(_size + count, _capacity); //todo
         new_start = _allocator.allocate(new_capacity);
         new_end = new_start + _size + count;
 
