@@ -7,6 +7,8 @@
   #include "vector.hpp"
 #endif
 
+
+#define TESTED_TYPE int
 #define T_SIZE_TYPE typename ft::vector<T>::size_type
 
 template <typename T>
@@ -43,46 +45,43 @@ void getinfo(const ft::vector<int>& vec) {
   std::cout << "end===================" << std::endl;
 }
 
-#define TESTED_TYPE int
 
+void	is_empty(ft::vector<TESTED_TYPE> const &vct)
+{
+std::cout << "is_empty: " << vct.empty() << std::endl;
+}
+
+template <class T, class Alloc>
+void	cmp(const ft::vector<T, Alloc> &lhs, const ft::vector<T, Alloc> &rhs)
+{
+  static int i = 0;
+
+  std::cout << "############### [" << i++ << "] ###############"  << std::endl;
+  std::cout << "==: " << (lhs == rhs) << " | !=: " << (lhs != rhs) << std::endl;
+  std::cout << "< : " << (lhs <  rhs) << " | <=: " << (lhs <= rhs) << std::endl;
+  std::cout << "> : " << (lhs >  rhs) << " | >=: " << (lhs >= rhs) << std::endl;
+}
+#define TESTED_TYPE int
+#include <list>
 int		main(void)
 {
-  const int size = 5;
-  ft::vector<TESTED_TYPE> vct(size);
-  ft::vector<TESTED_TYPE>::reverse_iterator it = vct.rbegin();
-  ft::vector<TESTED_TYPE>::const_reverse_iterator ite = vct.rbegin();
-  std::cout << *(it) << std::endl;
+  std::list<TESTED_TYPE> lst;
+  std::list<TESTED_TYPE>::iterator lst_it;
+  for (int i = 1; i < 5; ++i)
+    lst.push_back(i * 3);
 
-  for (int i = 0; i < size; ++i)
-    it[i] = (size - i) * 5;
+  ft::vector<TESTED_TYPE> vct(lst.begin(), lst.end());
+  printSize(vct);
 
-  std::cout << *(it) << std::endl;
-  it = it + 1;
-  std::cout << *(it) << std::endl;
-  it = it + 1;
-  std::cout << *(it) << std::endl;
-  it = it + 1;
-  std::cout << *(it) << std::endl;
-  it = it + 1;
-  std::cout << *(it) << std::endl;
-  it = it + 1;
-  std::cout << *(it) << std::endl;
-  it = it - 4;
-  std::cout << *(it) << std::endl;
+  lst_it = lst.begin();
+  for (int i = 1; lst_it != lst.end(); ++i)
+    *lst_it++ = i * 5;
+  vct.assign(lst.begin(), lst.end());
+  printSize(vct);
 
-  std::cout << *(it += 2) << std::endl;
-  std::cout << *(it -= 1) << std::endl;
+  vct.insert(vct.end(), lst.rbegin(), lst.rend());
+  printSize(vct);
 
-  *(it -= 2) = 42;
-  *(it += 2) = 21;
-
-  std::cout << "const_ite +=/-=: " << *(ite += 2) << " | " << *(ite -= 2) << std::endl;
-
-  std::cout << "(it == const_it): " << (ite == it) << std::endl;
-  std::cout << "(const_ite - it): " << (ite - it) << std::endl;
-  std::cout << "(ite + 3 == it): " << (ite + 3 == it) << std::endl;
-
-  printSize(vct, true);
 
 //  const int size = 5;
 //  ft::vector<int> vct(size);

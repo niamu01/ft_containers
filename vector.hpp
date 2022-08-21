@@ -502,14 +502,44 @@ namespace ft {
       }
     };
 
+    //todo: fix
     template< class InputIt >
     void insert( iterator pos, InputIt first, InputIt last,
       typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = 0 ) {
-//        size_type count = ft::distance(first, last);
 
+        size_type count = ft::distance(first, last);
+//        size_type pos_idx = &(*pos) - _start;
+
+        if (_capacity - ft::distance(begin(), end()) >= 0) {
+          for (size_type i = 0; i < count; i++){
+            _allocator.construct(&(*pos) + i, *first); //_start + pos_idx
+          }
+        } else {
+          pointer temp_start = _allocator.allocate(_size + count);
+          pointer temp_end = temp_start + count;
+
+//          for (int a = 0; a < &(*pos) - _start; a++)
+//            _allocator.construct(new_start + a, *(_start + a));
+//          for (int b = 0; &(*first) != &(*last); first++, b++)
+//            _allocator.construct(new_start + (&(*pos) - _start) + b, *first);
+//          for (size_type c = 0; c < this->size() - (&(*pos) - _start); c++)
+//            _allocator.construct(new_start + (&(*pos) - _start) + dist + c, *(_start + (&(*pos) - _start) + c));
+
+          for (size_type j = 0; j < _size; j++)
+            _allocator.destory(_start + j);
+          _allocator.deallocate(_start, _capacity);
+
+          _start = temp_start;
+          _end = temp_end;
+          _size = _size + count;
+          _capacity = _size;
+        }
+
+/*============================================================================*/
+//        size_type count = ft::distance(first, last);
         while (first != last)
           insert(pos, 1, *last--);
-
+/*============================================================================*/
 //        size_type n = 0;
 //        pointer temp_end = _end;
 //        size_type count = ft::distance(first, last);
