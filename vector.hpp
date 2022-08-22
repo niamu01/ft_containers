@@ -420,12 +420,8 @@ namespace ft {
       pointer temp = _allocator.allocate(new_cap);
 
       for (size_type i = 0; i < this->_size; i++) {
-//        std::cout
-//        << "start: " << _start[i]
-//        << "temp: " << &temp[i]
-//        << std::endl;
         _allocator.construct(&temp[i], _start[i]);
-        _allocator.destroy(_start); //[i]?
+        _allocator.destroy(_start);
       }
 
       _allocator.deallocate(_start, _capacity);
@@ -452,7 +448,7 @@ namespace ft {
 
       size_type pos_idx = &(*pos) - _start;
 
-      if (_capacity >= _size + 1) {
+      if (_capacity >= _size + 1) { // || _size == 0) {
         for (size_type i = 0; i < _size - pos_idx; i++)
           _allocator.construct(_end - i, *(_end - i - 1));
         _allocator.construct(_start + pos_idx, value);
@@ -501,14 +497,30 @@ namespace ft {
       if (_capacity >= _size + count) {
         pointer temp_end = _end + count;
 
-        for (size_type i = 0; i < _size - pos_idx; i++)
-          _allocator.construct(_end - i, *(_end - i - 1));
-
-        while (count--) {
-          _allocator.construct(&(*pos) + (count - 1), value);
+        if (_capacity - _size >= count)
+        {
+          for (size_type i = 0; i < this->size() - pos_idx; i++)
+            _allocator.construct(_end - i + (count - 1), *(_end - i - 1));
+          _end += count;
+          while (count)
+          {
+            _allocator.construct(&(*pos) + (count - 1), value);
+            count--;
+          }
         }
-
         _end = temp_end;
+
+
+//        size_type temp_count = count;
+//        while (count--) {
+//          for (size_type i = 0; i < _size - pos_idx; i++)
+//            _allocator.construct(_end - i, *(_end - i - 1));
+//        }
+//
+//        while (temp_count--) {
+//          _allocator.construct(&(*pos) + (temp_count - 1), value);
+//        }
+
       } else {
         pointer new_start;
         pointer new_end;
