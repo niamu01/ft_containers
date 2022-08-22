@@ -413,7 +413,7 @@ namespace ft {
       if (new_cap > this->max_size())
         throw std::length_error("reserve");
         
-      if (new_cap <= this->_capacity) {
+      if (new_cap < this->_capacity) { //<=
         return;
       }
 
@@ -506,6 +506,7 @@ namespace ft {
           {
             _allocator.construct(&(*pos) + (count - 1), value);
             count--;
+            _size++;
           }
         }
         _end = temp_end;
@@ -571,8 +572,9 @@ namespace ft {
         for (size_type i = 0; i < _size - pos_idx; i++)
           _allocator.construct(_end - i + (count - 1), *(_end - i - 1));
         _end += count;
+        _size += count;
         while (count--)
-          _allocator.construct(&(*pos) + (count - 1), *first++);
+          _allocator.construct(&(*pos) + count, *first++);
       } else {
         pointer new_start;
         pointer new_end;
