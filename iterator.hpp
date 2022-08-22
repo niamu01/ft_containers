@@ -204,7 +204,7 @@ namespace ft {
   size_type distance(iterator first, iterator second) {
     size_type ret = 0;
 
-    while (*first != *second) {
+    while (first != second) {
       *first++;
       ret++;
     }

@@ -447,32 +447,68 @@ namespace ft {
     };
 
     iterator insert( iterator pos, const T& value ) {
-      size_type n;
-      if (_size == 0)
-        n = 0;
-      else
-        n = &(*pos) - _start;
+      if (_size + 1 > this->max_size())
+        throw (std::length_error("insert"));
 
-      insert(pos, 1, value);
+      size_type pos_idx = &(*pos) - _start;
 
-      return (iterator(_start + n));
+      if (_capacity >= _size + 1) {
+        for (size_type i = 0; i < _size - pos_idx; i++)
+          _allocator.construct(_end - i, *(_end - i - 1));
+        _allocator.construct(_start + pos_idx, value);
+        _size = _size + 1;
+        _end = _end + 1;
+      } else {
+        pointer new_start;
+        pointer new_end;
+        size_type new_capacity;
+
+        new_capacity = cal_cap(_size + 1, _capacity);
+        new_start = _allocator.allocate(new_capacity);
+        new_end = new_start + _size + 1;
+
+        for (size_type i = 0; i < pos_idx; i++)
+          _allocator.construct(new_start + i, *(_start + i));
+
+        for (size_type j = 0; j < 1; j++)
+          _allocator.construct(new_start + pos_idx + j, value);
+
+        for (size_type m = 0; m < (_size - pos_idx); m++)
+          _allocator.construct(new_end - m - 1, *(_end - m - 1));
+
+        for (size_type n = 0; n < _size; n++)
+          _allocator.destroy(_start + n);
+        _allocator.deallocate(_start, _capacity);
+
+        _start = new_start;
+        _end = new_end;
+        _size = _size + 1;
+        _capacity = new_capacity;
+      }
+
+      return (iterator(_start + pos_idx));
     };
 
     void insert( iterator pos, size_type count, const T& value ) {
       if (count == 0)
         return ;
 
-      if (count > this->max_size())
+      if (_size + count > this->max_size())
         throw (std::length_error("insert"));
 
       size_type pos_idx = &(*pos) - _start;
 
-      if (_capacity - _size >= count) {
+      if (_capacity >= _size + count) {
+        pointer temp_end = _end + count;
+
         for (size_type i = 0; i < _size - pos_idx; i++)
-          _allocator.construct(_end - i + (count - 1), *(_end - i - 1));
-        _end += count;
-        while (count--)
+          _allocator.construct(_end - i, *(_end - i - 1));
+
+        while (count--) {
           _allocator.construct(&(*pos) + (count - 1), value);
+        }
+
+        _end = temp_end;
       } else {
         pointer new_start;
         pointer new_end;
@@ -488,7 +524,7 @@ namespace ft {
         for (size_type j = 0; j < count; j++)
           _allocator.construct(new_start + pos_idx + j, value);
 
-        for (size_type m = 0; m < (_size - pos_idx); m++)
+        for (size_type m = 0; m < _size - pos_idx; m++)
           _allocator.construct(new_end - m - 1, *(_end - m - 1));
 
         for (size_type n = 0; n < _size; n++)
