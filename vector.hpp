@@ -574,7 +574,7 @@ namespace ft {
         _end += count;
         _size += count;
         while (count--)
-          _allocator.construct(&(*pos) + count, *first++);
+          _allocator.construct(&(*pos) + count, *--last);
       } else {
         pointer new_start;
         pointer new_end;
