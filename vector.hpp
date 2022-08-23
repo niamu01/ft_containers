@@ -9,9 +9,6 @@
 #include "type_traits.hpp" //ft::enable_if, ft::is_integral
 #include "algorithm.hpp" //ft::equal
 
-// #include <iterator> //random_access_iterator_tag
-// #include <type_traits> //std::enable_if, std::is_integral -> delete
-
 namespace ft {
   template <typename T>
   class vector_iterator {
@@ -44,8 +41,6 @@ namespace ft {
     };
 
     reference operator*() const {
-//    pointer temp = _p;
-//    return *--temp;
       return *_p;
     };
 
@@ -61,7 +56,7 @@ namespace ft {
 
     vector_iterator operator++(int) {
       vector_iterator ip = *this;
-      ++(*this); //++_p;
+      ++(*this);
 
       return ip;
     };
@@ -74,7 +69,7 @@ namespace ft {
 
     vector_iterator operator--(int) {
       vector_iterator ip = *this;
-      --(*this); //--_p;
+      --(*this);
 
       return ip;
     };
@@ -85,10 +80,6 @@ namespace ft {
     bool operator> (const vector_iterator<T>& other) const { return (this->_p >  other._p); };
     bool operator<=(const vector_iterator<T>& other) const { return (this->_p <= other._p); };
     bool operator>=(const vector_iterator<T>& other) const { return (this->_p >= other._p); };
-//    bool operator< (value_type b) { return 0 < b - this->*_p); ;
-//    bool operator> (value_type b) { return this->*_p > b); ;
-//    bool operator<=(value_type b) { return !(this->*_p > b)); ;
-//    bool operator>=(value_type b) { return !(0 < b - this->*_p)); ;
 
     vector_iterator& operator+=(difference_type n) {
       _p += n;
@@ -107,7 +98,6 @@ namespace ft {
     };
 
     vector_iterator operator- (difference_type n) const {
-//      return vector_iterator(_p - n);
       return vector_iterator(base()-n);
     };
 
@@ -117,11 +107,6 @@ namespace ft {
   };
 
   /*  NON-MEMBER OPERATOR OVERLOADS  */
-//  template< class Iter >
-//    typename vector_iterator<Iter>::difference_type
-//      operator+ (typename vector_iterator<Iter>::difference_type n, const vector_iterator<Iter>& it) {
-//    return vector_iterator<Iter>(it.base() + n);
-//  }
   template< class Iter >
   vector_iterator<Iter> operator+ (
     typename vector_iterator<Iter>::difference_type n,
@@ -271,8 +256,6 @@ namespace ft {
         for(const_iterator it = other.begin(); it != other.end(); it++)
           this->push_back(*it);
 
-//      this->insert(this->end(), other.begin(), other.end());
-
         this->_size = other._size;
         this->_capacity = other._size;
       }
@@ -355,11 +338,11 @@ namespace ft {
       return *(this->_end - 1);
     };
 
-    T* data() {
+    pointer data() {
       return this->_start;
     };
 
-    const T* data() const {
+    const_pointer data() const {
       return this->_start;
     };
 
@@ -413,9 +396,8 @@ namespace ft {
       if (new_cap > this->max_size())
         throw std::length_error("reserve");
         
-      if (new_cap < this->_capacity) { //<=
+      if (new_cap < this->_capacity)
         return;
-      }
 
       pointer temp = _allocator.allocate(new_cap);
 
@@ -510,24 +492,12 @@ namespace ft {
           }
         }
         _end = temp_end;
-
-
-//        size_type temp_count = count;
-//        while (count--) {
-//          for (size_type i = 0; i < _size - pos_idx; i++)
-//            _allocator.construct(_end - i, *(_end - i - 1));
-//        }
-//
-//        while (temp_count--) {
-//          _allocator.construct(&(*pos) + (temp_count - 1), value);
-//        }
-
       } else {
         pointer new_start;
         pointer new_end;
         size_type new_capacity;
 
-        new_capacity = cal_cap(_size + count, _capacity); //todo
+        new_capacity = cal_cap(_size + count, _capacity);
         new_start = _allocator.allocate(new_capacity);
         new_end = new_start + _size + count;
 
@@ -551,13 +521,9 @@ namespace ft {
       }
     };
 
-    //todo: fix
     template< class InputIt >
     void insert( iterator pos, InputIt first, InputIt last,
       typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = 0 ) {
-//        while (first != last)
-//          insert(pos, 1, *first++);
-
       size_type count = ft::distance(first, last);
 
       if (count == 0)
@@ -580,7 +546,7 @@ namespace ft {
         pointer new_end;
         size_type new_capacity;
 
-        new_capacity = (_size + count) * 2; //*2
+        new_capacity = (_size + count) * 2;
         new_start = _allocator.allocate(new_capacity);
         new_end = new_start + _size + count;
 
@@ -655,11 +621,6 @@ namespace ft {
 
       if (range >= 0) {
         this->insert(this->end(), range, value);
-//        while (range--) {
-//          this->_allocator.allocate(1);
-//          this->_allocator.construct(this->_start + _size, value);
-//          this->_size++;
-//          this->_end++;
       } else {
         while (range++ < 0) {
           this->_end--;
@@ -727,7 +688,6 @@ template< class T, class Alloc >
 bool operator> ( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
   return !ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()) && operator!=(lhs, rhs);
 }
-//== -> 0
 
 template< class T, class Alloc >
 bool operator<=( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ) {
