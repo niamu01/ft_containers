@@ -223,6 +223,8 @@ public:
     Node*                       _parent;
     Node*                       _left;
     Node*                       _right;
+    // bool                        _color; //define 0 BLACK, 1 RED
+    // int                         _height;
   };
 
   allocator_type    _allocator;
