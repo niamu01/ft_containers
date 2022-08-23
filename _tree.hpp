@@ -2,8 +2,7 @@
 #define _TREE_HPP
 
 #include <functional> //std::less
-#include "algorithm.hpp" //ft::use_first
-#include "utility.hpp" //ft::pair, ft::make_pair
+#include "utility.hpp" //ft::pair, ft::make_pair, use_first, rebind
 #include "iterator.hpp" //ft::reverse_iterator, ft::distance
 #include "type_traits.hpp" //ft::enable_if, ft::is_integral
 
@@ -91,8 +90,7 @@ struct tree_node {
 };
 
 template <typename T, typename Pointer = T*, typename Reference = T&>
-struct tree_iterator
-{
+struct tree_iterator {
 //  typedef std::size_t                                             size_type;
   typedef std::ptrdiff_t                                          difference_type;
   typedef T                                                       value_type;
@@ -109,7 +107,7 @@ private: //public:
   node_type* _node;
 
 public:
-  explicit tree_iterator(const node_type* pNode = nullptr) : _node(pNode) {};
+  explicit tree_iterator(const node_type* pNode = NULL) : _node(pNode) {};
 
   tree_iterator(const iterator& other) : _node(other._node) {};
 
@@ -118,6 +116,7 @@ public:
   tree_iterator& operator=(const iterator& x) {
     if (this != &x)
       _node = x._node;
+
     return *this;
   };
 
@@ -182,8 +181,8 @@ public:
 }; // tree_iterator
 
 /*  TREE  */
-
-template <typename Key,
+template <
+  typename Key,
   typename Value,
   typename Compare = std::less<Key>,
   typename Allocator = std::allocator<Value>
@@ -218,12 +217,7 @@ public:
   typedef std::reverse_iterator<iterator>           reverse_iterator;
   typedef std::reverse_iterator<const_iterator>     const_reverse_iterator;
 
-  template< class U >
-  struct rebind {
-    typedef std::allocator <U> other;
-  };
-
-private: //public:
+public:
   struct Node {
     ft::pair<const Key, Value>  _content;
     Node*                       _parent;
@@ -243,8 +237,8 @@ public:
     : _compare(comp),
       _allocator(alloc),
       _size(0),
-      _anchor(nullptr),
-      _root(nullptr) {};
+      _anchor(NULL),
+      _root(NULL) {};
 
   template< class InputIt >
   _tree( InputIt first, InputIt last,
@@ -292,49 +286,49 @@ public:
 /*  ITERATORS  */
   iterator begin() {
     if (_size == 0)
-        return nullptr;
+        return NULL;
     return (iterator(tree_min(_root)));
   };
 
   const_iterator begin() const {
     if (_size == 0)
-      return nullptr;
+      return NULL;
     return (const_iterator(tree_min(_root)));
   };
 
   iterator end() {
     if (_size == 0)
-      return nullptr;
+      return NULL;
     return (++iterator(tree_max(_root)));
   };
 
   const_iterator end() const {
     if (_size == 0)
-      return nullptr;
+      return NULL;
     return (++const_iterator(tree_max(_root)));
   };
 
   reverse_iterator rbegin() {
     if (_size == 0)
-      return nullptr;
+      return NULL;
     return (reverse_iterator(end()));
   };
 
   const_reverse_iterator rbegin() const {
     if (_size == 0)
-      return nullptr;
+      return NULL;
     return (const_reverse_iterator(end()));
   };
 
   reverse_iterator rend() {
     if (_size == 0)
-      return nullptr;
+      return NULL;
     return (reverse_iterator(begin()));
   };
 
   const_reverse_iterator rend() const {
     if (_size == 0)
-      return nullptr;
+      return NULL;
     return (const_reverse_iterator(begin()));
   };
 
@@ -419,7 +413,7 @@ private:
     else if (node && node->right && _compare(node->value.first, key))
       search(key, node->right);
     else
-      return nullptr;
+      return NULL;
     return node;
   };
 

@@ -23,7 +23,7 @@ namespace ft {
     pointer _p;
 
   public:
-    explicit vector_iterator(pointer ptr = nullptr) : _p(ptr) {};
+    explicit vector_iterator(pointer ptr = NULL) : _p(ptr) {};
 
     template<typename Iter>
     vector_iterator(const vector_iterator<Iter>& other) : _p(other.base()) {};
@@ -192,7 +192,7 @@ namespace ft {
   public:
     explicit vector (const allocator_type& alloc = allocator_type())
     : _allocator(alloc),
-      _start(nullptr),
+      _start(NULL),
       _end(_start),
       _size(0),
       _capacity(0) {};
@@ -243,8 +243,8 @@ namespace ft {
 
     ~vector() {
       this->_allocator.deallocate(this->_start, _capacity);
-      this->_start = nullptr;
-      this->_end = nullptr;
+      this->_start = NULL;
+      this->_end = NULL;
       this->_size = 0;
       this->_capacity = 0;
     };

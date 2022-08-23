@@ -87,6 +87,30 @@ namespace ft {
     return (lhs.first >= rhs.first);
   };
 
+  template <typename Pair>
+  struct use_first {
+    typedef typename Pair::first_type result_type;
+
+    const result_type& operator()(const Pair& x) const {
+      return x.first;
+    }
+  };
+
+  template <typename T>
+  struct use_self
+  {
+    typedef T result_type;
+
+    const result_type& operator()(const T& x) const {
+      return x;
+    }
+  };
+
+  template< class U >
+  struct rebind {
+    typedef std::allocator <U> other;
+  };
+
 } //namespace
 
 #endif
