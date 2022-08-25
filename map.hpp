@@ -104,40 +104,41 @@ class map
     reference at( const Key& key ) {};
     const reference at( const Key& key ) const {};
 
-    reference operator[]( const Key& key ) {};
+    reference operator[]( const Key& key ) { return insert(ft::make_pair(key, T())).first->second; };
 
-    iterator begin() {};
+    iterator begin()                      { return _tree.begin(); };
+    const_iterator begin() const          { return _tree.begin(); };
+    iterator end()                        { return _tree.end();   };
+    const_iterator end() const            { return _tree.end();   };
+    reverse_iterator rbegin()             { return _tree.end();   };
+    const_reverse_iterator rbegin() const { return _tree.end();   };
+    reverse_iterator rend()               { return _tree.begin(); };
+    const_reverse_iterator rend() const   { return _tree.begin(); };
 
-    const_iterator begin() const {};
+    bool empty() const { return (_tree.size() == 0); };
 
-    iterator end() {};
-
-    const_iterator end() const {};
-
-    reverse_iterator rbegin() {};
-
-    const_reverse_iterator rbegin() const {};
-
-    reverse_iterator rend() {};
-
-    const_reverse_iterator rend() const {};
-
-    bool empty() const {};
-
-    size_type size() const {};
+    size_type size() const { return _tree.size(); };
 
     size_type max_size() const {};
 
-    void clear() {};
+    void clear() { return _tree.clear(); };
 
-    ft::pair<iterator, bool> insert( const value_type& value ) {};
+    ft::pair<iterator, bool> insert( const value_type& value ) {
+      return _tree.insert(value);
+    };
 
     template< class InputIt >
-    void insert( InputIt first, InputIt last ) {};
+    void insert( InputIt first, InputIt last ) {
+      return _tree.insert(first, last);
+    };
 
-    void erase( iterator pos ) {};
+    void erase( iterator pos ) {
+      return _tree.erase(pos);
+    };
 
-    void erase( iterator first, iterator last ) {};
+    void erase( iterator first, iterator last ) {
+      return _tree.erase(first, last);
+    };
 
     size_type erase( const Key& key ) {};
 
@@ -145,21 +146,21 @@ class map
 
     size_type count( const Key& key ) const {};
 
-    iterator find( const Key& key ) {};
+    iterator find( const Key& key ) { return _tree.find(key); };
 
-    const_iterator find( const Key& key ) const {};
+    const_iterator find( const Key& key ) const { return _tree.find(key); };
 
     ft::pair<iterator,iterator> equal_range( const Key& key ) {};
 
     ft::pair<const_iterator,const_iterator> equal_range( const Key& key ) const {};
 
-    iterator lower_bound( const Key& key ) {};
+    iterator lower_bound( const Key& key )              { return _tree.lower_bound(key); };
 
-    const_iterator lower_bound( const Key& key ) const {};
+    const_iterator lower_bound( const Key& key ) const  { return _tree.lower_bound(key); };
 
-    iterator upper_bound( const Key& key ) {};
+    iterator upper_bound( const Key& key )              { return _tree.upper_bound(key); };
 
-    const_iterator upper_bound( const Key& key ) const {};
+    const_iterator upper_bound( const Key& key ) const  { return _tree.upper_bound(key); };
 
     key_compare key_comp() const {};
 

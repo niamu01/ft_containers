@@ -6,55 +6,6 @@
 #include "iterator.hpp" //ft::reverse_iterator, ft::distance
 #include "type_traits.hpp" //ft::enable_if, ft::is_integral
 
-//template <typename Compare, bool = is_empty<Compare>::value>
-//struct rb_base_compare_ebo
-//{
-//protected:
-//  rb_base_compare_ebo() : mCompare() {}
-//  rb_base_compare_ebo(const Compare& compare) : mCompare(compare) {}
-//
-//  Compare& get_compare() { return mCompare; }
-//  const Compare& get_compare() const { return mCompare; }
-//
-//  template <typename T>
-//  bool compare(const T& lhs, const T& rhs)
-//  {
-//    return mCompare(lhs, rhs);
-//  }
-//
-//  template <typename T>
-//  bool compare(const T& lhs, const T& rhs) const
-//  {
-//    return mCompare(lhs, rhs);
-//  }
-//
-//private:
-//  Compare mCompare;
-//};
-//
-//template <typename Compare>
-//struct rb_base_compare_ebo<Compare, true> : private Compare
-//{
-//protected:
-//  rb_base_compare_ebo() {}
-//  rb_base_compare_ebo(const Compare& compare) : Compare(compare) {}
-//
-//  Compare& get_compare() { return *this; }
-//  const Compare& get_compare() const { return *this; }
-//
-//  template <typename T>
-//  bool compare(const T& lhs, const T& rhs)
-//  {
-//    return Compare::operator()(lhs, rhs);
-//  }
-//
-//  template <typename T>
-//  bool compare(const T& lhs, const T& rhs) const
-//  {
-//    return Compare::operator()(lhs, rhs);
-//  }
-//};
-
 //template <typename Key,
 //  typename Pair,
 //  typename Compare,
@@ -66,16 +17,6 @@
 //  public:
 //  tree_base() {};
 //  tree_base(const Compare& compare) {};
-//};
-//
-//struct tree_node {
-//  typedef tree_node node_type;
-//
-//public:
-//  node_type*  NodeRight;
-//  node_type*  NodeLeft;
-//  node_type*  NodeParent;
-//  char        color;
 //};
 
 template <typename T>
@@ -97,7 +38,7 @@ struct tree_iterator {
   typedef T*                                                      pointer;
   typedef T&                                                      reference;
   typedef tree_node<T>                                            node_type;
-  typedef tree_iterator<T, pointer, reference>                    this_type;
+//  typedef tree_iterator<T, pointer, reference>                    this_type;
   typedef tree_iterator<T, pointer, reference>                    iterator;
   typedef tree_iterator<T, const pointer, const reference>        const_iterator;
 //  typedef rbtree_node_base                                        base_node_type;
@@ -212,10 +153,10 @@ public:
 //  typedef integral_constant<bool, bUniqueKeys>           has_unique_keys_type;
 //  typedef typename tree_node::extract_key                extract_key;
 
-  typedef tree_iterator<value_type>                 iterator;
-  typedef tree_iterator<const value_type>           const_iterator;
-  typedef std::reverse_iterator<iterator>           reverse_iterator;
-  typedef std::reverse_iterator<const_iterator>     const_reverse_iterator;
+  typedef tree_iterator<value_type>                     iterator;
+  typedef tree_iterator<const value_type>               const_iterator;
+  typedef std::reverse_iterator<iterator>               reverse_iterator;
+  typedef std::reverse_iterator<const_iterator>         const_reverse_iterator;
 
 public:
   struct Node {
