@@ -133,18 +133,28 @@ class map
     };
 
     void erase( iterator pos ) {
-      return _tree.erase(pos);
+      _tree.erase(pos);
+      return;
     };
 
     void erase( iterator first, iterator last ) {
-      return _tree.erase(first, last);
+      _tree.erase(first, last);
+      return;
     };
 
-    size_type erase( const Key& key ) {};
+    size_type erase( const Key& key ) {
+      if (_tree.erase(find(key)) //check _tree.erase return value
+        return 1;
+      return 0;
+    };
 
     void swap( map& other ) {};
 
-    size_type count( const Key& key ) const {};
+    size_type count( const Key& key ) const {
+      if (_tree.find(key))
+        return 1;
+      return 0;
+    };
 
     iterator find( const Key& key ) { return _tree.find(key); };
 
@@ -162,7 +172,7 @@ class map
 
     const_iterator upper_bound( const Key& key ) const  { return _tree.upper_bound(key); };
 
-    key_compare key_comp() const {};
+    key_compare key_comp() const { return _comp; };
 
     ft::map::value_compare value_comp() const {};
 
