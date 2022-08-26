@@ -105,6 +105,7 @@ class map
     const reference at( const Key& key ) const {};
 
     reference operator[]( const Key& key ) { return insert(ft::make_pair(key, T())).first->second; };
+//    reference operator[]( const Key& key ) { return insert(ft::make_pair(key, T())).first->second; };
 
     iterator begin()                      { return _tree.begin(); };
     const_iterator begin() const          { return _tree.begin(); };
@@ -212,7 +213,7 @@ class map
   bool operator>= ( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs ) {
     return !(operator<(lhs, rhs));
   };
-//  operator==, !=, <, <=, >, >=, std::swap
+// std::swap
 
 
 

@@ -179,28 +179,28 @@ namespace ft {
     //          Value>, Compare, Allocator,
     //          ft::use_first<ft::pair<const Key, Value> >,
     //          true, true>                                   base_type;
-    typedef Key key_type;
-    typedef Value value_type;
-    typedef tree_node<ft::pair<key_type, value_type> > node_type;
+동    typedef Key                                           key_type;
+    typedef Value                                         value_type;
+    typedef tree_node<ft::pair<key_type, value_type> >    node_type;
     //  typedef ft::pair<const key_type, value_type>          node_type;
-    typedef Compare key_compare;
-    typedef Allocator allocator_type;
-    typedef value_type &reference;
-    typedef const value_type &const_reference;
-    typedef value_type *pointer;
-    typedef const value_type *const_pointer;
-    typedef u_int64_t size_type; //size_t
-    typedef ptrdiff_t difference_type;
+    typedef Compare                                       key_compare;
+    typedef Allocator                                     allocator_type;
+    typedef value_type&                                   reference;
+    typedef const value_type&                             const_reference;
+    typedef value_type*                                   pointer;
+    typedef const value_type*                             const_pointer;
+    typedef std::size_t                                   size_type;
+    typedef std::ptrdiff_t                                difference_type;
 
     //  typedef rbtree_node<value_type>                         node_type;
 
     //  typedef integral_constant<bool, bUniqueKeys>            has_unique_keys_type;
     //  typedef typename tree_node::extract_key                 extract_key;
 
-    typedef tree_iterator<value_type> iterator;
-    typedef tree_iterator<const value_type> const_iterator;
-    typedef std::reverse_iterator <iterator> reverse_iterator;
-    typedef std::reverse_iterator <const_iterator> const_reverse_iterator;
+    typedef tree_iterator<value_type>                     iterator;
+    typedef tree_iterator<const value_type>               const_iterator;
+    typedef std::reverse_iterator <iterator>              reverse_iterator;
+    typedef std::reverse_iterator <const_iterator>        const_reverse_iterator;
 
   private:
     allocator_type  _allocator;
@@ -326,18 +326,29 @@ namespace ft {
       return _size;
     };
 
-    std::pair<iterator, bool> insert(const value_type &value);
+    //insert된 인자의 iterator or element that prevented the insertion && insert성공여부
+    std::pair<iterator, bool> insert(const value_type& value) {
+//      insert()
+      return (ft::make_pair(iterator(value), true));
+      //
+    };
 
-    template<typename InputIterator>
-    void insert(InputIterator first, InputIterator last);
+    //hint: iterator, used as a suggestion as to where to start the search
+    iterator insert( iterator hint, const value_type& value );
+    //Returns an iterator to the inserted element, or to the element that prevented the insertion.
 
-    iterator erase(const_iterator position);
+    template< class InputIt >
+    void insert( InputIt first, InputIt last );
 
-    iterator erase(const_iterator first, const_iterator last);
+    void erase(iterator pos);
 
-    reverse_iterator erase(const_reverse_iterator position);
+    void erase(iterator first, iterator last) {
+      while (first++ != last)
+        erase(first);
+      return ;
+    };
 
-    reverse_iterator erase(const_reverse_iterator first, const_reverse_iterator last);
+    size_type erase(const Key& key);
 
     void clear() {
       for (iterator it = this->begin(); it != this->end(); it++)
