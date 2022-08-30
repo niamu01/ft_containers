@@ -1,19 +1,16 @@
 #include <iostream> //print
 
-#if 1
+#if 0
   #include <map>
   namespace ft = std;
 #else
   #include "map.hpp"
-  #include "_tree.hpp"
 #endif
 
-/* iterator */
-ft::map<int, char> m;
-ft::pair<int, char> p(0, 'a');
+int main(void) {
+  ft::map<int, char> m;
 
-m[0] = 'a';
+  std::cout << m.size() << std::endl;
 
-ft::map<int, char>::iterator it = m.end();
-
-std::cout << *it << std::endl;
+  return 0;
+}
