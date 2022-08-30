@@ -57,9 +57,9 @@ namespace ft {
       };
 
     ~tree_node() {
-      if (value != NULL) {
-        alloc.destroy(value);
-        alloc.deallocate(value, 1);
+      if (_value != NULL) {
+        _allocator.destroy(_value);
+        _allocator.deallocate(_value, 1);
       }
     };
 
@@ -164,7 +164,7 @@ namespace ft {
   }; // tree_iterator
 
 /*  TREE  */
-  template<typename T, typename Compare = ft::less<T>, typename Allocator = std::allocator<T> >
+  template<typename T, typename Compare = std::less<T>, typename Allocator = std::allocator<T> >
   class _tree {
   public:
     typedef Allocator                                     allocator_type;
@@ -176,7 +176,7 @@ namespace ft {
     typedef const value_type*                             const_pointer;
     typedef value_type&                                   reference;
     typedef const value_type&                             const_reference;
-    typedef typename ft::tree_node::color_type            color_type;
+    typedef typename ft::tree_node<T>::color_type         color_type;
     typedef ft::tree_node<T>                              node_type;
     typedef ft::tree_node<T>*                             node_pointer;
     typedef ft::tree_iterator<value_type>                 iterator;
@@ -185,7 +185,7 @@ namespace ft {
 //    typedef ft::tree_iterator<value_type, const_pointer, const_reference>   const_iterator;
     typedef ft::reverse_iterator <iterator>               reverse_iterator;
     typedef ft::reverse_iterator <const_iterator>         const_reverse_iterator;
-    typedef ft::rebind<node_type>::other                  node_allocator_type;
+    typedef typename ft::rebind<node_type>::other         node_allocator_type;
 
   private:
     node_allocator_type     _node_alloc;
@@ -213,7 +213,7 @@ namespace ft {
     };
 
     ~_tree() {
-      erase(begin()); //clear, destroy, deallocate
+//      erase(begin()); //clear, destroy, deallocate
     };
 
     _tree& operator=(const _tree& other) {
@@ -233,7 +233,7 @@ namespace ft {
     };
 
   /*  INSERT  */
-    ft::pair<node_pointer, bool> insert(const value_type& value) {};
+//    ft::pair<node_pointer, bool> insert(const value_type& value) {};
 
   /*  ERASE  */
   /*
@@ -381,7 +381,7 @@ namespace ft {
       node_type* ret_parent = node->_parent;
       node_type* ret_left = node->_left;
       node_type* ret_right = node->_right;
-      RBColor ret_color = node->_color;
+      color_type ret_color = node->_color;
 
       //node의 left/_right 설정
       node->_left = replace->_left;
@@ -406,12 +406,12 @@ namespace ft {
       replace->_parent->_right = node;
 
       //replace의 parent 연결
-      replace->_parent = tmp_parent;
+      replace->_parent = ret_parent;
 
       if (replace->_parent->_value == NULL)
         this->_root = replace;
       node->_color = replace->_color;
-      replace->_color = tmp_color;
+      replace->_color = ret_color;
 
       return (node);
     };
@@ -464,9 +464,9 @@ namespace ft {
       swap(_size, x._size);
     }
 
-    template<typename T>
-    void swap(T& a, T& b) {
-      T temp;
+    template<typename U>
+    void swap(U& a, U& b) {
+      U temp;
 
       temp = a;
       a = b;
@@ -576,15 +576,15 @@ namespace ft {
       //nil
     };
 
-    key_type search(key_type key, node_type *node) {
-      if (node && node->_left && _compare(key, node->_value.first))
-        search(key, node->_left);
-      else if (node && node->_right && _compare(node->_value.first, key))
-        search(key, node->_right);
-      else
-        return NULL;
-      return node;
-    };
+//    key_type search(key_type key, node_pointer node) {
+//      if (node && node->_left && _compare(key, node->_value.first))
+//        search(key, node->_left);
+//      else if (node && node->_right && _compare(node->_value.first, key))
+//        search(key, node->_right);
+//      else
+//        return 0;
+//      return node;
+//    };
 
     void copy(node_pointer node) {
       if(node->_value == NULL)
@@ -641,14 +641,14 @@ namespace ft {
       replace->_parent->_right = node;
 
       //replace의 parent 연결
-      replace->_parent = tmp_parent;
+      replace->_parent = ret_parent;
 
-      if (target == _root)
+      if (replace == _root)
 
         if (replace->_parent->_value == NULL)
           this->_root = replace;
       node->_color = replace->_color;
-      replace->_color = tmp_color;
+      replace->_color = ret_color;
 
       return (node);
     }
@@ -702,49 +702,39 @@ namespace ft {
     };
   };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*  NON-MEMBER FUNCTIONS  */
-  template<class Key, class T, class Compare, class Alloc>
-  bool operator==(const std::map <Key, T, Compare, Alloc> &lhs, const std::map <Key, T, Compare, Alloc> &rhs) {
-    return lhs.base() == rhs.base();
-  }
+//  template<class Key, class T, class Compare, class Alloc>
+//  bool operator==(const ft::map <Key, T, Compare, Alloc> &lhs, const ft::map <Key, T, Compare, Alloc> &rhs) {
+//    return lhs.base() == rhs.base();
+//  }
+//
+//  template<class Key, class T, class Compare, class Alloc>
+//  bool operator!=(const ft::map <Key, T, Compare, Alloc> &lhs, const ft::map <Key, T, Compare, Alloc> &rhs) {
+//    return !(operator==(lhs, rhs));
+//  }
+//
+//  template< class Key, class T, class Compare, class Alloc>
+//  bool operator< (const ft::map <Key, T, Compare, Alloc> &lhs, const ft::map <Key, T, Compare, Alloc> &rhs) {
+//    return lhs.base() < rhs.base();
+//  }
+//
+//  template<class Key, class T, class Compare, class Alloc>
+//  bool operator> (const ft::map <Key, T, Compare, Alloc> &lhs, const ft::map <Key, T, Compare, Alloc> &rhs) {
+//    return lhs.base() > rhs.base();
+//  }
+//
+//  template<class Key, class T, class Compare, class Alloc>
+//  bool operator<=(const ft::map <Key, T, Compare, Alloc> &lhs, const ft::map <Key, T, Compare, Alloc> &rhs) {
+//    return !(operator>(lhs, rhs));
+//  }
+//
+//  template<class Key, class T, class Compare, class Alloc>
+//  bool operator>=(const ft::map <Key, T, Compare, Alloc> &lhs, const ft::map <Key, T, Compare, Alloc> &rhs) {
+//    return !(operator<(lhs, rhs));
+//  }
 
-  template<class Key, class T, class Compare, class Alloc>
-  bool operator!=(const std::map <Key, T, Compare, Alloc> &lhs, const std::map <Key, T, Compare, Alloc> &rhs) {
-    return !(operator==(lhs, rhs));
-  }
 
-  template< class Key, class T, class Compare, class Alloc>
-  bool operator< (const std::map <Key, T, Compare, Alloc> &lhs, const std::map <Key, T, Compare, Alloc> &rhs) {
-    return lhs.base() < rhs.base();
-  }
 
-  template<class Key, class T, class Compare, class Alloc>
-  bool operator> (const std::map <Key, T, Compare, Alloc> &lhs, const std::map <Key, T, Compare, Alloc> &rhs) {
-    return lhs.base() > rhs.base();
-  }
-
-  template<class Key, class T, class Compare, class Alloc>
-  bool operator<=(const std::map <Key, T, Compare, Alloc> &lhs, const std::map <Key, T, Compare, Alloc> &rhs) {
-    return !(operator>(lhs, rhs));
-  }
-
-  template<class Key, class T, class Compare, class Alloc>
-  bool operator>=(const std::map <Key, T, Compare, Alloc> &lhs, const std::map <Key, T, Compare, Alloc> &rhs) {
-    return !(operator<(lhs, rhs));
-  }
 
 } //namespace
 

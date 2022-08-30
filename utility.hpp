@@ -29,7 +29,7 @@ namespace ft {
       second(p.second);
     };
 
-    pair(const pair &p) = default; //defalut
+//    pair(const pair &p) = default; //todo: default?
 
     pair &operator=(const pair &other) {
       first = other.first;

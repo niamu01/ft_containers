@@ -5,6 +5,7 @@
 #include "utility.hpp" //ft::pair, ft::make_pair, use_first, ft::rebind
 #include "iterator.hpp" //ft::reverse_iterator, ft::distance
 #include "type_traits.hpp" //ft::enable_if, ft::is_integral
+#include "algorithm.hpp" //ft::lexicographical_compare
 
 #include "_tree.hpp" //ft::_tree
 
@@ -69,9 +70,9 @@ namespace ft {
     typedef typename ft::_tree<value_type, value_compare>                                 tree_type;
 
   private:
-    ft::rebind<Node>    _allocator;
-    Compare             _comp;
-    tree_type           _tree;
+    ft::rebind<node_type>     _allocator;
+    Compare                   _comp;
+    tree_type                 _tree;
 
   public:
     explicit map( const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type() )
@@ -142,7 +143,7 @@ namespace ft {
     };
 
     size_type erase( const Key& key ) {
-      if (_tree.erase(find(key)) //check _tree.erase return value
+      if (_tree.erase(find(key))) //check _tree.erase return value
         return 1;
       return 0;
     };
@@ -151,7 +152,7 @@ namespace ft {
     void clear() { _tree.clear(); };
 
     key_compare key_comp() const { return key_compare(); };
-    ft::map::value_compare value_comp() const { return value_compare(); };
+    map::value_compare value_comp() const { return value_compare(); };
 
     iterator find( const Key& key ) {
       return iterator(_tree.find(value_type(key, mapped_type())));
