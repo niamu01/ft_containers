@@ -40,15 +40,20 @@ namespace ft {
     : _parent(NULL),
       _left(NULL),
       _right(NULL),
-      _value(value),
+      _value(NULL),
       _color(RED),
-      _allocator(alloc) {};
+      _allocator(alloc) {
+      _value = _allocator.allocate(1);
+      _allocator.construct(_value, val);
+    };
 
-    tree_node(const tree_node &x)
+    tree_node(const tree_node &x,
+              const allocator_type& alloc = allocator_type())
     : _parent(NULL),
       _left(NULL),
       _right(NULL),
-      _allocator(x._allocator) {
+      _value(NULL),
+      _allocator(alloc) {
         if (x._value != NULL) {
           _value = _allocator.allocate(1);
           _allocator.construct(_value, *x._value);
@@ -69,11 +74,11 @@ namespace ft {
   }; // class tree node
 
 /*  ITERATOR  */
-  template<typename T, typename Pointer = T *, typename Reference = T &>
+  template<typename T, typename Pointer = T*, typename Reference = T&>
   struct tree_iterator {
     typedef T                                         value_type;
-    typedef T*                                        pointer;
-    typedef T&                                        reference;
+    typedef pointer                                   pointer;
+    typedef reference                                 reference;
     typedef ft::tree_node<T>                          node_type;
     typedef std::ptrdiff_t                            difference_type;
     typedef std::bidirectional_iterator_tag           iterator_category;
@@ -86,7 +91,7 @@ namespace ft {
 
     tree_iterator(const tree_iterator<T>& other) : _node(other.base()) {};
 
-    ~tree_iterator() {};
+    virtual ~tree_iterator() {};
 
     tree_iterator& operator=(const tree_iterator<T>& x) {
       if (this != &x)
@@ -95,7 +100,7 @@ namespace ft {
       return *this;
     };
 
-    node_type* base() const { //&base
+    node_type* &base() const {
       return _node;
     };
 
@@ -104,10 +109,10 @@ namespace ft {
     };
 
     pointer operator->() const {
-      return _node->_value;
+      return this->_node->_value;
     };
 
-    tree_iterator& operator++() { //if (_node == begin())
+    tree_iterator& operator++() {
       if (_node->_right) {
         _node = _node->_right;
         while (_node->_left)
@@ -131,7 +136,7 @@ namespace ft {
       return (temp);
     };
 
-    tree_iterator& operator--() { //if (_node == end())
+    tree_iterator& operator--() {
       if (_node->_left) {
         _node = _node->_left;
         while (_node->_right)
@@ -179,13 +184,13 @@ namespace ft {
     typedef typename ft::tree_node<T>::color_type         color_type;
     typedef ft::tree_node<T>                              node_type;
     typedef ft::tree_node<T>*                             node_pointer;
-    typedef ft::tree_iterator<value_type>                 iterator;
-    typedef ft::tree_iterator<const value_type>           const_iterator;
-//    typedef ft::tree_iterator<value_type, pointer, reference>               iterator;
-//    typedef ft::tree_iterator<value_type, const_pointer, const_reference>   const_iterator;
-    typedef ft::reverse_iterator <iterator>               reverse_iterator;
-    typedef ft::reverse_iterator <const_iterator>         const_reverse_iterator;
-    typedef typename ft::rebind<node_type>::other         node_allocator_type;
+//    typedef ft::tree_iterator<value_type>                 iterator;
+//    typedef ft::tree_iterator<const value_type>           const_iterator;
+    typedef ft::tree_iterator<value_type, pointer, reference>               iterator;
+    typedef ft::tree_iterator<value_type, const_pointer, const_reference>   const_iterator;
+    typedef ft::reverse_iterator<iterator>               reverse_iterator;
+    typedef ft::reverse_iterator<const_iterator>         const_reverse_iterator;
+    typedef typename ft::rebind<node_type>::other        node_allocator_type;
 
   private:
     node_allocator_type     _node_alloc;
@@ -198,6 +203,8 @@ namespace ft {
     _tree()
     : _node_alloc(node_allocator_type()),
       _compare(key_compare()),
+      _root(NULL),
+      _nil(NULL),
       _size(0) {
       _nil = make_nil();
       _root = _nil;
@@ -205,15 +212,20 @@ namespace ft {
 
     _tree(const _tree& other)
     : _node_alloc(node_allocator_type()),
-      _compare(key_compare()) {
-      _size = other._size;
-      _root = other._root;
+      _compare(key_compare()),
+      _root(NULL),
+      _nil(NULL),
+      _size(0) {
       _nil = make_nil();
+      clear();
+      copy(ohter._root);
       _nil->_parent = tree_max(_root); //todo: check pointer
     };
 
     ~_tree() {
-//      erase(begin()); //clear, destroy, deallocate
+      clear();
+      _node_alloc.destroy(_nil);
+      _node_alloc.deallocate(_nil, 1);
     };
 
     _tree& operator=(const _tree& other) {
@@ -231,6 +243,10 @@ namespace ft {
     size_type size() const {
       return _size;
     };
+
+    size_type max_size() const {
+      return _node_alloc.max_size();
+    }
 
   /*  INSERT  */
 //    ft::pair<node_pointer, bool> insert(const value_type& value) {};
@@ -348,7 +364,7 @@ namespace ft {
         right_rotate(node->_parent);
       }
     };
-*/
+
     void replace_node(node_type* node, node_type* child)
     {
       //노드의 부모가 NULL이 되는 경우를 delete_case에 오지 않게 미리 처리할 수 있다.
@@ -415,7 +431,7 @@ namespace ft {
 
       return (node);
     };
-
+*/
     void clear(node_pointer node = NULL) {
       if (node == NULL)
         node = this->_root;
@@ -440,7 +456,7 @@ namespace ft {
     };
 
     node_pointer find(const value_type& value) {
-      node_type* ret = _root;
+      node_pointer ret = _root;
 
       if (_size == 0)
         return (_nil);
@@ -455,15 +471,6 @@ namespace ft {
       return (ret);
     };
 
-    void swap(_tree& x)
-    {
-      swap(_node_alloc, x._node_alloc);
-      swap(_compare, x._compare);
-      swap(_root, x._root);
-      swap(_nil, x._nil);
-      swap(_size, x._size);
-    }
-
     template<typename U>
     void swap(U& a, U& b) {
       U temp;
@@ -473,23 +480,33 @@ namespace ft {
       b = temp;
     };
 
+    void swap(_tree& x)
+    {
+      swap(_node_alloc, x._node_alloc);
+      swap(_compare, x._compare);
+      swap(_root, x._root);
+      swap(_nil, x._nil);
+      swap(_size, x._size);
+    }
+
     /*  BOUND  */
   //value보다 크거나 같은 범위
     node_pointer lower_bound(const value_type& value) const {
       iterator it(tree_min(_root));
-      iterator ite(tree_max(_root));
+      iterator ite(tree_max(_root)); //ite(_nil)
 
       while (it != ite && _compare(*it, value))
         it++;
 
+      return (it.base());
     };
 
   //value보다 작거나 같은 범위
     node_pointer upper_bound(const value_type& value) const {
       iterator it(tree_min(_root));
-      iterator ite(tree_max(_root));
+      iterator ite(tree_max(_root)); //ite(_nil)
 
-      while (it != ite && !_compare(value, *it)) //todo: search compare lv, rv
+      while (it != ite && !_compare(value, *it))
         it++;
 
       return (it.base());
@@ -573,7 +590,6 @@ namespace ft {
         return (node->_parent->_right);
       if (node->_parent->_right == node)
         return (node->_parent->_left);
-      //nil
     };
 
 //    key_type search(key_type key, node_pointer node) {
@@ -607,52 +623,12 @@ namespace ft {
       return (nil);
     };
 
-//todo: fix this func
-    node_pointer erase_util_replace(node_pointer node) {
-      node_pointer replace;
-      if (node->_left->_value != NULL)
-        replace = tree_max(node->_left);
-      else if (node->_right->_value != NULL)
-        replace = tree_min(replace->_right);
-      else
-        return node; // leaf node or one-node tree
-
-      //지울 노드를 반환하기 위해 node의 원본 값을 저장해둠
-      node_pointer ret_parent = node->_parent;
-      node_pointer ret_left = node->_left;
-      node_pointer ret_right = node->_right;
-      color_type ret_color = node->_color;
-
-      //node를 replace와 바꿈
-//      node->_left = replace->_left;
-//      node->_right = replace->_right;
-
-      //replace를 node자리에 옮김
-      if (ret_parent->_left == node)
-        ret_parent->_left = replace;
-      else if (ret_parent->_right == node)
-        ret_parent->_right = replace;
-
-      ret_left->_parent = replace;
-      replace->_left = ret_left;
-      ret_right->_parent = replace;
-      replace->_right = ret_right;
-      node->_parent = replace->_parent;
-      replace->_parent->_right = node;
-
-      //replace의 parent 연결
-      replace->_parent = ret_parent;
-
-      if (replace == _root)
-
-        if (replace->_parent->_value == NULL)
-          this->_root = replace;
-      node->_color = replace->_color;
-      replace->_color = ret_color;
-
-      return (node);
+    //have to set color, child, parent after
+    node_pointer make_node(const value_type& value) {
+      node_pointer ret = _node_alloc.allocate(1);
+      _node_alloc.construct(ret, node_type(value));
+      return (ret);
     }
-
 
   /*  ROTATE  */
     node_pointer left_rotate(node_pointer p) {
