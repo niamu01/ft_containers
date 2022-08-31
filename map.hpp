@@ -10,12 +10,6 @@
 #include "_tree.hpp" //ft::_tree
 
 namespace ft {
-//  template <typename T> // T -> pair
-//  class map_iterator {
-//  public:
-//
-//  }; //map_iterator
-
   template<
     class     Key,
     class     Value,
