@@ -23,9 +23,7 @@ namespace ft{
 
     stack& operator=(const stack& other) {
       if (this != &other)
-      {
         this->c = other.c;
-      }
       return (*this);
     };
 

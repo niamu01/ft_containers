@@ -227,7 +227,7 @@ namespace ft {
 
     vector (const vector& x)
     : _allocator(x._allocator) {
-      value_type n = x._size;
+      difference_type n = x._size;
 
       _start = _allocator.allocate(n);
       _end = _start;
