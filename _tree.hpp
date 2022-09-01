@@ -44,7 +44,7 @@ namespace ft {
       _color(RED),
       _allocator(alloc) {
       _value = _allocator.allocate(1);
-      _allocator.construct(_value, val);
+      _allocator.construct(_value, value);
     };
 
     tree_node(const tree_node &x,
@@ -74,11 +74,9 @@ namespace ft {
   }; // class tree node
 
 /*  ITERATOR  */
-  template<typename T, typename Pointer = T*, typename Reference = T&>
+  template<typename T, typename pointer = T*, typename reference = T&>
   struct tree_iterator {
     typedef T                                         value_type;
-    typedef pointer                                   pointer;
-    typedef reference                                 reference;
     typedef ft::tree_node<T>                          node_type;
     typedef std::ptrdiff_t                            difference_type;
     typedef std::bidirectional_iterator_tag           iterator_category;
@@ -184,25 +182,26 @@ namespace ft {
     typedef typename ft::tree_node<T>::color_type         color_type;
     typedef ft::tree_node<T>                              node_type;
     typedef ft::tree_node<T>*                             node_pointer;
+    typedef typename ft::rebind<node_type>::other         node_allocator_type;
 //    typedef ft::tree_iterator<value_type>                 iterator;
 //    typedef ft::tree_iterator<const value_type>           const_iterator;
     typedef ft::tree_iterator<value_type, pointer, reference>               iterator;
     typedef ft::tree_iterator<value_type, const_pointer, const_reference>   const_iterator;
-    typedef ft::reverse_iterator<iterator>               reverse_iterator;
-    typedef ft::reverse_iterator<const_iterator>         const_reverse_iterator;
-    typedef typename ft::rebind<node_type>::other        node_allocator_type;
+    typedef ft::reverse_iterator<iterator>                                  reverse_iterator;
+    typedef ft::reverse_iterator<const_iterator>                            const_reverse_iterator;
 
   private:
     node_allocator_type     _node_alloc;
-    key_compare             _compare;
+//    Compare                 _compare;
     node_pointer            _root;
     node_pointer            _nil;
     size_type               _size;
 
   public:
-    _tree()
-    : _node_alloc(node_allocator_type()),
-      _compare(key_compare()),
+    _tree(//const key_compare& comp = key_compare(),
+          const node_allocator_type& alloc = node_allocator_type())
+    : _node_alloc(alloc),
+//      _compare(comp),
       _root(NULL),
       _nil(NULL),
       _size(0) {
@@ -210,16 +209,17 @@ namespace ft {
       _root = _nil;
     };
 
-    _tree(const _tree& other)
-    : _node_alloc(node_allocator_type()),
-      _compare(key_compare()),
+    _tree(const _tree& other, //const key_compare& comp = key_compare(),
+          const node_allocator_type& alloc = node_allocator_type())
+    : _node_alloc(alloc),
+//      _compare(comp),
       _root(NULL),
       _nil(NULL),
       _size(0) {
       _nil = make_nil();
       clear();
-      copy(ohter._root);
-      _nil->_parent = tree_max(_root); //todo: check pointer
+      copy(other._root);
+      _nil->_parent = tree_max(_root);
     };
 
     ~_tree() {
@@ -252,201 +252,23 @@ namespace ft {
 //    ft::pair<node_pointer, bool> insert(const value_type& value) {};
 
   /*  ERASE  */
-  /*
-    //return success
-    bool erase(node_pointer node) {
-      if (node->_value == NULL)
-        return 0; //non-erase
+//    bool erase(node_pointer node) {};
 
-      //setting target
-      node_pointer target = replace_erase_node(node);
-      node_pointer child;
-      if (target->_right->_value == NULL)
-        child = target->_left;
-      else
-        child = target->_right;
-
-      replace_node(target, child);
-      if (target->_color == BLACK)
-      {
-        if (child->_color == RED)
-          child->_color = BLACK;
-        else
-          delete_case1(child);
-      }
-      this->_size--;
-      if (target->_parent->_value == NULL)
-        this->_root = this->_nil;
-      delete target;
-      this->_nil->_parent = tree_max(_root);
-      return (1);
-    };
-
-    void delete_case1(node_type* node)
-    {
-      if (node->_parent->_value != NULL)
-        delete_case2(node);
-    };
-
-    void delete_case2(node_type* node)
-    {
-      node_type* sibling = get_sibling(node);
-      if (sibling->_color == RED)
-      {
-        node->_parent->_color = RED;
-        sibling->_color = BLACK;
-        if (node == node->_parent->_left)
-          left_rotate(node->_parent);
-        else
-          right_rotate(node->_parent);
-      }
-      delete_case3(node);
-    };
-
-    void delete_case3(node_type* node)
-    {
-      node_type* sibling = get_sibling(node);
-      if (node->_parent->_color == BLACK && sibling->_color == BLACK && sibling->_left->_color == BLACK && sibling->_right->_color == BLACK)
-      {
-        sibling->_color = RED;
-        delete_case1(node->_parent);
-      }
-      else
-        delete_case4(node);
-    };
-
-    void delete_case4(node_type* node)
-    {
-      node_type* sibling = get_sibling(node);
-      if (node->_parent->_color == RED && sibling->_color == BLACK && sibling->_left->_color == BLACK && sibling->_right->_color == BLACK)
-      {
-        sibling->_color = RED;
-        node->_parent->_color = BLACK;
-      }
-      else
-        delete_case5(node);
-    };
-    void delete_case5(node_type* node)
-    {
-      node_type* sibling = get_sibling(node);
-
-      if (sibling->_color == BLACK)
-      {
-        if (node == node->_parent->_left && sibling->_right->_color == BLACK && sibling->_left->_color == RED)
-        {
-          sibling->_color = RED;
-          sibling->_left->_color = BLACK;
-          right_rotate(sibling);
-        }
-        else if (node == node->_parent->_right && sibling->_left->_color == BLACK && sibling->_right->_color == RED)
-        {
-          sibling->_color = RED;
-          sibling->_right->_color = BLACK;
-          left_rotate(sibling);
-        }
-      }
-      delete_case6(node);
-    };
-
-    void delete_case6(node_type* node)
-    {
-      node_type* sibling = get_sibling(node);
-      sibling->_color = node->_parent->_color;
-      node->_parent->_color = BLACK;
-      if (node == node->_parent->_left)
-      {
-        sibling->_right->_color = BLACK;
-        left_rotate(node->_parent);
-      }
-      else
-      {
-        sibling->_left->_color = BLACK;
-        right_rotate(node->_parent);
-      }
-    };
-
-    void replace_node(node_type* node, node_type* child)
-    {
-      //노드의 부모가 NULL이 되는 경우를 delete_case에 오지 않게 미리 처리할 수 있다.
-      child->_parent = node->_parent;
-      if (node->_parent->_left == node)
-        node->_parent->_left = child;
-      else// if (node->_parent->_right == node)
-        node->_parent->_right = child;
-    };
-
-    node_type* replace_erase_node(node_type* node)
-    {
-
-      node_type* replace;
-      if (node->_left->_value != NULL)
-      {
-        replace = node->_left;
-        while (replace->_right->_value != NULL)
-          replace = replace->_right;
-      }
-      else if (node->_right->_value != NULL)
-      {
-        replace = node->_right;
-        while (replace->_left->_value != NULL)
-          replace = replace->_left;
-      }
-      else
-        return (node);
-
-      node_type* ret_parent = node->_parent;
-      node_type* ret_left = node->_left;
-      node_type* ret_right = node->_right;
-      color_type ret_color = node->_color;
-
-      //node의 left/_right 설정
-      node->_left = replace->_left;
-      if (replace->_left->_value != NULL)//todo
-        replace->_left->_parent = node;
-      node->_right = replace->_right;
-      if (replace->_right->_value != NULL)
-        replace->_right->_parent = node;
-
-      //replace를 node->_parent의 left/_right로 설정
-      if (ret_parent->_left == node)
-        ret_parent->_left = replace;
-      else if (ret_parent->_right == node)
-        ret_parent->_right = replace;
-
-      //replace와 node가 멀리 떨어진 경우
-      ret_left->_parent = replace;
-      replace->_left = ret_left;
-      ret_right->_parent = replace;
-      replace->_right = ret_right;
-      node->_parent = replace->_parent;
-      replace->_parent->_right = node;
-
-      //replace의 parent 연결
-      replace->_parent = ret_parent;
-
-      if (replace->_parent->_value == NULL)
-        this->_root = replace;
-      node->_color = replace->_color;
-      replace->_color = ret_color;
-
-      return (node);
-    };
-*/
     void clear(node_pointer node = NULL) {
       if (node == NULL)
         node = this->_root;
 
-      if (node->leftChild->value != NULL) {
-        clear(node->leftChild);
-        node->leftChild = this->_nil;
+      if (node->_left->_value != NULL) {
+        clear(node->_left);
+        node->_left = this->_nil;
       }
 
-      if (node->rightChild->value != NULL) {
-        clear(node->rightChild);
-        node->rightChild = this->_nil;
+      if (node->_right->_value != NULL) {
+        clear(node->_right);
+        node->_right = this->_nil;
       }
 
-      if (node->value != NULL) {
+      if (node->_value != NULL) {
         if (node == this->_root)
           this->_root = this->_nil;
         _node_alloc.destroy(node);
@@ -463,9 +285,9 @@ namespace ft {
 
       while (ret->_value != NULL && (_compare(value, *ret->_value) || _compare(*ret->_value, value))) {
         if (_compare(value, *ret->_value))
-          ret = ret->leftChild;
+          ret = ret->_left;
         else
-          ret = ret->rightChild;
+          ret = ret->_right;
       }
 
       return (ret);
@@ -483,7 +305,7 @@ namespace ft {
     void swap(_tree& x)
     {
       swap(_node_alloc, x._node_alloc);
-      swap(_compare, x._compare);
+//      swap(_compare, x._compare);
       swap(_root, x._root);
       swap(_nil, x._nil);
       swap(_size, x._size);
@@ -678,6 +500,8 @@ namespace ft {
     };
   };
 
+} //namespace
+
 /*  NON-MEMBER FUNCTIONS  */
 //  template<class Key, class T, class Compare, class Alloc>
 //  bool operator==(const ft::map <Key, T, Compare, Alloc> &lhs, const ft::map <Key, T, Compare, Alloc> &rhs) {
@@ -711,7 +535,5 @@ namespace ft {
 
 
 
-
-} //namespace
 
 #endif
