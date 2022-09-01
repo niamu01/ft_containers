@@ -167,11 +167,11 @@ namespace ft {
   }; // tree_iterator
 
 /*  TREE  */
-  template<typename T, typename Compare = std::less<T>, typename Allocator = std::allocator<T> >
+  template<typename T, typename Allocator = std::allocator<T> > //typename Compare = std::less<T>,
   class _tree {
   public:
     typedef Allocator                                     allocator_type;
-    typedef Compare                                       key_compare;
+//    typedef Compare                                       key_compare;
     typedef T                                             value_type;
     typedef std::size_t                                   size_type;
     typedef std::ptrdiff_t                                difference_type;
@@ -249,10 +249,16 @@ namespace ft {
     }
 
   /*  INSERT  */
-//    ft::pair<node_pointer, bool> insert(const value_type& value) {};
+    ft::pair<node_pointer, bool> insert(const value_type& value) {
+      _size++;
+
+    };
 
   /*  ERASE  */
-//    bool erase(node_pointer node) {};
+    bool erase(node_pointer node) {
+      _size--;
+
+    };
 
     void clear(node_pointer node = NULL) {
       if (node == NULL)
