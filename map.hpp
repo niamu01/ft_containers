@@ -118,14 +118,6 @@ namespace ft {
     };
 
   /*  INSERT  */
-//    ft::pair<iterator, bool> insert( const value_type& value ) {
-//      return _tree.insert(value);
-//    };
-//
-//    template< class InputIt >
-//    void insert( InputIt first, InputIt last ) {
-//      return _tree.insert(first, last);
-//    };
     pair<iterator, bool> insert(const value_type& val) {
       ft::pair<node_type*, bool> res = _tree.insert(val);
       return (ft::make_pair(iterator(res.first), res.second));
@@ -144,21 +136,6 @@ namespace ft {
     }
 
   /*  ERASE  */
-//    void erase( iterator pos ) {
-//      _tree.erase(pos);
-//      return;
-//    };
-//
-//    void erase( iterator first, iterator last ) {
-//      _tree.erase(first, last);
-//      return;
-//    };
-//
-//    size_type erase( const Key& key ) {
-//      if (_tree.erase(find(key))) //check _tree.erase return value
-//        return 1;
-//      return 0;
-//    };
     void erase(iterator position) {
       this->_tree.erase(position.base());
     }
