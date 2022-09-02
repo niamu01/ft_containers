@@ -1,6 +1,12 @@
 #ifndef SET_HPP
 #define SET_HPP
 
-class set {};
+#include "_tree.hpp"
+
+namespace ft {
+
+  class set {};
+
+}
 
 #endif

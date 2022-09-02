@@ -1,7 +1,7 @@
 #ifndef MAP_HPP
 #define MAP_HPP
 
-#include <functional> //std::less
+//#include <functional> //std::less
 #include "type_traits.hpp" //ft::enable_if, ft::is_integral
 #include "algorithm.hpp" //ft::lexicographical_compare
 
@@ -11,7 +11,7 @@ namespace ft {
   template<
     class     Key,
     class     Value,
-    class     Compare = std::less<Key>,
+    class     Compare = ft::less<Key>,
     class     Allocator = std::allocator <ft::pair<const Key, Value> >
 //typename ExtractKey = ft::use_first<ft::pair<Key, Value>,
 // bool      bMutableIterators = true, //map: true, set: false
@@ -95,7 +95,7 @@ namespace ft {
 
     map& operator=( const map& other ) {
       if (this != &other)
-        _tree.copy(other._tree);
+        _tree.copy(other._tree); //todo: make copy by tree (in _tree header)
       return *this;
     };
 

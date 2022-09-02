@@ -192,6 +192,8 @@ namespace ft {
     typedef ft::reverse_iterator<iterator>                                      reverse_iterator;
     typedef ft::reverse_iterator<const_iterator>                                const_reverse_iterator;
 
+//    typedef ft::_tree<T>     tree_type;
+
   private:
     node_allocator_type     _node_alloc;
     key_compare             _compare;
@@ -394,58 +396,65 @@ namespace ft {
       return (it.base());
     };
 
-    /*  ITERATORS  */
-//    iterator begin() {
-//      if (_size == 0)
-//        return NULL;
-//      return (iterator(tree_min(_root)));
-//    };
-//
-//    const_iterator begin() const {
-//      if (_size == 0)
-//        return NULL;
-//      return (const_iterator(tree_min(_root)));
-//    };
-//
-//    iterator end() {
-//      if (_size == 0)
-//        return NULL;
-//      return (++iterator(tree_max(_root)));
-//    };
-//
-//    const_iterator end() const {
-//      if (_size == 0)
-//        return NULL;
-//      return (++const_iterator(tree_max(_root)));
-//    };
-//
-//    reverse_iterator rbegin() {
-//      if (_size == 0)
-//        return NULL;
-//      return (reverse_iterator(end()));
-//    };
-//
-//    const_reverse_iterator rbegin() const {
-//      if (_size == 0)
-//        return NULL;
-//      return (const_reverse_iterator(end()));
-//    };
-//
-//    reverse_iterator rend() {
-//      if (_size == 0)
-//        return NULL;
-//      return (reverse_iterator(begin()));
-//    };
-//
-//    const_reverse_iterator rend() const {
-//      if (_size == 0)
-//        return NULL;
-//      return (const_reverse_iterator(begin()));
-//    };
+  /*  ITERATORS  */
+    iterator begin() {
+      if (_size == 0)
+        return iterator(NULL); //todo: return NULL
+      return (iterator(tree_min(_root)));
+    };
+
+    const_iterator begin() const {
+      if (_size == 0)
+        return iterator(NULL);
+      return (const_iterator(tree_min(_root)));
+    };
+
+    iterator end() {
+      if (_size == 0)
+        return iterator(NULL);
+      return (++iterator(tree_max(_root)));
+    };
+
+    const_iterator end() const {
+      if (_size == 0)
+        return iterator(NULL);
+      return (++const_iterator(tree_max(_root)));
+    };
+
+    reverse_iterator rbegin() {
+      if (_size == 0)
+        return iterator(NULL);
+      return (reverse_iterator(end()));
+    };
+
+    const_reverse_iterator rbegin() const {
+      if (_size == 0)
+        return iterator(NULL);
+      return (const_reverse_iterator(end()));
+    };
+
+    reverse_iterator rend() {
+      if (_size == 0)
+        return iterator(NULL);
+      return (reverse_iterator(begin()));
+    };
+
+    const_reverse_iterator rend() const {
+      if (_size == 0)
+        return iterator(NULL);
+      return (const_reverse_iterator(begin()));
+    };
 
 /*  PRIVATE FUNCTION  */
   private:
     node_pointer tree_min(node_pointer node) {
+      while (node->_left)
+        node = node->_left;
+
+      return node;
+    };
+
+    node_pointer tree_min(node_pointer node) const {
       while (node->_left)
         node = node->_left;
 
@@ -459,15 +468,16 @@ namespace ft {
       return node;
     };
 
-    node_pointer get_root(node_pointer node) {
-      while (node->_parent)
-        node = node->_parent;
+    node_pointer tree_max(node_pointer node) const {
+      while (node->_right)
+        node = node->_right;
 
       return node;
     };
 
-    //usage: tree_max(get_root(any_node)) -> max value in tree
-    //usage: tree_max(sub_tree_root_node) -> max value in sub_tree
+//    node_pointer& get_root() const {
+//      return _root;
+//    };
 
     node_pointer get_sibling(node_pointer node) const {
       if (node->_parent->_left == node)
@@ -499,6 +509,11 @@ namespace ft {
 //        return 0;
 //      return node;
 //    };
+
+//    //copy tree
+//    void copy(tree_type& tree) {
+//      copy(tree._root);
+//    }
 
     //copy tree by root node
     void copy(node_pointer node) {
