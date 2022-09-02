@@ -345,7 +345,7 @@ namespace ft {
         return (_nil);
 
       while (ret->_value != NULL && (_compare(value, *ret->_value) || _compare(*ret->_value, value))) {
-        if (_compare(value, *ret->_value)) //todo: compare
+        if (_compare(value, *ret->_value))
           ret = ret->_left;
         else
           ret = ret->_right;
@@ -483,6 +483,8 @@ namespace ft {
 
       if (node->_parent == node->_parent->_parent->_right)
         return node->_parent->_parent->_left;
+
+      return NULL; //todo
     }
 
     node_pointer get_grand(node_pointer node) const {
@@ -630,8 +632,7 @@ namespace ft {
       (void) hint;
       (void) value;
 
-
-      node_pointer null_ret;
+      node_pointer null_ret = NULL;
       return null_ret;
     };
 
