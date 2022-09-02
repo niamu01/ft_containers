@@ -12,10 +12,10 @@ namespace ft {
     class     Key,
     class     Value,
     class     Compare = std::less<Key>,
-    class     Allocator = std::allocator <ft::pair<const Key, Value> >,
-    typename  ExtractKey = ft::use_first<ft::pair<Key, Value> >
-    // bool      bMutableIterators = true, //map: true, set: false
-    // bool      bUniqueKeys = true //map,set: true, multi: false
+    class     Allocator = std::allocator <ft::pair<const Key, Value> >
+//typename ExtractKey = ft::use_first<ft::pair<Key, Value>,
+// bool      bMutableIterators = true, //map: true, set: false
+// bool      bUniqueKeys = true //map,set: true, multi: false
   >
   class map {
   public:
@@ -59,9 +59,9 @@ namespace ft {
 
   public:
     typedef typename ft::tree_node<value_type>                                            node_type;
-    typedef typename ft::_tree<value_type, value_compare>                                 tree_type;
+    typedef typename ft::_tree<value_type, ft::use_first<ft::pair<Key, Value> > >         tree_type;
 
-  private:
+                          private:
     allocator_type     _allocator;
     key_compare        _comp;
     tree_type          _tree;

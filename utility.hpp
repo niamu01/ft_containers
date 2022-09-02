@@ -13,38 +13,27 @@ namespace ft {
     second_type second;
 
     /*  MEMBER FUNCTIONS  */
-    pair() {
-      first();
-      second();
-    };
+    pair() : first(), second() {};
 
-    pair(const T1 &x, const T2 &y) {
-      first(x);
-      second(y);
-    };
+    pair(const first_type& x, const second_type& y) : first(x), second(y) {};
 
     template<class U1, class U2>
-    pair(const pair<U1, U2> &p) {
-      first(p.first);
-      second(p.second);
-    };
+    pair(const pair<U1, U2> &p) : first(p.first), second(p.second) {};
 
-//    pair(const pair &p) = default; //todo: default?
+    pair& operator=(const pair& other) {
+      if (this != &other) {
+        this->first = other.first;
+        this->second = other.second;
+      }
 
-    pair &operator=(const pair &other) {
-      first = other.first;
-      second = other.second;
+      return (*this);
     };
   }; //struct pair
 
   /*  NON-MEMBER FUNCTIONS  */
   template< class T1, class T2 >
   ft::pair<T1,T2> make_pair( T1 t, T2 u ) {
-    ft::pair<T1, T2> p;
-    p.first = t;
-    p.second = u;
-
-    return (p);
+    return (pair<T1, T2>(t, u));
   };
 
   template< class T1, class T2 >
