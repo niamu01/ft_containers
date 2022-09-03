@@ -95,7 +95,7 @@ namespace ft {
 
     map& operator=( const map& other ) {
       if (this != &other)
-        _tree.copy(other._tree); //todo: make copy by tree (in _tree header)
+        _tree.copy(other._tree);
       return *this;
     };
 
