@@ -115,17 +115,17 @@ namespace ft {
     };
 
     tree_iterator& operator++() {
-      if (_node->_right) {
+      if (_node->_right->_value) {
         _node = _node->_right;
-        while (_node->_left)
+        while (_node->_left->_value)
           _node = _node->_left;
       } else {
         if (_node == _node->_parent->_left)
           _node = _node->_parent;
         else {
-          while (_node->_parent && _node != _node->_parent->_left)
+          while (_node->_parent->_value && _node != _node->_parent->_left)
             _node = _node->_parent;
-          if (_node->_parent)
+          if (_node->_parent->_value)
             _node = _node->_parent;
         }
       }
@@ -139,17 +139,17 @@ namespace ft {
     };
 
     tree_iterator& operator--() {
-      if (_node->_left) {
+      if (_node->_left->_value) {
         _node = _node->_left;
-        while (_node->_right)
+        while (_node->_right->_value)
           _node = _node->_right;
       } else {
         if (_node == _node->_parent->_right)
           _node = _node->_parent;
         else {
-          while (_node->_parent && _node != _node->_parent->_right)
+          while (_node->_parent->_value && _node != _node->_parent->_right)
             _node = _node->_parent;
-          if (_node->_parent)
+          if (_node->_parent->_value)
             _node = _node->_parent;
         }
       }
@@ -416,53 +416,14 @@ namespace ft {
     };
 
   /*  ITERATORS  */
-    iterator begin() {
-      if (_size == 0)
-        return iterator(NULL); //todo: return NULL
-      return (iterator(tree_min(_root)));
-    };
-
-    const_iterator begin() const {
-      if (_size == 0)
-        return iterator(NULL);
-      return (const_iterator(tree_min(_root)));
-    };
-
-    iterator end() {
-      if (_size == 0)
-        return iterator(NULL);
-      return (++iterator(tree_max(_root)));
-    };
-
-    const_iterator end() const {
-      if (_size == 0)
-        return iterator(NULL);
-      return (++const_iterator(tree_max(_root)));
-    };
-
-    reverse_iterator rbegin() {
-      if (_size == 0)
-        return iterator(NULL);
-      return (reverse_iterator(end()));
-    };
-
-    const_reverse_iterator rbegin() const {
-      if (_size == 0)
-        return iterator(NULL);
-      return (const_reverse_iterator(end()));
-    };
-
-    reverse_iterator rend() {
-      if (_size == 0)
-        return iterator(NULL);
-      return (reverse_iterator(begin()));
-    };
-
-    const_reverse_iterator rend() const {
-      if (_size == 0)
-        return iterator(NULL);
-      return (const_reverse_iterator(begin()));
-    };
+    iterator begin()                        { return iterator(tree_min(_root)); };
+    const_iterator begin() const            { return const_iterator(tree_min(_root)); };
+    iterator end()                          { return iterator(get_nil()); };
+    const_iterator end() const              { return const_iterator(get_nil()); };
+    reverse_iterator rbegin()               { return reverse_iterator(end()); };
+    const_reverse_iterator rbegin() const   { return const_reverse_iterator(end()); };
+    reverse_iterator rend()                 { return reverse_iterator(begin()); };
+    const_reverse_iterator rend() const     { return const_reverse_iterator(begin()); };
 
 /*  PRIVATE FUNCTION  */
   private:
@@ -494,11 +455,11 @@ namespace ft {
       return node;
     };
 
-//    node_pointer& get_root() const {
-//      return _root;
-//    };
+    node_pointer get_nil() const {
+      return _nil;
+    };
 
-    node_pointer get_sibling(node_pointer node) const {
+    node_pointer& get_sibling(node_pointer node) const {
       if (node->_parent->_left == node)
         return node->_parent->_right;
 
@@ -506,33 +467,18 @@ namespace ft {
         return node->_parent->_left;
     };
 
-    node_pointer get_uncle(node_pointer node) const {
+    node_pointer get_uncle(node_pointer node) {
       if (node->_parent == node->_parent->_parent->_left)
         return node->_parent->_parent->_right;
-
-      if (node->_parent == node->_parent->_parent->_right)
+      else if(node->_parent == node->_parent->_parent->_right)
         return node->_parent->_parent->_left;
-
-      return NULL; //todo
+      else
+        return NULL;
     }
 
     node_pointer get_grand(node_pointer node) const {
       return node->_parent->_parent;
     }
-//    key_type search(key_type key, node_pointer node) {
-//      if (node && node->_left && _compare(key, node->_value.first))
-//        search(key, node->_left);
-//      else if (node && node->_right && _compare(node->_value.first, key))
-//        search(key, node->_right);
-//      else
-//        return 0;
-//      return node;
-//    };
-
-//    //copy tree
-//    void copy(tree_type& tree) {
-//      copy(tree._root);
-//    }
 
     node_pointer make_nil() {
       node_pointer nil;
