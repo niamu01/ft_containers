@@ -130,9 +130,7 @@ namespace ft {
     template <class InputIt>
     void insert(InputIt first, InputIt last,
                 typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type* = 0) {
-      difference_type diff = ft::distance(first, last);
-
-      while (diff--)
+      while (first != last)
         _tree.insert(*first++);
     }
 
@@ -142,9 +140,7 @@ namespace ft {
     }
 
     void erase(iterator first, iterator last) {
-      difference_type diff = ft::distance(first, last);
-
-      while (diff--)
+      while (first != last)
         erase(first++);
     }
 
@@ -155,16 +151,11 @@ namespace ft {
     void swap( map& other ) { _tree.swap(other._tree); };
     void clear() { _tree.clear(); };
 
-    key_compare key_comp() const { return key_compare(); };
-    map::value_compare value_comp() const { return value_compare(); };
+    key_compare         key_comp()    const { return key_compare(); };
+    map::value_compare  value_comp()  const { return value_compare(); };
 
-    iterator find( const Key& key ) {
-      return iterator(_tree.find(value_type(key, mapped_type())));
-    };
-
-    const_iterator find( const Key& key ) const {
-      return const_iterator(_tree.find(value_type(key, mapped_type())));
-    };
+    iterator        find( const Key& key )        { return iterator(_tree.find(value_type(key, mapped_type()))); };
+    const_iterator  find( const Key& key ) const  { return const_iterator(_tree.find(value_type(key, mapped_type()))); };
 
     size_type count( const Key& key ) const {
 //      if (_tree.find(value_type(key, mapped_type())) != NULL)
@@ -173,34 +164,13 @@ namespace ft {
       return 0;
     };
 
-//    iterator lower_bound( const Key& key )              { return iterator(_tree.lower_bound(key)); };
-//    const_iterator lower_bound( const Key& key ) const  { return const_iterator(_tree.lower_bound(key)); };
-//    iterator upper_bound( const Key& key )              { return iterator(_tree.upper_bound(key)); };
-//    const_iterator upper_bound( const Key& key ) const  { return const_iterator(_tree.upper_bound(key)); };
+    iterator        lower_bound(const key_type& key)       { return iterator(_tree.lower_bound(value_type(key, mapped_type()))); };
+    const_iterator  lower_bound(const key_type& key) const { return const_iterator(_tree.lower_bound(value_type(key, mapped_type()))); };
+    iterator        upper_bound(const key_type& key)       { return iterator(_tree.upper_bound(value_type(key, mapped_type()))); };
+    const_iterator  upper_bound(const key_type& key) const { return const_iterator(_tree.upper_bound(value_type(key, mapped_type()))); };
 
-    iterator lower_bound(const key_type& k) {
-      return (iterator(_tree.lower_bound(value_type(k, mapped_type()))));
-    };
-
-    const_iterator lower_bound(const key_type& k) const {
-      return (const_iterator(_tree.lower_bound(value_type(k, mapped_type()))));
-    };
-
-    iterator upper_bound(const key_type& k) {
-      return (iterator(_tree.upper_bound(value_type(k, mapped_type()))));
-    };
-    const_iterator upper_bound(const key_type& k) const {
-      return (const_iterator(_tree.upper_bound(value_type(k, mapped_type()))));
-    };
-
-
-    ft::pair<iterator,iterator> equal_range( const Key& key ) {
-      return ft::make_pair(lower_bound(key), upper_bound(key));
-    };
-
-    ft::pair<const_iterator,const_iterator> equal_range( const Key& key ) const {
-      return ft::make_pair(lower_bound(key), upper_bound(key));
-    };
+    ft::pair<iterator,iterator>             equal_range( const Key& key )       { return ft::make_pair(lower_bound(key), upper_bound(key)); };
+    ft::pair<const_iterator,const_iterator> equal_range( const Key& key ) const { return ft::make_pair(lower_bound(key), upper_bound(key)); };
 
     allocator_type get_allocator() const { return _allocator; };
 
