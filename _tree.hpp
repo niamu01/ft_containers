@@ -467,28 +467,28 @@ namespace ft {
 /*  PRIVATE FUNCTION  */
   private:
     node_pointer tree_min(node_pointer node) {
-      while (node->_left)
+      while (node->_left->_value)
         node = node->_left;
 
       return node;
     };
 
     node_pointer tree_min(node_pointer node) const {
-      while (node->_left)
+      while (node->_left->_value)
         node = node->_left;
 
       return node;
     };
 
     node_pointer tree_max(node_pointer node) {
-      while (node->_right)
+      while (node->_right->_value)
         node = node->_right;
 
       return node;
     };
 
     node_pointer tree_max(node_pointer node) const {
-      while (node->_right)
+      while (node->_right->_value)
         node = node->_right;
 
       return node;
