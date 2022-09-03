@@ -129,7 +129,7 @@ namespace ft {
             _node = _node->_parent;
         }
       }
-      return (*this);
+      return *this;
     };
 
     tree_iterator operator++(int) {
@@ -153,12 +153,13 @@ namespace ft {
             _node = _node->_parent;
         }
       }
+      return *this;
     };
 
     tree_iterator operator--(int) {
       tree_iterator temp(*this);
       this->operator--();
-      return (temp);
+      return temp;
     };
 
     bool operator==(const tree_iterator& iter) { return (_node == iter.base()); };
@@ -200,10 +201,14 @@ namespace ft {
     node_pointer            _root;
     node_pointer            _nil;
     size_type               _size;
+    node_pointer            _end;
+    /*
+     * _end -> parent
+     * _end -> left = last node
+     * _end -> right = begin
+     */
 
   public:
-//    _tree(const key_compare &comp = key_compare(),
-//          const node_allocator_type &alloc = node_allocator_type())
     _tree()
     : _node_alloc(node_allocator_type()),
       _compare(key_compare()),
@@ -259,7 +264,9 @@ namespace ft {
         _root->_right = _nil;
         _root->_parent = _nil;
         _root->_color = BLACK;
-        _nil->_parent = _root; //_nil에 대한 설정도 해주기
+        _nil->_parent = _root;
+//        _nil->_right = _nil;
+//        _nil->_left = _nil;
         _size++;
 
         return ft::make_pair(_root, true);
@@ -278,7 +285,13 @@ namespace ft {
       }
       //insert success
       check_sort_insert(insert_node);
+
+      node_pointer last_node = tree_max(_root);
+      _nil = last_node->_right;
       _nil->_parent = tree_max(_root);
+//      _nil->_right = _nil;
+//      _nil->_left = _nil;
+
       _size++;
 
       return ft::make_pair(insert_node, true);
@@ -297,7 +310,7 @@ namespace ft {
       else
         child = target->_right;
       //target이랑 target의 child랑 교체
-      replace_to(target, child);
+      replace_a_to_b(target, child);
 
       if (target->color == BLACK) {
         if (child->color == RED)
@@ -367,7 +380,7 @@ namespace ft {
 
     void swap(_tree &x) {
       swap(_node_alloc, x._node_alloc);
-//      swap(_compare, x._compare);
+      swap(_compare, x._compare);
       swap(_root, x._root);
       swap(_nil, x._nil);
       swap(_size, x._size);
@@ -418,8 +431,8 @@ namespace ft {
   /*  ITERATORS  */
     iterator begin()                        { return iterator(tree_min(_root)); };
     const_iterator begin() const            { return const_iterator(tree_min(_root)); };
-    iterator end()                          { return iterator(get_nil()); };
-    const_iterator end() const              { return const_iterator(get_nil()); };
+    iterator end()                          { return iterator(get_end()); };
+    const_iterator end() const              { return const_iterator(get_end()); };
     reverse_iterator rbegin()               { return reverse_iterator(end()); };
     const_reverse_iterator rbegin() const   { return const_reverse_iterator(end()); };
     reverse_iterator rend()                 { return reverse_iterator(begin()); };
@@ -455,8 +468,8 @@ namespace ft {
       return node;
     };
 
-    node_pointer get_nil() const {
-      return _nil;
+    node_pointer get_end() const {
+      return _end;
     };
 
     node_pointer& get_sibling(node_pointer node) const {
@@ -649,10 +662,7 @@ namespace ft {
       return null_ret;
     };
 
-//  check_sort_insert (rotate)
-//check sub-tree sorted (root == insert_node)
-    //have to set color, child, parent after
-    void check_sort_insert(node_pointer node) { //insert 된 후의 node
+    void check_sort_insert(node_pointer node) {
       //empty라서 root로 insert되는 경우는 밖에서 진행
 
       //insert되는 node는 RED라 부모가 BLACK인 경우 문제 없음
@@ -683,7 +693,7 @@ namespace ft {
           node->_parent->_color = BLACK;
           right_rotate(node->_parent);
         } else { //case2, 3과 대칭인 구조 (rotate반대)
-          if (node == node->_parent->_right) //_left?
+          if (node == node->_parent->_left) //_right?
             right_rotate(node->_parent);
           node->_parent->_parent->_color = RED;
           node->_parent->_color = BLACK;
@@ -693,8 +703,7 @@ namespace ft {
     };
 
 /*  ERASE UTILS  */
-    //a자리를 b로 대체
-    void replace_to(node_pointer a, node_pointer b) {
+    void replace_a_to_b(node_pointer a, node_pointer b) {
       b->_parent = a->_parent;
 
       if (a->_parent->_left == a)
@@ -726,10 +735,6 @@ namespace ft {
         node->_parent->_color = RED;
 
         rotate(node->_parent, node != node->_parent->_left);
-//        if (node == node->_parent->_left)
-//          rotate_left(node->_parent);
-//        else
-//          rotate_right(node->_parent); //-> 요 부분을 함수로 나누기
 
       } else if (sibling->_color == BLACK) {
 
@@ -771,36 +776,5 @@ namespace ft {
     };
   }; //class tree
 } //namespace
-
-/*  NON-MEMBER FUNCTIONS  */
-//  template<class Key, class T, class Compare, class Alloc>
-//  bool operator==(const ft::map <Key, T, Compare, Alloc> &lhs, const ft::map <Key, T, Compare, Alloc> &rhs) {
-//    return lhs.base() == rhs.base();
-//  }
-//
-//  template<class Key, class T, class Compare, class Alloc>
-//  bool operator!=(const ft::map <Key, T, Compare, Alloc> &lhs, const ft::map <Key, T, Compare, Alloc> &rhs) {
-//    return !(operator==(lhs, rhs));
-//  }
-//
-//  template< class Key, class T, class Compare, class Alloc>
-//  bool operator< (const ft::map <Key, T, Compare, Alloc> &lhs, const ft::map <Key, T, Compare, Alloc> &rhs) {
-//    return lhs.base() < rhs.base();
-//  }
-//
-//  template<class Key, class T, class Compare, class Alloc>
-//  bool operator> (const ft::map <Key, T, Compare, Alloc> &lhs, const ft::map <Key, T, Compare, Alloc> &rhs) {
-//    return lhs.base() > rhs.base();
-//  }
-//
-//  template<class Key, class T, class Compare, class Alloc>
-//  bool operator<=(const ft::map <Key, T, Compare, Alloc> &lhs, const ft::map <Key, T, Compare, Alloc> &rhs) {
-//    return !(operator>(lhs, rhs));
-//  }
-//
-//  template<class Key, class T, class Compare, class Alloc>
-//  bool operator>=(const ft::map <Key, T, Compare, Alloc> &lhs, const ft::map <Key, T, Compare, Alloc> &rhs) {
-//    return !(operator<(lhs, rhs));
-//  }
 
 #endif
