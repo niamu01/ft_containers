@@ -290,7 +290,7 @@ namespace ft {
         if (this->_capacity < diff)
           this->_capacity = diff;
 
-        while (!(first == last)) {
+        while (first != last) {
           this->_allocator.construct(this->_end++, *first++);
       }
     };
@@ -419,9 +419,9 @@ namespace ft {
 
     /* Modifiers */
     void clear() {
-      while (this->_size--)
+      while (this->_size--) //size
         _allocator.destroy(--this->_end);
-      this->_size = 0;
+      this->_size = 0; //size--;
     };
 
     iterator insert( iterator pos, const T& value ) {
@@ -479,13 +479,11 @@ namespace ft {
       if (_capacity >= _size + count) {
         pointer temp_end = _end + count;
 
-        if (_capacity - _size >= count)
-        {
+        if (_capacity - _size >= count) {
           for (size_type i = 0; i < this->size() - pos_idx; i++)
             _allocator.construct(_end - i + (count - 1), *(_end - i - 1));
           _end += count;
-          while (count)
-          {
+          while (count) {
             _allocator.construct(&(*pos) + (count - 1), value);
             count--;
             _size++;
