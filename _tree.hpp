@@ -499,58 +499,105 @@ namespace ft {
     node_pointer make_node(const value_type &value) {
       node_pointer ret = _node_alloc.allocate(1);
       _node_alloc.construct(ret, node_type(value));
-      ret->_color = RED;
-//      ret->_left = _nil;
-//      ret->_right = _nil;
 
       return (ret);
     }
 
-    /*  ROTATE  */
+  /*  ROTATE  */
+//    node_pointer left_rotate(node_pointer p) {
+//      node_pointer ret = p->_right;
+//
+//      p->_right = ret->_left;
+//
+//      if (ret->_left)
+//        ret->_left->_parent = p;
+//
+//      ret->_parent = p->_parent;
+//
+//      if (p->_parent == NULL)
+//        _root = ret;
+//      else if (p->_parent->_left == p)
+//        p->_parent->_left = ret;
+//      else
+//        p->_parent->_right = ret;
+//
+//      ret->_left = p;
+//      p->_parent = ret;
+//
+//      return ret;
+//    };
     node_pointer left_rotate(node_pointer p) {
       node_pointer ret = p->_right;
+      node_pointer parent = p->_parent;
+
+      if (ret->_left->_value)
+        ret->_left->_parent = p;
 
       p->_right = ret->_left;
 
-      if (ret->_left)
-        ret->_left->_parent = p;
-
-      ret->_parent = p->_parent;
-
-      if (p->_parent == NULL)
-        _root = ret;
-      else if (p->_parent->_left == p)
-        p->_parent->_left = ret;
-      else
-        p->_parent->_right = ret;
+      p->_parent = ret;
 
       ret->_left = p;
-      p->_parent = ret;
+      ret->_parent = parent;
+
+      if (parent->_value) {
+        if (parent->_left == p)
+          parent->_left = ret;
+        else
+          parent->_right = ret;
+      } else {
+        _root = ret;
+      }
 
       return ret;
     };
 
+//  node_pointer right_rotate(node_pointer p) {
+//    node_pointer ret = p->_left;
+//
+//    p->_left = ret->_right;
+//
+//    if (ret->_right)
+//      ret->_right->_parent = p;
+//
+//    ret->_parent = p->_parent;
+//
+//    if (p->_parent == NULL)
+//      _root = ret;
+//    else if (p->_parent->_left == p)
+//      p->_parent->_left = ret;
+//    else
+//      p->_parent->_right = ret;
+//
+//    ret->_right = p;
+//    p->_parent = ret;
+//
+//    return ret;
+//  };
     node_pointer right_rotate(node_pointer p) {
       node_pointer ret = p->_left;
+      node_pointer parent = p->_parent;
+
+      if (ret->_right->_value)
+        ret->_right->_parent = p;
 
       p->_left = ret->_right;
 
-      if (ret->_right)
-        ret->_right->_parent = p;
-
-      ret->_parent = p->_parent;
-
-      if (p->_parent == NULL)
-        _root = ret;
-      else if (p->_parent->_left == p)
-        p->_parent->_left = ret;
-      else
-        p->_parent->_right = ret;
-
-      ret->_right = p;
       p->_parent = ret;
 
-      return ret;
+      ret->_right = p;
+      ret->_parent = parent;
+
+      if (parent->_value != NULL) {
+        if (parent->_right == p)
+          parent->_right = ret;
+        else
+          parent->_left = ret;
+      } else {
+        _root = ret;
+      }
+
+        return ret;
     };
 
     /*  INSERT UTILS  */
@@ -614,6 +661,11 @@ namespace ft {
 
       //case1. x의 uncle_node가 RED
       node_pointer uncle = get_uncle(node);
+
+      if(uncle == _nil) {
+        rotate(node->_parent, node == node->_parent->_left);
+        return;
+      }
 
       if (uncle->_value && uncle->_color == RED) {
         node->_parent->_color = BLACK;
