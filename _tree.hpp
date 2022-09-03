@@ -373,6 +373,25 @@ namespace ft {
       swap(_size, x._size);
     }
 
+    void copy(const _tree& tree) {
+      clear();
+      copy(tree._root);
+    }
+
+    //copy tree by root node
+    void copy(node_pointer node) {
+      if (node->_value == NULL)
+        return;
+
+      insert(*node->_value);
+
+      if (node->_left->_value != NULL)
+        copy(node->_left);
+
+      if (node->_right->_value != NULL)
+        copy(node->_right);
+    };
+
     /*  BOUND  */
     //value보다 크거나 같은 범위
     node_pointer lower_bound(const value_type &value) const {
@@ -514,20 +533,6 @@ namespace ft {
 //    void copy(tree_type& tree) {
 //      copy(tree._root);
 //    }
-
-    //copy tree by root node
-    void copy(node_pointer node) {
-      if (node->_value == NULL)
-        return;
-
-      insert(*node->_value);
-
-      if (node->_left->_value != NULL)
-        copy(node->_left);
-
-      if (node->_right->_value != NULL)
-        copy(node->_right);
-    };
 
     node_pointer make_nil() {
       node_pointer nil;
