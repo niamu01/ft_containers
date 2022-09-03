@@ -130,7 +130,9 @@ namespace ft {
     template <class InputIt>
     void insert(InputIt first, InputIt last,
                 typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type* = 0) {
-      while (first != last)
+      difference_type diff = ft::distance(first, last);
+
+      while (diff--)
         _tree.insert(*first++);
     }
 
@@ -140,7 +142,9 @@ namespace ft {
     }
 
     void erase(iterator first, iterator last) {
-      while (first != last)
+      difference_type diff = ft::distance(first, last);
+
+      while (diff--)
         erase(first++);
     }
 
