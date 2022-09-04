@@ -39,7 +39,7 @@ namespace ft {
 
   public:
   /* MEMBER CLASS */
-    class value_compare { //:binary_function<value_type, value_type, bool>
+    class value_compare {// :binary_function<value_type, value_type, bool> {
 //    friend class map;
 
     public:
@@ -47,9 +47,9 @@ namespace ft {
       typedef const key_type  first_argument_type;
       typedef mapped_type     second_argument_type;
 
-    protected:
+    public:
       key_compare comp;
-      value_compare( Compare c ) : comp(c) {};
+      value_compare() : comp() {};
 
     public:
       bool operator()( const value_type& lhs, const value_type& rhs ) const {
@@ -61,7 +61,7 @@ namespace ft {
     typedef typename ft::tree_node<value_type>                                            node_type;
     typedef typename ft::_tree<value_type, ft::use_first<ft::pair<Key, Value> > >         tree_type;
 
-                          private:
+  private:
     allocator_type     _allocator;
     key_compare        _comp;
     tree_type          _tree;
@@ -114,7 +114,7 @@ namespace ft {
 
     mapped_type& operator[]( const Key& key ) {
 //      return _tree.insert(ft::make_pair(key, mapped_type())).first;
-      return (*(_tree.insert(ft::make_pair(key, mapped_type())).first)).value->second;
+      return (*(_tree.insert(ft::make_pair(key, mapped_type())).first))._value->second;
     };
 
   /*  INSERT  */
@@ -151,8 +151,8 @@ namespace ft {
     void swap( map& other ) { _tree.swap(other._tree); };
     void clear() { _tree.clear(); };
 
-    key_compare         key_comp()    const { return key_compare(); };
-    map::value_compare  value_comp()  const { return value_compare(); };
+    key_compare    key_comp()    const { return key_compare(); };
+    value_compare  value_comp()  const { return value_compare(); };
 
     iterator        find( const Key& key )        { return iterator(_tree.find(value_type(key, mapped_type()))); };
     const_iterator  find( const Key& key ) const  { return const_iterator(_tree.find(value_type(key, mapped_type()))); };
