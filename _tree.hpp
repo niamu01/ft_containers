@@ -115,22 +115,39 @@ namespace ft {
     };
 
     tree_iterator& operator++() {
+      node_type* temp = NULL;
+
       if (_node->_right->_value) {
-        _node = _node->_right;
-        while (_node->_left->_value)
-          _node = _node->_left;
+        temp = _node->_right;
+        while (temp->_left->_value)
+          temp = temp->_left;
       } else {
-        if (_node == _node->_parent->_left)
-          _node = _node->_parent;
-        else {
-          while (_node->_parent->_value && _node != _node->_parent->_left)
-            _node = _node->_parent;
-          if (_node->_parent->_value)
-            _node = _node->_parent;
+        temp = _node->_parent;
+        if (temp->_right == _node) {
+          while (temp->_parent->_right == temp)
+            temp = temp->_parent;
+          temp = temp->_parent;
         }
       }
+      _node = temp;
+
       return *this;
     };
+//      if (_node->_right->_value) {
+//        _node = _node->_right;
+//        while (_node->_left->_value)
+//          _node = _node->_left;
+//      } else {
+//        if (_node == _node->_parent->_left)
+//          _node = _node->_parent;
+//        else {
+//          while (_node->_parent->_value && _node != _node->_parent->_left)
+//            _node = _node->_parent;
+//          if (_node->_parent->_value)
+//            _node = _node->_parent;
+//        }
+//      }
+//      return *this;
 
     tree_iterator operator++(int) {
       tree_iterator temp(*this);
@@ -139,22 +156,40 @@ namespace ft {
     };
 
     tree_iterator& operator--() {
-      if (_node->_left->_value) {
-        _node = _node->_left;
-        while (_node->_right->_value)
-          _node = _node->_right;
+      node_type *temp = NULL;
+
+      if (_node->_value){
+        temp = _node->_parent;
+      } else if (_node->_left->_value != NULL) {
+        temp = _node->_left;
+        while (temp->_right->_value != NULL)
+          temp = temp->_right;
       } else {
-        if (_node == _node->_parent->_right)
-          _node = _node->_parent;
-        else {
-          while (_node->_parent->_value && _node != _node->_parent->_right)
-            _node = _node->_parent;
-          if (_node->_parent->_value)
-            _node = _node->_parent;
+        temp = _node->_parent;
+        if (temp->_left ==_node) {
+          while (temp->_parent->_left == temp)
+            temp = temp->_parent;
+          temp = temp->_parent;
         }
       }
+      _node = temp;
       return *this;
     };
+//      if (_node->_left->_value) {
+//        _node = _node->_left;
+//        while (_node->_right->_value)
+//          _node = _node->_right;
+//      } else {
+//        if (_node == _node->_parent->_right)
+//          _node = _node->_parent;
+//        else {
+//          while (_node->_parent->_value && _node != _node->_parent->_right)
+//            _node = _node->_parent;
+//          if (_node->_parent->_value)
+//            _node = _node->_parent;
+//        }
+//      }
+//      return *this;
 
     tree_iterator operator--(int) {
       tree_iterator temp(*this);
@@ -193,20 +228,12 @@ namespace ft {
     typedef ft::reverse_iterator<iterator>                                      reverse_iterator;
     typedef ft::reverse_iterator<const_iterator>                                const_reverse_iterator;
 
-//    typedef ft::_tree<T>     tree_type;
-
   private:
     node_allocator_type     _node_alloc;
     key_compare             _compare;
     node_pointer            _root;
     node_pointer            _nil;
     size_type               _size;
-    node_pointer            _end;
-    /*
-     * _end -> parent
-     * _end -> left = last node
-     * _end -> right = begin
-     */
 
   public:
     _tree()
@@ -227,8 +254,7 @@ namespace ft {
       _nil(NULL),
       _size(0) {
       _nil = make_nil();
-      clear();
-      copy(other._root);
+      copy(other);
       _nil->_parent = tree_max(_root);
     };
 
@@ -239,10 +265,9 @@ namespace ft {
     };
 
     _tree &operator=(const _tree &other) {
-      if (this != &other) {
-        clear();
-        copy(other._root);
-      }
+      if (this != &other)
+        copy(other);
+
       return *this;
     };
 
@@ -265,32 +290,29 @@ namespace ft {
         _root->_parent = _nil;
         _root->_color = BLACK;
         _nil->_parent = _root;
-//        _nil->_right = _nil;
-//        _nil->_left = _nil;
         _size++;
 
         return ft::make_pair(_root, true);
       }
 
       if (hint != NULL)
-        insert_position = find_position_by_hint(hint, value);
+        insert_position = find_position_by_hint(hint, value); //check hint->value was NULL in this function
 
       ft::pair<node_pointer, bool> ret_pair = try_insert(insert_position, insert_node);
 
-      if (ret_pair.second == false) { //insert fail
+      //insert fail
+      if (ret_pair.second == false) {
         _node_alloc.destroy(insert_node);
         _node_alloc.deallocate(insert_node, 1);
 
         return (ret_pair); //<insert_position, false>
       }
-      //insert success
+      //insert success -> check balance
       check_sort_insert(insert_node);
 
-      node_pointer last_node = tree_max(_root);
-      _nil = last_node->_right;
+//      node_pointer last_node = tree_max(_root);
+//      _nil = last_node->_right;
       _nil->_parent = tree_max(_root);
-//      _nil->_right = _nil;
-//      _nil->_left = _nil;
 
       _size++;
 
@@ -366,7 +388,7 @@ namespace ft {
           ret = ret->_right;
       }
 
-      return (ret);
+      return ret;
     };
 
     template<typename U>
@@ -409,7 +431,7 @@ namespace ft {
     //value보다 크거나 같은 범위
     node_pointer lower_bound(const value_type &value) const {
       iterator it(tree_min(_root));
-      iterator ite(tree_max(_root)); //ite(_nil)
+      iterator ite(_nil);
 
       while (it != ite && _compare(*it, value))
         it++;
@@ -420,7 +442,7 @@ namespace ft {
     //value보다 작거나 같은 범위
     node_pointer upper_bound(const value_type &value) const {
       iterator it(tree_min(_root));
-      iterator ite(tree_max(_root)); //ite(_nil)
+      iterator ite(_nil);
 
       while (it != ite && !_compare(value, *it))
         it++;
@@ -431,8 +453,8 @@ namespace ft {
   /*  ITERATORS  */
     iterator begin()                        { return iterator(tree_min(_root)); };
     const_iterator begin() const            { return const_iterator(tree_min(_root)); };
-    iterator end()                          { return iterator(get_end()); };
-    const_iterator end() const              { return const_iterator(get_end()); };
+    iterator end()                          { return iterator(_nil); };
+    const_iterator end() const              { return const_iterator(_nil); };
     reverse_iterator rbegin()               { return reverse_iterator(end()); };
     const_reverse_iterator rbegin() const   { return const_reverse_iterator(end()); };
     reverse_iterator rend()                 { return reverse_iterator(begin()); };
@@ -466,10 +488,6 @@ namespace ft {
         node = node->_right;
 
       return node;
-    };
-
-    node_pointer get_end() const {
-      return _end;
     };
 
     node_pointer& get_sibling(node_pointer node) const {
@@ -614,35 +632,30 @@ namespace ft {
     };
 
     /*  INSERT UTILS  */
+    void insert_LR(node_pointer insert_position, node_pointer insert_node, bool direction) {
+      if (direction == LEFT) {
+        insert_position->_left = insert_node;
+      } else if (direction == RIGHT) {
+        insert_position->_right = insert_node;
+      }
 
-    void insert_left(node_pointer insert_position, node_pointer insert_node) {
-      insert_position->_left = insert_node;
       insert_node->_parent = insert_position;
       insert_node->_left = _nil;
       insert_node->_right = _nil;
       insert_node->_color = RED;
     };
 
-    void insert_right(node_pointer insert_position, node_pointer insert_node) {
-      insert_position->_right = insert_node;
-      insert_node->_parent = insert_position;
-      insert_node->_left = _nil;
-      insert_node->_right = _nil;
-      insert_node->_color = RED;
-    };
-
-    // insert한 후 pair만들어서 반환 <insert_node, bool>
     ft::pair<node_pointer, bool> try_insert(node_pointer insert_position, node_pointer insert_node) {
-      while (insert_position->_value != NULL) {
+      while (insert_position->_value) {
         if (_compare(*insert_node->_value, *insert_position->_value)) {
           if (insert_position->_left->_value == NULL) {
-            insert_left(insert_position, insert_node);
+            insert_LR(insert_position, insert_node, LEFT);
             break;
           } else
             insert_position = insert_position->_left;
         } else if (_compare(*insert_position->_value, *insert_node->_value)) {
           if (insert_position->_right->_value == NULL) {
-            insert_right(insert_position, insert_node);
+            insert_LR(insert_position, insert_node, RIGHT);
             break;
           } else
             insert_position = insert_position->_right;
@@ -653,7 +666,6 @@ namespace ft {
     };
 
 //  find_position_by_hint(hint, value) -> insert_position
-//return position to insert
     node_pointer find_position_by_hint(node_pointer hint, value_type value) {//todo: make func
       (void) hint;
       (void) value;
@@ -664,6 +676,8 @@ namespace ft {
 
     void check_sort_insert(node_pointer node) {
       //empty라서 root로 insert되는 경우는 밖에서 진행
+      if (node->_parent->_value == NULL)
+        return;
 
       //insert되는 node는 RED라 부모가 BLACK인 경우 문제 없음
       if (node->_parent->_color == BLACK)
@@ -672,8 +686,9 @@ namespace ft {
       //case1. x의 uncle_node가 RED
       node_pointer uncle = get_uncle(node);
 
-      if(uncle == _nil) {
-        rotate(node->_parent, node == node->_parent->_left);
+      //uncle 이 없는 경우 일자 형태의 tree일 수 있어 rotate해주기
+      if (uncle->_value == NULL) {
+        rotate_LR(node->_parent, node == node->_parent->_left);
         return;
       }
 
@@ -682,27 +697,36 @@ namespace ft {
         uncle->_color = BLACK;
         node->_parent->_parent->_color = RED;
         check_sort_insert(node->_parent->_parent);
-      } else if (uncle->_value && uncle->_color == BLACK) {
-        if (node->_parent == node->_parent->_parent->_left) {
-          //case2. uncle이 BLACK이고 x가 right child:
-          // x->_parent에서 l-r한 후 case3으로 이동
-          if (node == node->_parent->_right)
-            left_rotate(node->_parent);
-          //case3. uncle이 BLACK이고 x가 left child
-          node->_parent->_parent->_color = RED;
-          node->_parent->_color = BLACK;
-          right_rotate(node->_parent);
-        } else { //case2, 3과 대칭인 구조 (rotate반대)
-          if (node == node->_parent->_left) //_right?
-            right_rotate(node->_parent);
-          node->_parent->_parent->_color = RED;
-          node->_parent->_color = BLACK;
-          left_rotate(node->_parent);
+      } else { //if (uncle->_value && uncle->_color == BLACK) {
+        node_pointer grand = node->_parent->_parent;
+
+        //case2. uncle이 BLACK이고 x가 right child:
+        if (grand->_value) {
+          if (node == node->_parent->_right && node->_parent == grand->_left) {
+            // x->_parent에서 l-r한 후 case3으로 이동
+            rotate_LR(node->_parent, LEFT);
+            node = node->_left;
+          } else if (node == node->_parent->_right && node->_parent == grand->_left) {
+            // case2와 대칭인 경우
+            rotate_LR(node->_parent, RIGHT);
+            node = node->_right;
+          }
+          check_sort_insert_2(node);
         }
       }
     };
 
-/*  ERASE UTILS  */
+    void check_sort_insert_2(node_pointer node) {
+      node_pointer grand = node->_parent->_parent;
+
+      if (grand->_value) {
+        grand->_color = RED;
+        node->_parent->_color = BLACK;
+        rotate_LR(grand, node == node->_parent->_left);
+      }
+    }
+
+  /*  ERASE UTILS  */
     void replace_a_to_b(node_pointer a, node_pointer b) {
       b->_parent = a->_parent;
 
@@ -713,7 +737,7 @@ namespace ft {
         a->_parent->_right = b;
     };
 
-    void rotate(node_pointer target, bool direction) {
+    void rotate_LR(node_pointer target, bool direction) {
       if (direction == LEFT)
         left_rotate(target);
       else if (direction == RIGHT)
@@ -734,7 +758,7 @@ namespace ft {
         sibling->_color = BLACK;
         node->_parent->_color = RED;
 
-        rotate(node->_parent, node != node->_parent->_left);
+        rotate_LR(node->_parent, node != node->_parent->_left);
 
       } else if (sibling->_color == BLACK) {
 
@@ -759,7 +783,7 @@ namespace ft {
           //이후 w를 x->p->r로 옮기면 case4
           sibling->_left->_color = BLACK;
           sibling->_color = RED;
-          rotate(sibling, RIGHT);
+          rotate_LR(sibling, RIGHT);
 //      w -> x_p, x_p -> x_p_p 옮기면 case4가 됨 //todo: 3->4
         } else if (sibling->_right->_color == RED) {
           //case4. w가 BLACK이고 w->right가 RED
@@ -770,7 +794,7 @@ namespace ft {
           sibling->_color = node->_parent->_color;
           node->_parent->_color = BLACK;
           sibling->_right->_color = BLACK;
-          rotate(sibling, LEFT); //z의 parent가 x->parent->right인 경우 대칭이라 반대로 rotation한다
+          rotate_LR(sibling, LEFT); //z의 parent가 x->parent->right인 경우 대칭이라 반대로 rotation한다
         }
       }
     };
