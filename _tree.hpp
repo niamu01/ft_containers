@@ -158,7 +158,7 @@ namespace ft {
     tree_iterator& operator--() {
       node_type *temp = NULL;
 
-      if (_node->_value){
+      if (_node->_value == NULL){
         temp = _node->_parent;
       } else if (_node->_left->_value != NULL) {
         temp = _node->_left;
@@ -173,6 +173,7 @@ namespace ft {
         }
       }
       _node = temp;
+
       return *this;
     };
 //      if (_node->_left->_value) {
@@ -437,7 +438,7 @@ namespace ft {
       while (it != ite && _compare(*it, value))
         it++;
 
-      return (it.base());
+      return it.base();
     };
 
     //value보다 작거나 같은 범위
@@ -448,7 +449,7 @@ namespace ft {
       while (it != ite && !_compare(value, *it))
         it++;
 
-      return (it.base());
+      return it.base();
     };
 
   /*  ITERATORS  */
