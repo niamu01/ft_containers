@@ -331,12 +331,13 @@ namespace ft {
         child = target->_left;
       else
         child = target->_right;
+
       //target이랑 target의 child랑 교체
       replace_a_to_b(target, child);
 
-      if (target->color == BLACK) {
-        if (child->color == RED)
-          child->color = BLACK;
+      if (target->_color == BLACK) {
+        if (child->_color == RED)
+          child->_color = BLACK;
         else
           check_sort_erase(child);
       }
@@ -494,7 +495,7 @@ namespace ft {
       if (node->_parent->_left == node)
         return node->_parent->_right;
 
-      if (node->_parent->_right == node)
+      else //if (node->_parent->_right == node)
         return node->_parent->_left;
     };
 
@@ -745,7 +746,8 @@ namespace ft {
     };
 
     void check_sort_erase(node_pointer node) {
-      if (node->_parent->value == NULL)
+      //erase힐 노드가 root먄 재정렬할 필요가 없다
+      if (node->_parent->_value == NULL)
         return;
 
       node_pointer sibling = get_sibling(node);

@@ -1,7 +1,7 @@
 #ifndef MAP_HPP
 #define MAP_HPP
 
-//#include <functional> //std::less
+#include "functional.hpp" //ft::less
 #include "type_traits.hpp" //ft::enable_if, ft::is_integral
 #include "algorithm.hpp" //ft::lexicographical_compare
 
