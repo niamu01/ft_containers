@@ -677,8 +677,10 @@ namespace ft {
 
     void check_sort_insert(node_pointer node) {
       //empty라서 root로 insert되는 경우는 밖에서 진행
-      if (node->_parent->_value == NULL)
+      if (node->_parent->_value == NULL) {
+        node->_color = BLACK;
         return;
+      }
 
       //insert되는 node는 RED라 부모가 BLACK인 경우 문제 없음
       if (node->_parent->_color == BLACK)
@@ -688,10 +690,10 @@ namespace ft {
       node_pointer uncle = get_uncle(node);
 
       //uncle 이 없는 경우 일자 형태의 tree일 수 있어 rotate해주기
-      if (uncle->_value == NULL) {
-        rotate_LR(node->_parent, node == node->_parent->_left);
-        return;
-      }
+//      if (uncle->_value == NULL) {
+//        rotate_LR(node->_parent, node == node->_parent->_left);
+//        return;
+//      }
 
       if (uncle->_value && uncle->_color == RED) {
         node->_parent->_color = BLACK;
@@ -707,7 +709,7 @@ namespace ft {
             // x->_parent에서 l-r한 후 case3으로 이동
             rotate_LR(node->_parent, LEFT);
             node = node->_left;
-          } else if (node == node->_parent->_right && node->_parent == grand->_left) {
+          } else if (node == node->_parent->_left && node->_parent == grand->_right) {
             // case2와 대칭인 경우
             rotate_LR(node->_parent, RIGHT);
             node = node->_right;
@@ -728,6 +730,94 @@ namespace ft {
     }
 
   /*  ERASE UTILS  */
+  node_pointer replace_erase_node(node_pointer node)
+  {
+    /**
+     * @brief replace and erase
+     * 이진 탐색 트리에서 삭제를 수행할 때에는 왼쪽 서브트리에서의 최댓값이나,
+     * 오른쪽 서브트리에서의 최솟값을 삭제한 노드의 위치에 삽입한다는 것.
+     * 삭제한 노드를 대체할 노드에는 반드시 1개의 자식 노드만 있다는 점이다.
+     * 그 이유는 즉슨, 자식 2개를 보유한 노드일 경우,
+     * 왼쪽 자식 < 대체 노드 < 오른쪽 자식이라는 결론이 도출되므로, 자식 2개를 보유할 가능성은 절대적으로 0이라는 것이다.
+     *
+     * ->node의 leftChild가 있으면, 왼쪽 서브트리에서 최댓값,
+     * ->node의 leftChild가 없으면, 오른쪽 서브트리에서 최솟값을 찾는다.
+     * 찾은 값의 value를 node에 복사하고, 찾은 그 노드는 삭제해야 하므로 리턴한다.
+     */
+
+    node_pointer res;
+    if (node->_left->_value != NULL)
+    {
+      res = node->_left;
+      while (res->_right->_value != NULL)
+        res = res->_right;
+    }
+    else if (node->_right->_value != NULL)
+    {
+      res = node->_right;
+      while (res->_left->_value != NULL)
+        res = res->_left;
+    }
+    else
+      return (node);
+
+    node_pointer tmp_parent = node->_parent;
+    node_pointer tmp_left = node->_left;
+    node_pointer tmp_right = node->_right;
+    bool tmp_color = node->_color;
+
+    //node의 left/rightChild 설정
+    node->_left = res->_left;
+    if (res->_left->_value != NULL)
+      res->_left->_parent = node;
+    node->_right = res->_right;
+    if (res->_right->_value != NULL)
+      res->_right->_parent = node;
+
+    //res를 node->_parent의 left/rightChild로 설정
+    if (tmp_parent->_left == node)
+      tmp_parent->_left = res;
+    else if (tmp_parent->_right == node)
+      tmp_parent->_right = res;
+
+    if (res == tmp_left)
+    {
+      //res의 형제를 res의 left/rightChild로 연결
+      tmp_right->_parent = res;
+      res->_right = tmp_right;
+      //node를 res의 left/rightChild로 연결
+      node->_parent = res;
+      res->_left = node;
+    }
+    else if (res == tmp_right)
+    {
+      tmp_left->_parent = res;
+      res->_left = tmp_left;
+      node->_parent = res;
+      res->_right = node;
+    }
+    else
+    {
+      //res와 node가 멀리 떨어진 경우
+      tmp_left->_parent = res;
+      res->_left = tmp_left;
+      tmp_right->_parent = res;
+      res->_right = tmp_right;
+      node->_parent = res->_parent;
+      res->_parent->_right = node;
+    }
+
+    //res의 parent 연결
+    res->_parent = tmp_parent;
+
+    if (res->_parent->_value == NULL)
+      this->_root = res;
+    node->_color = res->_color;
+    res->_color = tmp_color;
+
+    return (node);
+  };
+
     void replace_a_to_b(node_pointer a, node_pointer b) {
       b->_parent = a->_parent;
 
