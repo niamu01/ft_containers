@@ -86,8 +86,7 @@ namespace ft {
   };
 
   template <typename T>
-  struct use_self
-  {
+  struct use_self {
     typedef T result_type;
 
     const result_type& operator()(const T& x) const {
