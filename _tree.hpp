@@ -188,9 +188,9 @@ namespace ft {
 /*  TREE  */
   template<
     typename T,
+    typename ExtractKey,// = ft::use_first<T>, //todo: put ExtractKey lastly, and check it's use
     typename Compare = ft::less<T>,
-    typename Allocator = std::allocator<T>,
-    typename ExtractKey = ft::use_first<T> //todo: put ExtractKey lastly, and check it's use
+    typename Allocator = std::allocator<T>
   //typename ExtractKey = ft::use_first<ft::pair<Key, Value>,
   // bool      bMutableIterators = true, //map: true, set: false
   // bool      bUniqueKeys = true //map,set: true, multi: false
