@@ -1,7 +1,7 @@
 NAME = a.out
 CXXFLAGS = -Wall -Wextra -Werror
 CXXFLAGS += -g -fsanitize=address
-SRCS = map_test.cpp
+SRCS = set_test.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 .PHONY : all
