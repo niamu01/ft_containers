@@ -13,9 +13,6 @@ namespace ft {
     class     Value,
     class     Compare = ft::less<Key>,
     class     Allocator = std::allocator <ft::pair<const Key, Value> >
-//typename ExtractKey = ft::use_first<ft::pair<Key, Value>,
-// bool      bMutableIterators = true, //map: true, set: false
-// bool      bUniqueKeys = true //map,set: true, multi: false
   >
   class map {
   public:
@@ -59,7 +56,12 @@ namespace ft {
 
   public:
     typedef typename ft::tree_node<value_type>                                            node_type;
-    typedef typename ft::_tree<value_type, ft::use_first<ft::pair<Key, Value> > >         tree_type;
+    typedef typename ft::_tree<
+                                value_type,
+                                ft::less<value_type>,
+                                std::allocator<value_type>,
+                                ft::use_first<ft::pair<Key, Value> >
+                              >                                                           tree_type;
 
   private:
     allocator_type     _allocator;
@@ -99,21 +101,14 @@ namespace ft {
       return *this;
     };
 
-    iterator begin()                      { return _tree.begin();  };
-    const_iterator begin() const          { return _tree.begin();  };
-    iterator end()                        { return _tree.end();    };
-    const_iterator end() const            { return _tree.end();    };
-    reverse_iterator rbegin()             { return _tree.rbegin(); };
-    const_reverse_iterator rbegin() const { return _tree.rbegin(); };
-    reverse_iterator rend()               { return _tree.rend();   };
-    const_reverse_iterator rend() const   { return _tree.rend();   };
+//todo: remake iterator
 
     bool empty() const          { return _tree.empty();    };
     size_type size() const      { return _tree.size();     };
     size_type max_size() const  { return _tree.max_size(); };
 
     mapped_type& operator[]( const Key& key ) {
-//      return _tree.insert(ft::make_pair(key, mapped_type())).first;
+//      todo: return _tree.insert(ft::make_pair(key, mapped_type())).first;
       return (*(_tree.insert(ft::make_pair(key, mapped_type())).first))._value->second;
     };
 
