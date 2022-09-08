@@ -1,10 +1,6 @@
 #ifndef MAP_HPP
 #define MAP_HPP
 
-#include "functional.hpp" //ft::less
-#include "type_traits.hpp" //ft::enable_if, ft::is_integral
-#include "algorithm.hpp" //ft::lexicographical_compare
-
 #include "_tree.hpp" //ft::_tree
 
 namespace ft {
@@ -56,12 +52,9 @@ namespace ft {
 
   public:
     typedef typename ft::tree_node<value_type>                                            node_type;
-    typedef typename ft::_tree<
-                                value_type,
-                                ft::less<value_type>,
-                                std::allocator<value_type>,
-                                ft::use_first<ft::pair<Key, Value> >
-                              >                                                           tree_type;
+    typedef typename ft::_tree<value_type, ft::use_first<ft::pair<Key, Value> > >         tree_type;
+//                                ft::less<value_type>,
+//                                std::allocator<value_type>,
 
   private:
     allocator_type     _allocator;
@@ -101,7 +94,14 @@ namespace ft {
       return *this;
     };
 
-//todo: remake iterator
+    iterator begin() { return iterator(_tree.tree_min(_tree.get_root())); };
+    const_iterator begin() const { return const_iterator(_tree.tree_min(_tree.get_root())); };
+    iterator end() { return iterator(_tree.get_nil()); };
+    const_iterator end() const { return const_iterator(_tree.get_nil()); };
+    reverse_iterator rbegin() { return reverse_iterator(_tree.get_nil()); };
+    const_reverse_iterator rbegin() const { return const_reverse_iterator(_tree.get_nil()); };
+    reverse_iterator rend() { return reverse_iterator(_tree.tree_min(_tree.get_root())); };
+    const_reverse_iterator rend() const { return const_reverse_iterator(_tree.tree_min(_tree.get_root())); };
 
     bool empty() const          { return _tree.empty();    };
     size_type size() const      { return _tree.size();     };
