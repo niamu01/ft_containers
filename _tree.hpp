@@ -186,9 +186,8 @@ namespace ft {
   }; // tree_iterator
 
 /*  TREE  */
-  template<
+	template<
     typename T,
-    typename ExtractKey,// = ft::use_first<T>, //todo: put ExtractKey lastly, and check it's use
     typename Compare = ft::less<T>,
     typename Allocator = std::allocator<T>
   //typename ExtractKey = ft::use_first<ft::pair<Key, Value>,
@@ -263,7 +262,7 @@ namespace ft {
 
       size_type max_size() const { return _node_alloc.max_size(); };
 
-    /*  INSERT  */    
+    /*  INSERT  */
       ft::pair<node_pointer, bool> insert(const value_type &value, node_pointer hint = NULL) {
         node_pointer insert_node = make_node(value);
         node_pointer insert_position = _root;
@@ -406,7 +405,7 @@ namespace ft {
         if (node->_right->_value != NULL)
           copy(node->_right);
       };
-      
+
     /*  BOUND  */
       node_pointer lower_bound(const value_type &value) const {
         iterator it(tree_min(get_root()));
@@ -426,7 +425,7 @@ namespace ft {
         return it.base();
       };
 
-    /*  PUBLIC UTIL FUNCTIONS */
+      /*  PUBLIC UTIL FUNCTIONS */
       node_pointer tree_min(node_pointer node) {
         while (node->_left->_value)
           node = node->_left;
@@ -462,35 +461,32 @@ namespace ft {
       node_pointer get_nil() const {
         return _nil;
       };
+      
+			node_pointer get_sibling(node_pointer node) const {
+				if (node->_parent->_left == node)
+					return node->_parent->_right;
+				else //if (node->_parent->_right == node)
+					return node->_parent->_left;
+			}; 
 
-    /*  PRIVATE FUNCTION  */
-    private:
-      node_pointer get_sibling(node_pointer node) const { //todo: node pointer&
-        if (node->_parent->_left == node)
-          return node->_parent->_right;
+			node_pointer get_uncle(node_pointer node) const {
+				node_pointer grand = get_grand(node);
+				if (grand == NULL)
+					return NULL;
 
-        else //if (node->_parent->_right == node)
-          return node->_parent->_left;
-      };
+				if (grand->_left == node->_parent)
+					return grand->_right;
+				else //if (node->_parent == grand->_right)
+					return grand->_left;
+			};
 
-      node_pointer get_uncle(node_pointer node) const {
-        node_pointer grand = get_grand(node);
-        if (grand == NULL)
-          return NULL;
-
-        if (grand->_left == node->_parent)
-          return grand->_right;
-        else //if (node->_parent == grand->_right)
-          return grand->_left;
-      };
-
-      node_pointer get_grand(node_pointer node) const {
-        if (node && node->_parent && node->_parent->_parent) //todo: check value
-          return node->_parent->_parent;
-        else
-          return NULL;
-      };
-
+			node_pointer get_grand(node_pointer node) const {
+        if (node && node->_parent && node->_parent->_parent->_value)
+					return node->_parent->_parent;
+				else
+					return NULL;
+			};
+      
       node_pointer make_nil() {
         node_pointer nil;
         
@@ -559,7 +555,7 @@ namespace ft {
         }
       };
 
-      /*  INSERT UTILS  */
+          /*  INSERT UTILS  */
       void insert_LR(node_pointer insert_position, node_pointer insert_node, bool direction) {
         if (direction == LEFT) {
           insert_position->_left = insert_node;
@@ -642,7 +638,7 @@ namespace ft {
           }
       };
 
-      /*  ERASE UTILS  */
+    /*  ERASE UTILS  */
       node_pointer replace_erase_node(node_pointer node) {
         node_pointer res;
         if (node->_left->_value) {
@@ -785,7 +781,7 @@ namespace ft {
           }
         }
       };
-  }; //class tree
-} //namespace
+	}; // class tree
+} // namespace
 
 #endif
