@@ -104,47 +104,25 @@ T	dec(T it, int n)
   return (it);
 }
 
-#define T1 float
-#define T2 foo<int>
-typedef ft::pair<const T1, T2> T3;
 
 int		main(void)
 {
-  std::list<T3> lst;
-  unsigned int lst_size = 5;
-  for (unsigned int i = 0; i < lst_size; ++i)
-    lst.push_back(T3(2.5 - i, (i + 1) * 7));
+  
+  ft::map<int, char> m;
 
-  ft::map<T1, T2> mp(lst.begin(), lst.end());
-  ft::map<T1, T2>::reverse_iterator it(mp.rbegin());
-  ft::map<T1, T2>::const_reverse_iterator ite(mp.rbegin());
-  printSize(mp);
+  m[0] = 'a';
+  m[1] = 'b';
+  m[2] = 'c';
 
-  printPair(++ite);
-  printPair(ite++);
-  printPair(ite++);
-  printPair(++ite);
+  for (ft::map<int, char>::iterator it = m.begin(); it != m.end(); ++it)
+    std::cout << it->first << std::endl;
 
-  it->second.m();
-  ite->second.m();
+  std::cout << m[1] << std::endl;
+  std::cout << m[4] << std::endl;
 
-  printPair(++it);
-  printPair(it++);
-  printPair(it++);
-  printPair(++it);
-
-  printPair(--ite);
-  printPair(ite--);
-  printPair(--ite);
-  printPair(ite--);
-
-  (*it).second.m();
-  (*ite).second.m();
-
-  printPair(--it);
-  printPair(it--);
-  printPair(it--);
-  printPair(--it);
+  for (ft::map<int, char>::iterator it = m.begin(); it != m.end(); ++it) {
+    std::cout << it->first << ", " << it->second << std::endl;
+  }
 
   return (0);
 }

@@ -1,7 +1,7 @@
 NAME = ft_containers
 CXXFLAGS = -Wall -Wextra -Werror
-CXXFLAGS += -g -fsanitize=address
-SRCS = stack_test.cpp
+#CXXFLAGS += -g -fsanitize=address
+SRCS = main.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 .PHONY : all
