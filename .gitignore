@@ -3,7 +3,6 @@
 
 .DS_Store
 
-#
 *.out
 *.dSYM
 *.o
@@ -11,6 +10,6 @@
 #clion
 .idea
 
-ft_containers
-
 containers_test
+
+main.cpp
