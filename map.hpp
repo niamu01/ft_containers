@@ -104,7 +104,6 @@ namespace ft {
     size_type max_size() const  { return _tree.max_size(); };
 
     mapped_type& operator[]( const Key& key ) {
-//      todo: return _tree.insert(ft::make_pair(key, mapped_type())).first;
       return (*(_tree.insert(ft::make_pair(key, mapped_type())).first))._value->second;
     };
 
