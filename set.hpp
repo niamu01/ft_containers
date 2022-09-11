@@ -11,23 +11,24 @@ namespace ft {
   >
   class set {
   public:
-    typedef Key                                               key_type;
-    typedef const Key                                         value_type;
-    typedef typename std::size_t                              size_type;
-    typedef typename std::ptrdiff_t                           difference_type;
-    typedef Compare                                           key_compare;
-    typedef Compare                                           value_compare;
-    typedef Allocator                                         allocator_type;
-    typedef value_type&                                       reference;
-    typedef const value_type&                                 const_reference;
-    typedef value_type*                                       pointer;
-    typedef const value_type*                                 const_pointer;
-    typedef typename ft::tree_iterator<value_type>            iterator;
-    typedef typename ft::tree_iterator<value_type>            const_iterator;
-    typedef typename ft::reverse_iterator<iterator>           reverse_iterator;
-    typedef typename ft::reverse_iterator<const_iterator>     const_reverse_iterator;
-    typedef ft::tree_node<value_type>				              	  node_type;
-    typedef ft::_tree<value_type, value_compare>		          tree_type;
+    typedef Key                                                       key_type;
+    typedef const Key                                                 value_type;
+    typedef typename std::size_t                                      size_type;
+    typedef typename std::ptrdiff_t                                   difference_type;
+    typedef ft::use_self<Key>                                         use_self;
+    typedef Compare                                                   key_compare;
+    typedef Compare                                                   value_compare;
+    typedef Allocator                                                 allocator_type;
+    typedef value_type&                                               reference;
+    typedef const value_type&                                         const_reference;
+    typedef value_type*                                               pointer;
+    typedef const value_type*                                         const_pointer;
+    typedef typename ft::tree_iterator<value_type>                    iterator;
+    typedef typename ft::tree_iterator<value_type>                    const_iterator;
+    typedef typename ft::reverse_iterator<iterator>                   reverse_iterator;
+    typedef typename ft::reverse_iterator<const_iterator>             const_reverse_iterator;
+    typedef ft::tree_node<value_type>				              	          node_type;
+    typedef typename ft::_tree<value_type, use_self, value_compare>	  tree_type;
 
   private:
     allocator_type      _allocator;
@@ -47,8 +48,8 @@ namespace ft {
       const allocator_type& alloc = allocator_type(),
       typename ft::enable_if<!is_integral<InputIt>::value, InputIt>::type* = 0 )
       : _allocator(alloc),
-      _comp(comp),
-      _tree() {
+        _comp(comp),
+        _tree() {
         insert(first, last);
       };
 

@@ -8,15 +8,15 @@ namespace ft {
     class     Key,
     class     Value,
     class     Compare = ft::less<Key>,
-    class     Allocator = std::allocator <ft::pair<const Key, Value> > 
+    class     Allocator = std::allocator <ft::pair<const Key, Value> >
   >
 	class map {
   public:
     typedef Key                                                                           key_type;
     typedef Value                                                                         mapped_type;
     typedef ft::pair<const key_type, mapped_type>                                         value_type;
+    typedef ft::use_first<value_type>                                                     use_first;
     typedef Compare                                                                       key_compare;
-
     typedef Allocator                                                                     allocator_type;
     typedef typename allocator_type::reference                                            reference;
     typedef typename allocator_type::const_reference                                      const_reference;
@@ -32,9 +32,7 @@ namespace ft {
 
   public:
   /* MEMBER CLASS */
-    class value_compare {// :binary_function<value_type, value_type, bool> {
-//    friend class map;
-
+    class value_compare {
     public:
       typedef bool            result_type;
       typedef const key_type  first_argument_type;
@@ -52,8 +50,7 @@ namespace ft {
 
   public:
 			typedef typename ft::tree_node<value_type>					                                  node_type;
-			typedef typename ft::_tree<value_type, value_compare>		                              tree_type;
-      //less -> value_compare (bound)
+			typedef typename ft::_tree<value_type, use_first, value_compare>		                  tree_type;
 
   private:
     allocator_type     _allocator;
@@ -152,7 +149,6 @@ namespace ft {
     const_iterator  find( const Key& key ) const  { return const_iterator(_tree.find(value_type(key, mapped_type()))); };
 
     size_type count( const Key& key ) const {
-//      if (_tree.find(value_type(key, mapped_type())) != NULL)
       if (_tree.find(value_type(key, mapped_type()))->_value != NULL)
         return 1;
       return 0;
@@ -191,7 +187,6 @@ namespace ft {
 	bool operator> (const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs) {
 		return rhs < lhs;
 	};
-  //todo: lexicographical_compare -> rhs < lhs
 
   template< class Key, class T, class Compare, class Alloc >
   bool operator<=( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs ) {
