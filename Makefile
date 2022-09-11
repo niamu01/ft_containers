@@ -1,7 +1,7 @@
-NAME = a.out
+NAME = ft_containers
 CXXFLAGS = -Wall -Wextra -Werror
 CXXFLAGS += -g -fsanitize=address
-SRCS = set_test.cpp
+SRCS = stack_test.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 .PHONY : all
@@ -16,7 +16,8 @@ clean :
 	rm -rf $(OBJS)
 
 .PHONY : fclean
-fclean : clean
+fclean :
+	make clean
 	rm -rf $(NAME)
 
 .PHONY : re

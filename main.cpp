@@ -1,27 +1,28 @@
 #include <iostream>
 #include <string>
 #include <deque>
-#if 1 //CREATE A REAL STL EXAMPLE
+#if 0 //CREATE A REAL STL EXAMPLE
 	#include <map>
 	#include <stack>
 	#include <vector>
 	namespace ft = std;
 #else
-	#include <map.hpp>
-	#include <stack.hpp>
-	#include <vector.hpp>
+	#include "map.hpp"
+	#include "stack.hpp"
+	#include "vector.hpp"
 #endif
 
 #include <stdlib.h>
 
-#define MAX_RAM 4294967296
+#include <sys/time.h>
+
+#define MAX_RAM 4194304
 #define BUFFER_SIZE 4096
 struct Buffer
 {
 	int idx;
 	char buff[BUFFER_SIZE];
 };
-
 
 #define COUNT (MAX_RAM / (int)sizeof(Buffer))
 
@@ -44,7 +45,21 @@ public:
 	iterator end() { return this->c.end(); }
 };
 
+long long	timestamp(void)
+{
+	struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
+}
+
 int main(int argc, char** argv) {
+	
+	long long	start_time;
+	long long	end_time;
+	
+ 	start_time = timestamp();
+
 	if (argc != 2)
 	{
 		std::cerr << "Usage: ./test seed" << std::endl;
@@ -112,5 +127,11 @@ int main(int argc, char** argv) {
 		std::cout << *it;
 	}
 	std::cout << std::endl;
+
+ 	end_time = timestamp();
+
+	long long diffTime = end_time - start_time;
+	std::cout << diffTime << std::endl;
+	
 	return (0);
 }
