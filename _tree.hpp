@@ -5,10 +5,9 @@
 #include <memory>
 
 #include "functional.hpp" //ft::less
-#include "utility.hpp" //ft::rebind, ft::pair
+#include "utility.hpp" //ft::rebind, ft::pair, ft::use_first
 #include "iterator.hpp" //ft::reverse_iterator, ft::distance
 
-#include "functional.hpp" //ft::less<T>
 #include "algorithm.hpp" //ft::equal, ft::lexicographical_compare
 #include "type_traits.hpp" //ft::enable_if, ft::is_integral
 
@@ -188,9 +187,9 @@ namespace ft {
 /*  TREE  */
 	template<
     typename T,
+    typename ExtractKey,
     typename Compare = ft::less<T>,
     typename Allocator = std::allocator<T>
-  //typename ExtractKey = ft::use_first<ft::pair<Key, Value>,
   // bool      bMutableIterators = true, //map: true, set: false
   // bool      bUniqueKeys = true //map,set: true, multi: false
   >
